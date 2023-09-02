@@ -1,0 +1,7 @@
+import {ISchemaConfig} from "../types/ISchemaConfig";
+import {SCHEMA_TYPE} from "../types/DataTypes";
+{{imports}}
+
+export const SCHEMAS_CONFIG = {
+  {{exports}}
+};

@@ -1,0 +1,13 @@
+import { mergeRouters, router } from "../../autoGen/utils/trpc";
+import { BASE_ROUTERS } from "./base_routers";
+import { CUSTOM_ROUTERS } from "./custom_routers";
+import { SCHEMA_TYPE } from "../../types/DataTypes";
+
+import {AuthRouter} from "../../autoGen/utils/basic-auth/AuthRouter";
+
+export const databaseAppRouter = router({
+  auth: AuthRouter,
+  {{export_apis}}
+});
+
+export type DatabaseRouter = typeof databaseAppRouter;

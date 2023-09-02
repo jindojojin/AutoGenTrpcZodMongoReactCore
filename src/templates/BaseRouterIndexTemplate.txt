@@ -1,0 +1,6 @@
+import {SCHEMA_TYPE} from "../types/DataTypes";
+{{imports}}
+
+export const BASE_ROUTERS = {
+  {{export_routers}}
+};

@@ -1,0 +1,36 @@
+{
+  "dependencies": {
+    "@trpc/server": "latest",
+    "superjson": "latest",
+    "change-case": "latest",
+    "dayjs": "latest",
+    "dotenv": "latest",
+    "exceljs": "latest",
+    "express": "latest",
+    "lodash": "latest",
+    "mongodb": "latest",
+    "mongoose": "latest",
+    "archiver": "latest",
+    "multer": "latest",
+    "node-cache": "latest",
+    "papaparse": "latest",
+    "zod": "latest",
+    "uuid": "latest"
+  },
+  "devDependencies": {
+    "@types/uuid": "latest",
+    "@types/archiver": "latest",
+    "@types/lodash": "latest",
+    "@types/multer": "latest",
+    "@types/node": "latest",
+    "@types/papaparse": "latest",
+    "cross-env": "latest",
+    "dotenv-cli": "latest",
+    "prettier": "latest",
+    "ts-node": "latest",
+    "typescript": "latest"
+  },
+  "scripts": {
+    "gen": "ts-node --typeCheck=false index.ts"
+  }
+}

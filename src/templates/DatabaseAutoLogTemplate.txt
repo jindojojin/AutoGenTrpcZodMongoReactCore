@@ -1,0 +1,5 @@
+import { watchChangeThenUpdateToLog } from "../utils/auto-logs/watchChangeThenUpdateToLog";
+{{imports}}
+export function runAutoLog(){
+{{exports}}
+}

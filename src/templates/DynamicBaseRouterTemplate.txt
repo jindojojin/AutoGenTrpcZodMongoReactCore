@@ -1,0 +1,29 @@
+/**
+ * This file is auto generated _ do not fix manually
+ */
+import _ from "lodash";
+import { publicProcedure, router } from "../{{RelativePath}}utils/trpc";
+import { DB_FUNC } from "../{{RelativePath}}utils/database-functions";
+import { SCHEMA_TYPE } from "../{{RelativePath}}types/DataTypes";
+import { MONGOOSE_SCHEMA } from "../{{RelativePath}}mongoose/MongooseSchemas";
+import { DATABASE_MODELS } from "../{{RelativePath}}mongoose/DatabaseModels";
+import { SCHEMAS_CONFIG } from "../{{RelativePath}}schema_configs";
+import {
+  dynamicTableProcedure,
+  DynamicTableProcedureParams,
+} from "../{{RelativePath}}utils/trpc-dynamic-routes/utils/dynamicTableProcedure";
+import { IProcedureConfig } from "../{{RelativePath}}utils/trpcUtils";
+
+const DynamicParams: DynamicTableProcedureParams = {
+  procedure: publicProcedure,
+  DataModel: DATABASE_MODELS[SCHEMA_TYPE.ASSET],
+  MongoDataSchema: MONGOOSE_SCHEMA[SCHEMA_TYPE.ASSET],
+  PropertyModel: DATABASE_MODELS[SCHEMA_TYPE.ASSET_PROPERTY],
+  CategoryModel: DATABASE_MODELS[SCHEMA_TYPE.ASSET_CATEGORY],
+  fixedFields: _.omit(SCHEMAS_CONFIG[SCHEMA_TYPE.ASSET].fieldConfigs, ["_id"]),
+};
+
+export const {{ModuleName}}BaseRouter = (config?: IProcedureConfig) =>
+  router({
+    {{routerCodes}}
+  });

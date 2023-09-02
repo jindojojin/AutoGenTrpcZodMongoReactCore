@@ -1,0 +1,10 @@
+import mongoose, {Schema} from "mongoose";
+import {SCHEMA_TYPE} from "../types/DataTypes";
+import {getSchemaFromFieldConfigs} from "../utils/trpc-dynamic-routes/utils/SchemaBuilder";
+import { GenList } from "../GenList";
+import type { {{importTypes}} } from "./DatabaseTypes";
+
+{{exports}}
+export const MONGOOSE_SCHEMA: Record<SCHEMA_TYPE, Schema> = {
+  {{exportModelMapping}}
+};

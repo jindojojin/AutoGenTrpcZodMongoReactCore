@@ -1,0 +1,17 @@
+import {z} from "zod";
+import { BASIC_TYPE, FILE_TYPE, SCHEMA_TYPE } from "../{{RelativePath}}types/DataTypes";
+import {ISchemaConfig} from "../{{RelativePath}}types/ISchemaConfig";
+import {{{ModuleName}}} from "../{{RelativePath}}types/DatabaseTypes";
+import _ from "lodash";
+export const {{ModuleName}}SchemaConfig: ISchemaConfig<{{ModuleName}}> = {
+    name:"{{Module Name}}",
+    importKeys:{{importKeys}},
+    exportKeys:{{exportKeys}},
+    uniqueKeys:{{uniqueKeys}},
+    searchKeys:{{searchKeys}},
+    relationKeys:{{relationKeys}},
+    fieldConfigs:{
+        _id:{type: BASIC_TYPE.TEXT,label: "ID",hidden:true},
+        {{keyConfigs}}
+    }
+}
