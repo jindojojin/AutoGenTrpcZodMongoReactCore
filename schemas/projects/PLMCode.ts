@@ -1,5 +1,6 @@
-import { BASIC_TYPE, SCHEMA_TYPE } from "../../share/types/DataTypes";
+import { BASIC_TYPE } from "../../share/types/DataTypes";
 import { ISchemaDefinition } from "../../share/types/ISchemaDefinition";
+import {SCHEMA_TYPE} from "../SchemaTypes";
 
 export const PLMCodeSchema: ISchemaDefinition = {
   testProject: { type: SCHEMA_TYPE.TEST_PROJECT, hidden: true },

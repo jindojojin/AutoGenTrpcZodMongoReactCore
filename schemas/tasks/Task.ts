@@ -3,8 +3,8 @@ import { ISchemaDefinition } from "../../share/types/ISchemaDefinition";
 import {
   BASIC_TYPE,
   FILE_TYPE,
-  SCHEMA_TYPE,
 } from "../../share/types/DataTypes";
+import {SCHEMA_TYPE} from "../SchemaTypes";
 
 export const TaskSchema: ISchemaDefinition = {
   status: {
