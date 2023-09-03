@@ -2,7 +2,6 @@ import {copyFile, copyFiles} from "./server_base/genUtils";
 import CONFIG from './config.json'
 import path from "path";
 import {autoGenSchemaType} from "./src/generators/autoGenType";
-import {GenList} from "./GenList";
 import {autoGenDatabaseModel} from "./src/generators/autoGenDatabaseModel";
 import {autoGenMongooseSchema} from "./src/generators/autoGenMongooseSchema";
 import {autoGenSchemaConfigIndex} from "./src/generators/autoGenSchemaConfigIndex";
@@ -14,6 +13,7 @@ import {autoGenDatabaseAPI} from "./src/generators/autoGenDatabaseAPI";
 import {autoGenBaseRouterIndex} from "./src/generators/autoGenBaseRouterIndex";
 import {autoGenDatabaseAutoLog} from "./src/generators/autoGenDatabaseAutoLog";
 import {getObjectKeys} from "./share/CommonFunctions";
+import {GenList} from "./schemas";
 
 const clientPath = (str: string = "") => path.resolve(CONFIG.client_path, str)
 const serverPath = (str: string = "") => path.resolve(CONFIG.database_service_path, str)

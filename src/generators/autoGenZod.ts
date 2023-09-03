@@ -15,10 +15,10 @@ import {
   ISchemaDefinition,
   ISchemaFieldConfig,
 } from "../../share/types/ISchemaDefinition";
-import { GenList } from "../../GenList";
 import _ from "lodash";
 import path from "path";
 import {getObjectKeys} from "../../share/CommonFunctions";
+import {GenList} from "../../schemas";
 
 function getFieldType(type: DataType, topType: DataType) {
   let input;

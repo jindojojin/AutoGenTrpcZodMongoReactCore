@@ -1,8 +1,8 @@
 import mongoose, {Schema} from "mongoose";
 import {SCHEMA_TYPE} from "../../share/types/DataTypes";
 import {getSchemaFromFieldConfigs} from "../trpc-dynamic-routes/utils/SchemaBuilder";
-import { GenList } from "../../GenList";
 import type { AssetLog,Asset,AssetCategoryLog,AssetCategory,AssetPropertyLog,AssetProperty,AssetPicLog,AssetPic,AssetInvoiceLog,AssetInvoice,Task,TaskCheckItem,PlmCode,PlmDefect,Project,TestProject,Ttv2TestSuite,Ttv2TestSet,Ttv2Testcase,Scope,User,UserScope } from "./DatabaseTypes";
+import {GenList} from "../../schemas";
 
 export const AssetLogMongooseSchema = getSchemaFromFieldConfigs<AssetLog>(GenList[SCHEMA_TYPE.ASSET_LOG].schema as any);
 export const AssetMongooseSchema = getSchemaFromFieldConfigs<Asset>(GenList[SCHEMA_TYPE.ASSET].schema as any);
