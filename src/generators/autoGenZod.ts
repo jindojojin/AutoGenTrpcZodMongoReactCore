@@ -5,7 +5,7 @@ import {
   DataType,
   isBasicType,
   isSchemaType,
-  SCHEMA_TYPE,
+
 } from "../../share/types/DataTypes";
 import {
   createFolderIfNotExist, GenConfig, getRelativePath,
@@ -19,6 +19,7 @@ import _ from "lodash";
 import path from "path";
 import {getObjectKeys} from "../../share/CommonFunctions";
 import {GenList} from "../../schemas";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 
 function getFieldType(type: DataType, topType: DataType) {
   let input;

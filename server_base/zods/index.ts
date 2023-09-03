@@ -1,4 +1,3 @@
-import {SCHEMA_TYPE} from "../../share/types/DataTypes";
 import {zAssetLogInput, zAssetLogOutput, ZodAssetLogAPIs} from "./assets/zAssetLog";
 import {zAssetInput, zAssetOutput, ZodAssetAPIs} from "./assets/zAsset";
 import {zAssetCategoryLogInput, zAssetCategoryLogOutput, ZodAssetCategoryLogAPIs} from "./assets/zAssetCategoryLog";
@@ -21,6 +20,7 @@ import {zTtv2TestcaseInput, zTtv2TestcaseOutput, ZodTtv2TestcaseAPIs} from "./pr
 import {zScopeInput, zScopeOutput, ZodScopeAPIs} from "./users/zScope";
 import {zUserInput, zUserOutput, ZodUserAPIs} from "./users/zUser";
 import {zUserScopeInput, zUserScopeOutput, ZodUserScopeAPIs} from "./users/zUserScope";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 
 export const ZOD_INPUTS = {
   [SCHEMA_TYPE.ASSET_LOG]: zAssetLogInput,

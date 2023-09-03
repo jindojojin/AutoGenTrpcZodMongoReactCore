@@ -4,7 +4,7 @@ import {
   DataType,
   isBasicType,
   isFileType,
-  SCHEMA_TYPE,
+
 } from "../../../share/types/DataTypes";
 import _ from "lodash";
 import { ISchemaDefinition } from "../../../share/types/ISchemaDefinition";
@@ -13,6 +13,7 @@ import { SystemUserCollectionName } from "../../../share/constants/database_fiel
 import { getSchemaName } from "../../../share/SchemaUtils";
 
 import {getObjectKeys} from "../../../share/CommonFunctions";
+import {SCHEMA_TYPE} from "../../../schemas/SchemaTypes";
 
 function getMongoType(type: DataType): any {
   if (Array.isArray(type)) {

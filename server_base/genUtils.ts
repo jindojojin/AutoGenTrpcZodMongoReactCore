@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import {existsSync, mkdirSync} from "fs";
-import {BASIC_TYPE, DataType, FILE_TYPE, getBaseType, SCHEMA_TYPE,} from "../share/types/DataTypes";
+import {BASIC_TYPE, DataType, FILE_TYPE, getBaseType, } from "../share/types/DataTypes";
 import {ObjectId} from "mongodb";
 import {isPlainObject, mapValues} from "lodash";
 import {camelCase, constantCase, pascalCase, snakeCase} from "change-case";
@@ -8,6 +8,7 @@ import path from "path";
 import {getObjectKeys} from "../share/CommonFunctions";
 import {ISchemaDefinition} from "../share/types/ISchemaDefinition";
 import {DB_FUNC} from "./database-functions";
+import {SCHEMA_TYPE} from "../schemas/SchemaTypes";
 
 export function convertObjectIdsToStrings(obj: any): any {
     return mapValues(obj, (value: any) => {

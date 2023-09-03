@@ -1,5 +1,6 @@
 import {z} from "zod";
-import { BASIC_TYPE, FILE_TYPE, SCHEMA_TYPE } from "../{{RelativePath}}types/DataTypes";
+import { BASIC_TYPE, FILE_TYPE } from "../{{RelativePath}}types/DataTypes";
+import {SCHEMA_TYPE} from "../../{{RelativePath}}schemas/SchemaTypes";
 import {ISchemaConfig} from "../{{RelativePath}}types/ISchemaConfig";
 import {{{ModuleName}}} from "../{{RelativePath}}types/DatabaseTypes";
 import _ from "lodash";

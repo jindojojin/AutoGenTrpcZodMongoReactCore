@@ -1,4 +1,4 @@
-import { watchChangeThenUpdateToLog } from "../utils/auto-logs/watchChangeThenUpdateToLog";
+import { watchChangeThenUpdateToLog } from "../auto-logs/watchChangeThenUpdateToLog";
 {{imports}}
 export function runAutoLog(){
 {{exports}}

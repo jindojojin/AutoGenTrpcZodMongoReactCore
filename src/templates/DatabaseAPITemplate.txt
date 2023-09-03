@@ -1,4 +1,4 @@
-import { SCHEMA_TYPE } from "../types/DataTypes";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 export type API_NAME = {{api_names}}
 export const DATABASE_APIS: Record<SCHEMA_TYPE, API_NAME> = {
   {{export_apis}}

@@ -4,8 +4,9 @@ import {
   AUTH_USER_PWD_FIELD,
   AUTH_USER_SALT_FIELD,
 } from "../../share/constants/database_fields";
-import { BASIC_TYPE, SCHEMA_TYPE } from "../../share/types/DataTypes";
+import { BASIC_TYPE } from "../../share/types/DataTypes";
 import { ISchemaDefinition } from "../../share/types/ISchemaDefinition";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 
 export const SystemUserSchema: ISchemaDefinition = {
   [AUTH_USER_ID_FIELD]: {

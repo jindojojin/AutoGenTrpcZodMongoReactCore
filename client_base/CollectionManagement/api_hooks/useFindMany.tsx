@@ -1,7 +1,7 @@
-import { SCHEMA_TYPE } from "../../../share/types/DataTypes";
 import { useCallback, useEffect, useState } from "react";
 import { databaseClient } from "../../../../src/trpc/service";
 import { DATABASE_APIS } from "../../../share/constants/database_apis";
+import {SCHEMA_TYPE} from "../../../schemas/SchemaTypes";
 function useFindMany<T>(
   schema: SCHEMA_TYPE,
   where: any,
