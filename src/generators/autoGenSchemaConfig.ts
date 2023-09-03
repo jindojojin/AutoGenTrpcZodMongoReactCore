@@ -6,13 +6,13 @@ import {DataType, isSchemaType, SCHEMA_TYPE,} from "../../types/DataTypes";
 import {ISchemaDefinition, ISchemaFieldConfig,} from "../../types/ISchemaDefinition";
 import {
     createFolderIfNotExist,
-    getObjectKeys,
     getRelativePath,
     getSchemaFolder,
     getSchemaName,
     getTypeEnumText,
 } from "../../utils/genUtils";
 import {GenConfig} from "../../GenList";
+import {getObjectKeys} from "../../utils/CommonFunctions";
 
 function getFieldType(type: DataType): string {
     if (Array.isArray(type)) {

@@ -11,7 +11,8 @@ import { ISchemaDefinition } from "../../../types/ISchemaDefinition";
 import { SFileCollectionName } from "../../file-storage/FileManager";
 import { SystemUserCollectionName } from "../../../constants/database_fields";
 import { getSchemaName } from "../../SchemaUtils";
-import {getObjectKeys} from "../../genUtils";
+
+import {getObjectKeys} from "../../CommonFunctions";
 
 function getMongoType(type: DataType): any {
   if (Array.isArray(type)) {

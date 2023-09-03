@@ -9,7 +9,8 @@ import {
 import _ from "lodash";
 import { AUTH_USER_ID_FIELD } from "../../../constants/database_fields";
 import { Scope } from "../../../types/DatabaseTypes";
-import {getObjectKeys} from "../../genUtils";
+
+import {getObjectKeys} from "../../CommonFunctions";
 
 function getCombineUserGroupsScopes(userScopes: (any & Scope)[]) {
   return _.chain(userScopes)

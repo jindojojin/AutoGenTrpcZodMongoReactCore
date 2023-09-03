@@ -1,18 +1,11 @@
+import * as fs from "fs";
 import {existsSync, mkdirSync} from "fs";
 import {BASIC_TYPE, DataType, FILE_TYPE, getBaseType, SCHEMA_TYPE,} from "../types/DataTypes";
 import {ObjectId} from "mongodb";
 import {isPlainObject, mapValues} from "lodash";
 import {camelCase, constantCase, pascalCase, snakeCase} from "change-case";
-import * as fs from "fs";
 import path from "path";
-
-export function getObjectKeys<T>(Object: T) {
-    const keys: (keyof T)[] = [];
-    for (const objectKey in Object) {
-        keys.push(objectKey);
-    }
-    return keys;
-}
+import {getObjectKeys} from "./CommonFunctions";
 
 export function convertObjectIdsToStrings(obj: any): any {
     return mapValues(obj, (value: any) => {

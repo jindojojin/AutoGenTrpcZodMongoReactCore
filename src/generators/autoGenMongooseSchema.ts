@@ -1,8 +1,9 @@
 import { readFileSync, writeFileSync } from "fs";
 import { GenConfig } from "../../GenList";
 import { SCHEMA_TYPE } from "../../types/DataTypes";
-import {createFolderIfNotExist, getObjectKeys, getSchemaName, getTypeEnumText} from "../../utils/genUtils";
+import {createFolderIfNotExist, getSchemaName, getTypeEnumText} from "../../utils/genUtils";
 import path from "path";
+import {getObjectKeys} from "../../utils/CommonFunctions";
 
 export function autoGenMongooseSchema(outDir:string,GenList: Record<SCHEMA_TYPE, GenConfig>) {
   // const importLines: string[] = [];

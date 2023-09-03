@@ -1,6 +1,7 @@
 import { z, ZodTypeAny } from "zod";
 import mongoose from "mongoose";
-import {getObjectKeys} from "./genUtils";
+
+import {getObjectKeys} from "./CommonFunctions";
 export function zObjectId() {
   return z.custom<string>(
     (val) =>

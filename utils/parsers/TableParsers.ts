@@ -13,7 +13,8 @@ import {
   getFieldsMapByTitle,
   getLinkedSchemaConfig,
 } from "../SchemaUtils";
-import {getObjectKeys} from "../genUtils";
+
+import {getObjectKeys} from "../CommonFunctions";
 
 function getDate(s?: any) {
   const date = new Date(s);

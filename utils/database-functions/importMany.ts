@@ -11,7 +11,8 @@ import {
 } from "../parsers/TableParsers";
 import { zodErrorOutput } from "../zodUtils";
 import { upsertMany, zUpsertOutput } from "./upsertMany";
-import {getObjectKeys} from "../genUtils";
+
+import {getObjectKeys} from "../CommonFunctions";
 
 export async function importFromExcelFile(
   input: any,

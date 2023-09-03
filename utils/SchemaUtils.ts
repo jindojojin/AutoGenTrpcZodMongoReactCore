@@ -4,7 +4,8 @@ import {SCHEMAS_CONFIG} from "../schema_configs";
 import {isBasicType, isSchemaType, SCHEMA_TYPE} from "../types/DataTypes";
 import {ISchemaConfig} from "../types/ISchemaConfig";
 import {ISchemaDefinition, ISchemaFieldConfig,} from "../types/ISchemaDefinition";
-import {getObjectKeys} from "./genUtils";
+
+import {getObjectKeys} from "./CommonFunctions";
 
 export function getSchemaConfigFromFieldConfigs<T>(
     fieldConfigs: ISchemaDefinition<T> | ISchemaFieldConfig[],
