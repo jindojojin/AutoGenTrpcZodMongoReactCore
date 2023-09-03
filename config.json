@@ -1,4 +1,5 @@
 {
-  "database_service_path": "D:\\Laptrinh\\HOSOSO\\database_service\\autoGen",
-  "client_path": "D:\\Laptrinh\\HOSOSO\\vite-client\\autoGen"
+  "database_service_path": "D:\\Laptrinh\\PRIVATE_PORTAL\\database_service\\autoGen",
+  "share_folder_path": "D:\\Laptrinh\\TestGen\\Share",
+  "client_path": "D:\\Laptrinh\\PRIVATE_PORTAL\\vite-client\\autoGen"
 }
