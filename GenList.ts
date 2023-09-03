@@ -1,5 +1,4 @@
-import {SCHEMA_TYPE} from "./types/DataTypes";
-import {ISchemaDefinition} from "./types/ISchemaDefinition";
+import {SCHEMA_TYPE} from "./share/types/DataTypes";
 import {AssetPicSchema} from "./schemas/assets/AssetPic";
 import {PLMDefectSchema} from "./schemas/projects/PLMDefect";
 import {PLMCodeSchema} from "./schemas/projects/PLMCode";
@@ -13,21 +12,13 @@ import {TaskCheckItemSchema} from "./schemas/tasks/TaskCheckItem";
 import {UserSchema} from "./schemas/users/User";
 import {AssetSchema} from "./schemas/assets/Asset";
 import {AssetInvoiceSchema} from "./schemas/assets/AssetInvoice";
-import {getDynamicSchemaGenConfigs} from "./utils/trpc-dynamic-routes/dynamic_table_schema/getDynamicSchemaDefinition";
-import {DB_FUNC} from "./utils/database-functions";
-import {withAutoLog} from "./utils/auto-logs/AutoLogSchema";
-import {SystemScopeSchema, SystemUserScopeSchema} from "./utils/basic-auth/AuthSchemas";
+import {
+    getDynamicSchemaGenConfigs
+} from "./server_base/trpc-dynamic-routes/dynamic_table_schema/getDynamicSchemaDefinition";
+import {SystemScopeSchema, SystemUserScopeSchema} from "./server_base/basic-auth/AuthSchemas";
+import {withAutoLog} from "./server_base/auto-logs/AutoLogSchema";
+import {GenConfig} from "./server_base/genUtils";
 
-export type GenConfig = {
-    schema: ISchemaDefinition;
-    folder?: string;
-    dynamic?: {
-        category: SCHEMA_TYPE;
-        property: SCHEMA_TYPE;
-    };
-    logSchema?: SCHEMA_TYPE;
-    excludeFunctions?: (keyof typeof DB_FUNC)[];
-};
 export const GenList: Record<SCHEMA_TYPE, GenConfig> = {
     ...getDynamicSchemaGenConfigs(
         {

@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useMemo } from "react";
 import _ from "lodash";
 import { TablePaginationConfig, TableProps } from "antd";
 import { getFilterQuery } from "../getTypedColumnFilter";
-import { DataType } from "../../../types/DataTypes";
+import { DataType } from "../../../share/types/DataTypes";
 import { IColumnType } from "../Utils";
 import {
   FilterValue,

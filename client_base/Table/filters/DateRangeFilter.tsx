@@ -1,5 +1,5 @@
 import { TableColumValueFilter } from "../Types";
-import { DateRange } from "../../../types/CommonTypes";
+import { DateRange } from "../../../share/types/CommonTypes";
 import { FilterFilled, FilterOutlined } from "@ant-design/icons";
 import React from "react";
 import _ from "lodash";

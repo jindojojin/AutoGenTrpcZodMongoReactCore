@@ -3,7 +3,7 @@ import { databaseClient, simplePopulate } from "../../../../src/trpc/service";
 import { downloadFile } from "../../Common/FileService";
 import { useApiInput, useApiRoute, useFixedQuery } from "./common";
 import { APICallbacks, APIConfigs } from "../configs/CommonConfig";
-import { SCHEMAS_CONFIG } from "../../../schema_configs";
+import { SCHEMAS_CONFIG } from "../../../share/schema_configs";
 
 export function useExportToExcel<T>(
   configs: APIConfigs,

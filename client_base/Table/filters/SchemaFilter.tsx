@@ -2,7 +2,7 @@ import React from "react";
 import { ColumnType } from "antd/es/table";
 import { FilterFilled, FilterOutlined } from "@ant-design/icons";
 import { Button } from "antd";
-import { ISchemaFieldConfig } from "../../../types/ISchemaDefinition";
+import { ISchemaFieldConfig } from "../../../share/types/ISchemaDefinition";
 import MultiSchemaInput, {
   IMultiSchemaInputProps,
 } from "../../Form/inputs/MultiSchemaInput";

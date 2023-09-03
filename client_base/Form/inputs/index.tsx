@@ -1,4 +1,4 @@
-import {BASIC_TYPE, FILE_TYPE} from "../../../types/DataTypes";
+import {BASIC_TYPE, FILE_TYPE} from "../../../share/types/DataTypes";
 import React from "react";
 import {FormInputProps, FormMultiInputProps} from "./Types";
 import TextInput, {MultiTextInput} from "./TextInput";

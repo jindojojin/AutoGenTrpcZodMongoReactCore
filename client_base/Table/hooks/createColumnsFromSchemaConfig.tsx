@@ -1,5 +1,5 @@
 import React from "react";
-import { ISchemaConfig } from "../../../types/ISchemaConfig";
+import { ISchemaConfig } from "../../../share/types/ISchemaConfig";
 import { getObjectKeys } from "../../Common/Utils";
 import { ColumnType } from "antd/es/table";
 import { IColumnType } from "../Utils";

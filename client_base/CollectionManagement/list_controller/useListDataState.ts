@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { databaseClient, simplePopulate } from "../../../../src/trpc/service";
 import { APIConfigs } from "../configs/CommonConfig";
 import { useApiInput, useApiRoute, useFixedQuery } from "../api_hooks/common";
-import {SCHEMAS_CONFIG} from "../../../schema_configs";
+import {SCHEMAS_CONFIG} from "../../../share/schema_configs";
 
 type FilterConfig<T = any> = Partial<{ [k in keyof T]: any }> & any;
 type SorterConfig<T = any> = Partial<{ [k in keyof T]: 1 | -1 | undefined }>;

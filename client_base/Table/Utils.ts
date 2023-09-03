@@ -1,7 +1,7 @@
 import { ColumnType } from "antd/es/table";
 import _ from "lodash";
-import { DataType } from "../../types/DataTypes";
-import { ISchemaFieldConfig } from "../../types/ISchemaDefinition";
+import { DataType } from "../../share/types/DataTypes";
+import { ISchemaFieldConfig } from "../../share/types/ISchemaDefinition";
 
 export interface IColumnType<T> extends ColumnType<T> {
   type: DataType;

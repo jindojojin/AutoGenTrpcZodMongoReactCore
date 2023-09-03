@@ -19,5 +19,4 @@ function useFormAPI<T extends FieldValues>(config: FormConfigProps<T>) {
   );
   return { onCreate, onDelete, onUpdate };
 }
-
 export default useFormAPI;

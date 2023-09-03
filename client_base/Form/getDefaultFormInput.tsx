@@ -6,8 +6,8 @@ import {
   FILE_TYPE,
   isSchemaType,
   SCHEMA_TYPE,
-} from "../../types/DataTypes";
-import { ISchemaFieldConfig } from "../../types/ISchemaDefinition";
+} from "../../share/types/DataTypes";
+import { ISchemaFieldConfig } from "../../share/types/ISchemaDefinition";
 import {
   CustomFormInputs,
   CustomFormMultiInputs,

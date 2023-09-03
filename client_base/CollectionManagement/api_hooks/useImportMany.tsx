@@ -50,7 +50,6 @@ function useShowResult() {
   return showResult;
 }
 
-export type importFromExcelFileSettings = CommonApiSettings;
 
 export function useImportFromExcelFile(
   configs: APIConfigs,
@@ -81,7 +80,6 @@ export function useImportFromExcelFile(
   };
 }
 
-export type importFromTextSettings = CommonApiSettings;
 
 export function useImportFromText<T>(
   configs: APIConfigs,

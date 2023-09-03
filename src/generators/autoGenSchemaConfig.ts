@@ -2,17 +2,16 @@ import {capitalCase} from "change-case";
 import {readFileSync, writeFileSync} from "fs";
 import _ from "lodash";
 import path from "path";
-import {DataType, isSchemaType, SCHEMA_TYPE,} from "../../types/DataTypes";
-import {ISchemaDefinition, ISchemaFieldConfig,} from "../../types/ISchemaDefinition";
+import {DataType, isSchemaType, SCHEMA_TYPE,} from "../../share/types/DataTypes";
+import {ISchemaDefinition, ISchemaFieldConfig,} from "../../share/types/ISchemaDefinition";
 import {
-    createFolderIfNotExist,
+    createFolderIfNotExist, GenConfig,
     getRelativePath,
     getSchemaFolder,
     getSchemaName,
     getTypeEnumText,
-} from "../../utils/genUtils";
-import {GenConfig} from "../../GenList";
-import {getObjectKeys} from "../../utils/CommonFunctions";
+} from "../../server_base/genUtils";
+import {getObjectKeys} from "../../share/CommonFunctions";
 
 function getFieldType(type: DataType): string {
     if (Array.isArray(type)) {

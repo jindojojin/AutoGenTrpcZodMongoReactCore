@@ -10,6 +10,7 @@ import { FieldValues } from "react-hook-form";
 import { useCreateOne } from "../api_hooks/useCreateOne";
 import useUpdateOne from "../api_hooks/useUpdateOne";
 import useDeleteOne from "../api_hooks/useDeleteOne";
+import useFormAPI from "./useFormAPI";
 
 function useFormController<T extends FieldValues>(config: FormConfigProps<T>) {
   const onCreate = useCreateOne(
@@ -49,7 +50,7 @@ function WithFormController<
 >(Component: ComponentType<P>) {
   return forwardRef<ControllableFormViewRef<T>, ControlledFormViewProps<T, P>>(
     (props, ref) => {
-      const { onCreate, onUpdate, onDelete } = useFormController<T>(props);
+      const { onCreate, onUpdate, onDelete } = useFormAPI<T>(props);
       const [mode, setMode] = useState<FORM_ACTION>(FORM_ACTION.CREATE);
       const [initValue, setInitValue] = useState<T>();
       useImperativeHandle(ref, () => ({

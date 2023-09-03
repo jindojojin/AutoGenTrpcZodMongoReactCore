@@ -8,18 +8,13 @@ import React, {
 } from "react";
 import { LIST_ACTION, ListConfigProps } from "../configs/ListConfigs";
 import { useListDataState } from "./useListDataState";
-import useListImportExport from "./useListImportExport";
+import useListImportExport from "./useListAPI";
 import { FieldValues } from "react-hook-form";
+import useListAPI from "./useListAPI";
 
 function UseListController<T>(configs: ListConfigProps<T>) {
   const ListStates = useListDataState<T>(configs.api);
-  const getListAPI = useCallback(
-    (action: LIST_ACTION, trigger: any) => {
-      return !configs.api || !configs.usages?.[action] ? null : trigger;
-    },
-    [configs]
-  );
-  const ImportExportAPIs = useListImportExport(configs, getListAPI);
+  const ImportExportAPIs = useListAPI(configs);
 
   return {
     ...ListStates,

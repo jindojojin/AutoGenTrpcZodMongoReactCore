@@ -1,5 +1,5 @@
-import { BASIC_TYPE, SCHEMA_TYPE } from "../../types/DataTypes";
-import { ISchemaDefinition } from "../../types/ISchemaDefinition";
+import { BASIC_TYPE, SCHEMA_TYPE } from "../../share/types/DataTypes";
+import { ISchemaDefinition } from "../../share/types/ISchemaDefinition";
 
 export const TTv2TestSetSchema: ISchemaDefinition = {
   tpid: { type: SCHEMA_TYPE.TTV2_TEST_SUITE, hidden: true },

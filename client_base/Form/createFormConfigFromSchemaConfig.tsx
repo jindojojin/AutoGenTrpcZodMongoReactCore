@@ -1,4 +1,4 @@
-import { ISchemaConfig } from "../../types/ISchemaConfig";
+import { ISchemaConfig } from "../../share/types/ISchemaConfig";
 import { getObjectKeys } from "../Common/Utils";
 import IFormConfig, { IFormItemConfig } from "./IFormConfig";
 import { FieldPath, FieldValues } from "react-hook-form";

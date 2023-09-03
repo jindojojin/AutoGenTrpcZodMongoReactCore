@@ -2,8 +2,8 @@ import {
   BASIC_TYPE,
   SCHEMA_TYPE,
   TTV2_STATES,
-} from "../../types/DataTypes";
-import { ISchemaDefinition } from "../../types/ISchemaDefinition";
+} from "../../share/types/DataTypes";
+import { ISchemaDefinition } from "../../share/types/ISchemaDefinition";
 
 export const TTv2TestCaseSchema: ISchemaDefinition = {
   id: { type: BASIC_TYPE.NUMBER, unique: true, importKey: true },

@@ -1,8 +1,13 @@
 import {readFileSync, writeFileSync} from "fs";
-import {createFolderIfNotExist, getSchemaFolder, getSchemaName, getTypeEnumText,} from "../../utils/genUtils";
-import {GenConfig} from "../../GenList";
+import {
+    createFolderIfNotExist,
+    GenConfig,
+    getSchemaFolder,
+    getSchemaName,
+    getTypeEnumText,
+} from "../../server_base/genUtils";
 import path from "path";
-import {SCHEMA_TYPE} from "../../types/DataTypes";
+import {SCHEMA_TYPE} from "../../share/types/DataTypes";
 
 export function autoGenSchemaConfigIndex(outDir: string | string[],
                                          GenList: Record<SCHEMA_TYPE, GenConfig>,

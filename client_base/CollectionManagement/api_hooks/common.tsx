@@ -1,7 +1,7 @@
 import _ from "lodash";
-import { DATABASE_APIS } from "../../../constants/database_apis";
-import { DYNAMIC_CATEGORY_ID } from "../../../constants/database_fields";
-import { SCHEMAS_CONFIG } from "../../../schema_configs";
+import { DATABASE_APIS } from "../../../share/constants/database_apis";
+import { DYNAMIC_CATEGORY_ID } from "../../../share/constants/database_fields";
+import { SCHEMAS_CONFIG } from "../../../share/schema_configs";
 import { APIConfigs } from "../configs/CommonConfig";
 
 export function useDepopulate<T>(config: APIConfigs) {

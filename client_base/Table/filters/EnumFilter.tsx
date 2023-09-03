@@ -4,7 +4,7 @@ import { FilterOutlined } from "@ant-design/icons";
 import ListEnumInput from "../../Form/inputs/ListEnumInput";
 import { getEnumTitle } from "../Utils";
 import { Button } from "antd";
-import { ISchemaFieldConfig } from "../../../types/ISchemaDefinition";
+import { ISchemaFieldConfig } from "../../../share/types/ISchemaDefinition";
 
 export function EnumFilter<T>(
   config: ISchemaFieldConfig

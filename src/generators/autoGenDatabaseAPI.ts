@@ -1,7 +1,6 @@
-import {createFolderIfNotExist, getSchemaName, getTypeEnumText} from "../../utils/genUtils";
+import {createFolderIfNotExist, GenConfig, getSchemaName, getTypeEnumText} from "../../server_base/genUtils";
 import { readFileSync, writeFileSync } from "fs";
-import { GenConfig } from "../../GenList";
-import { SCHEMA_TYPE } from "../../types/DataTypes";
+import { SCHEMA_TYPE } from "../../share/types/DataTypes";
 import path from "path";
 
 export function autoGenDatabaseAPI(outDir:string,GenList: Record<SCHEMA_TYPE, GenConfig>) {

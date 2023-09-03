@@ -1,5 +1,5 @@
-import { ISchemaDefinition } from "../../types/ISchemaDefinition";
-import { BASIC_TYPE, SCHEMA_TYPE } from "../../types/DataTypes";
+import { ISchemaDefinition } from "../../share/types/ISchemaDefinition";
+import { BASIC_TYPE, SCHEMA_TYPE } from "../../share/types/DataTypes";
 
 export const PLMDefectSchema: ISchemaDefinition = {
   plm_code: {

@@ -1,8 +1,8 @@
 import React from "react";
 import {IColumnType} from "./Utils";
-import {BASIC_TYPE, DataType, isFileType, isSchemaType, SCHEMA_TYPE,} from "../../types/DataTypes";
+import {BASIC_TYPE, DataType, isFileType, isSchemaType, SCHEMA_TYPE,} from "../../share/types/DataTypes";
 import {FilterValue} from "antd/es/table/interface";
-import {ISchemaFieldConfig} from "../../types/ISchemaDefinition";
+import {ISchemaFieldConfig} from "../../share/types/ISchemaDefinition";
 import {CustomTableColumnFilter} from "../../../src/common/custom/table/filters";
 import { BaseTableColumnFilter } from "./filters";
 import { getDateRangeFilterValue } from "./filters/DateRangeFilter";

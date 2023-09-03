@@ -1,6 +1,6 @@
 // Table name use for create relationship in schemas and automatic generate route,.....
 
-import {SCHEMA_TYPE} from "../types/DataTypes";
+import {SCHEMA_TYPE} from "../share/types/DataTypes";
 
 export const SCHEMA_HAS_SCOPE: SCHEMA_TYPE[] = [
     SCHEMA_TYPE.ASSET,

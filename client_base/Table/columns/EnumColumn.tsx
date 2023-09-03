@@ -3,7 +3,7 @@ import { ColumnType } from "antd/es/table";
 import { Row, Tag } from "antd";
 import { getEnumTitle } from "../Utils";
 import { showIf } from "../../Common/Utils";
-import { ISchemaFieldConfig } from "../../../types/ISchemaDefinition";
+import { ISchemaFieldConfig } from "../../../share/types/ISchemaDefinition";
 import { TableColumValueRender } from "../Types";
 
 export const EnumColumn: TableColumValueRender<string> = (config) => {

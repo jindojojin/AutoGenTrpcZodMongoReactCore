@@ -1,19 +1,16 @@
 import React from "react";
-import {
-  CopyOutlined,
-  ExportOutlined,
-  FileExcelOutlined,
-} from "@ant-design/icons";
-import { Button, Dropdown } from "antd";
-import { useExportToExcel } from "../../../../src/common/base/crud/api_hooks/useReadAPIs";
-import { showIf } from "../../Common/Utils";
+import {CopyOutlined, ExportOutlined, FileExcelOutlined,} from "@ant-design/icons";
+import {Dropdown} from "antd";
+import {showIf} from "../../Common/Utils";
 
 TableExporter.propTypes = {};
 
-function TableExporter<T>() {
-    const {onExportTemplateToExcel, onExportDataToExcel} = useExportToExcel();
+function TableExporter<T>(props: {
+    onExportToExcelData?: () => Promise<void>,
+    onExportToExcelTemplate?: () => Promise<void>
+}) {
     return showIf(
-        onExportTemplateToExcel || onExportDataToExcel,
+        props.onExportToExcelData || props.onExportToExcelTemplate,
         <>
             <Dropdown
                 trigger={["click", "click"]}
@@ -25,27 +22,27 @@ function TableExporter<T>() {
                             icon: <FileExcelOutlined/>,
                         },
                         {
-            label: "To excel data file",
-            key: "excel_data",
-            icon: <CopyOutlined />,
-          },
-        ],
-        onClick: async ({ key }) => {
-          switch (key) {
-            case "excel_data":
-              await onExportDataToExcel?.();
-              break;
-            case "excel_template":
-              await onExportTemplateToExcel?.();
-              break;
-          }
-        },
-      }}
-    >
-      <Button icon={<ExportOutlined />}>Export</Button>
-    </Dropdown>
-  </>
-);
+                            label: "To excel data file",
+                            key: "excel_data",
+                            icon: <CopyOutlined/>,
+                        },
+                    ],
+                    onClick: async ({key}) => {
+                        switch (key) {
+                            case "excel_data":
+                                await props.onExportToExcelData?.();
+                                break;
+                            case "excel_template":
+                                await props.onExportToExcelTemplate?.();
+                                break;
+                        }
+                    },
+                }}
+            >
+                <ExportOutlined title={"Export"}/>
+            </Dropdown>
+        </>
+    );
 }
 
 export default TableExporter;

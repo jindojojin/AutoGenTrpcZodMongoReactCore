@@ -1,5 +1,5 @@
 import React from "react";
-import { ISchemaConfig } from "../../types/ISchemaConfig";
+import { ISchemaConfig } from "../../share/types/ISchemaConfig";
 import { App, Button, Card, Descriptions, Space } from "antd";
 import HighlightedText from "./HighlightedText";
 import {getObjectKeys} from "../Common/Utils";

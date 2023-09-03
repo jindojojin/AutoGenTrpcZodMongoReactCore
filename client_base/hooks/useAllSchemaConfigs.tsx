@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { API_NAME } from "../../constants/database_apis";
-import { DYNAMIC_CATEGORY_ID } from "../../constants/database_fields";
-import { ISchemaConfig } from "../../types/ISchemaConfig";
-import { getSchemaConfigFromFieldConfigs } from "../../utils/SchemaUtils";
+import { API_NAME } from "../../share/constants/database_apis";
+import { DYNAMIC_CATEGORY_ID } from "../../share/constants/database_fields";
+import { ISchemaConfig } from "../../share/types/ISchemaConfig";
+import { getSchemaConfigFromFieldConfigs } from "../../share/SchemaUtils";
 import { databaseClient } from "../../../src/trpc/service";
 
 function useAllSchemaConfigs(

@@ -1,7 +1,7 @@
 import React from "react";
-import { BASIC_TYPE } from "../../../types/DataTypes";
+import { BASIC_TYPE } from "../../../share/types/DataTypes";
 import { IColumnType } from "../Utils";
-import { ISchemaFieldConfig } from "../../../types/ISchemaDefinition";
+import { ISchemaFieldConfig } from "../../../share/types/ISchemaDefinition";
 
 function GetDefaultSorter<T>(
   config: ISchemaFieldConfig

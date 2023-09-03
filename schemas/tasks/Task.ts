@@ -1,10 +1,10 @@
-import { ISchemaDefinition } from "../../types/ISchemaDefinition";
+import { ISchemaDefinition } from "../../share/types/ISchemaDefinition";
 
 import {
   BASIC_TYPE,
   FILE_TYPE,
   SCHEMA_TYPE,
-} from "../../types/DataTypes";
+} from "../../share/types/DataTypes";
 
 export const TaskSchema: ISchemaDefinition = {
   status: {

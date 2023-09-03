@@ -1,4 +1,4 @@
-import { ISchemaFieldConfig } from "../../../types/ISchemaDefinition";
+import { ISchemaFieldConfig } from "../../../share/types/ISchemaDefinition";
 import { ColumnType } from "antd/es/table";
 import { Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";

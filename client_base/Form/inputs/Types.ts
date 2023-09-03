@@ -1,4 +1,4 @@
-import {ISchemaFieldConfig} from "../../../types/ISchemaDefinition";
+import {ISchemaFieldConfig} from "../../../share/types/ISchemaDefinition";
 
 export type FormInputProps<T extends any = any> = any & {
   value?: T | null;

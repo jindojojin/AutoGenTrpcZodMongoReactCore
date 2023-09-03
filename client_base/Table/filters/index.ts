@@ -1,4 +1,4 @@
-import {BASIC_TYPE, FILE_TYPE} from "../../../types/DataTypes";
+import {BASIC_TYPE, FILE_TYPE} from "../../../share/types/DataTypes";
 import {TableColumValueFilter, TableColumValueRender} from "../Types";
 import {EnumColumn} from "../columns/EnumColumn";
 import DateColumn from "../columns/DateColumn";

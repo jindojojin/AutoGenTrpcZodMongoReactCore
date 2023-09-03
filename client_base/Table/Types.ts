@@ -1,5 +1,5 @@
 import React from "react";
-import {ISchemaFieldConfig} from "../../types/ISchemaDefinition";
+import {ISchemaFieldConfig} from "../../share/types/ISchemaDefinition";
 import {IColumnType} from "./Utils";
 
 export type TableColumValueRender<V extends any = any, R extends any = any> = (

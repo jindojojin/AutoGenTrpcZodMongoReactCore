@@ -2,7 +2,7 @@ import React from "react";
 import { ColumnType } from "antd/es/table";
 import { showIf } from "../../Common/Utils";
 import { CheckOutlined } from "@ant-design/icons";
-import { ISchemaFieldConfig } from "../../../types/ISchemaDefinition";
+import { ISchemaFieldConfig } from "../../../share/types/ISchemaDefinition";
 
 BooleanColumn.propTypes = {};
 
