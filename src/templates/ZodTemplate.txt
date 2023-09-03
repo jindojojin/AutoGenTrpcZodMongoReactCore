@@ -3,10 +3,10 @@ import { z } from "zod";
 import {
  ZodMongoQuery,
  zObjectId,
-} from "../{{RelativePath}}utils/zodUtils";
-import {zUpsertOutput} from "../{{RelativePath}}utils/database-functions/upsertMany";
-import {zImportOutput} from "../{{RelativePath}}utils/database-functions/importMany";
-import {getBasicRouteZodIO} from "../{{RelativePath}}utils/trpc-dynamic-routes/utils/ZodBuilders";
+} from "../{{RelativePath}}zodUtils";
+import {zUpsertOutput} from "../{{RelativePath}}database-functions/upsertMany";
+import {zImportOutput} from "../{{RelativePath}}database-functions/importMany";
+import {getBasicRouteZodIO} from "../{{RelativePath}}trpc-dynamic-routes/utils/ZodBuilders";
 export const z{{ModuleName}}Output = {{ZodOutput}};
 export const z{{ModuleName}}Query = {{ZodQuery}}.passthrough().partial();
 export const z{{ModuleName}}Input = {{ZodInput}};

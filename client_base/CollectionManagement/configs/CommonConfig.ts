@@ -1,4 +1,4 @@
-import { SCHEMA_TYPE } from "../../../share/types/DataTypes";
+import {SCHEMA_TYPE} from "../../../schemas/SchemaTypes";
 
 export type APIConfigs<T = any> = {
   schema: SCHEMA_TYPE;

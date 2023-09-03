@@ -1,8 +1,8 @@
 import {readFileSync, writeFileSync} from "fs";
-import {SCHEMA_TYPE} from "../../share/types/DataTypes";
 import {createFolderIfNotExist, GenConfig, getSchemaName, getTypeEnumText} from "../../server_base/genUtils";
 import path from "path";
 import {getObjectKeys} from "../../share/CommonFunctions";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 
 export function autoGenDatabaseModel(outDir: string, GenList: Record<SCHEMA_TYPE, GenConfig>) {
     const importLines: string[] = [];

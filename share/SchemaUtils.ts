@@ -1,11 +1,12 @@
 import {camelCase, capitalCase, constantCase, pascalCase, snakeCase,} from "change-case";
 import _ from "lodash";
 import {SCHEMAS_CONFIG} from "./schema_configs";
-import {isBasicType, isSchemaType, SCHEMA_TYPE} from "./types/DataTypes";
+import {isBasicType, isSchemaType} from "./types/DataTypes";
 import {ISchemaConfig} from "./types/ISchemaConfig";
 import {ISchemaDefinition, ISchemaFieldConfig,} from "./types/ISchemaDefinition";
 
 import {getObjectKeys} from "./CommonFunctions";
+import {SCHEMA_TYPE} from "../schemas/SchemaTypes";
 
 export function getSchemaConfigFromFieldConfigs<T>(
     fieldConfigs: ISchemaDefinition<T> | ISchemaFieldConfig[],

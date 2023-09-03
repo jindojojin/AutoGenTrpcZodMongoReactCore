@@ -7,7 +7,8 @@ import {
     getTypeEnumText,
 } from "../../server_base/genUtils";
 import path from "path";
-import {SCHEMA_TYPE} from "../../share/types/DataTypes";
+
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 
 export function autoGenSchemaConfigIndex(outDir: string | string[],
                                          GenList: Record<SCHEMA_TYPE, GenConfig>,

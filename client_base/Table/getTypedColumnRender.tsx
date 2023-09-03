@@ -5,7 +5,7 @@ import {
   FILE_TYPE,
   isFileType,
   isSchemaType,
-  SCHEMA_TYPE,
+
 } from "../../share/types/DataTypes";
 import { ISchemaFieldConfig } from "../../share/types/ISchemaDefinition";
 import {
@@ -16,6 +16,7 @@ import {
   BaseMultiValueTableColumnRender,
   BaseSingleValueTableColumnRender,
 } from "./columns";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 
 export function getTypedColumnRender<T>(
   config: ISchemaFieldConfig

@@ -6,10 +6,10 @@ import {
     getSchemaName,
     getTypeEnumText,
 } from "../../server_base/genUtils";
-import {SCHEMA_TYPE} from "../../share/types/DataTypes";
 import path from "path";
 import {pascalCase} from "change-case";
 import {getObjectKeys} from "../../share/CommonFunctions";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 
 const RouterMethodMap = {
     createMany: "mutation",
@@ -123,6 +123,9 @@ export function genBaseRouter(outDir: string,schema_type:SCHEMA_TYPE, genConfig:
         .replaceAll("{{SchemaFolder}}", getSchemaFolder(genConfig.folder))
         .replaceAll("{{RelativePath}}", getRelativePath(genConfig.folder))
         .replaceAll("{{DataType}}", getTypeEnumText(schema_type))
+        .replaceAll("{{DATA_NAME}}",getTypeEnumText(schema_type))
+        .replaceAll("{{CATEGORY_NAME}}",getTypeEnumText(genConfig.dynamic?.category as SCHEMA_TYPE))
+        .replaceAll("{{PROPERTY_NAME}}",getTypeEnumText(genConfig.dynamic?.property as SCHEMA_TYPE))
         .replaceAll(
             "{{PropertyType}}",
             genConfig.dynamic ? getTypeEnumText(genConfig.dynamic?.property) : "",

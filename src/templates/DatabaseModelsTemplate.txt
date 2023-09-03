@@ -1,5 +1,5 @@
 import mongoose, {Schema} from "mongoose";
-import {SCHEMA_TYPE} from "../types/DataTypes";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 {{imports}}
 
 {{exports}}

@@ -1,4 +1,4 @@
-import {SCHEMA_TYPE} from "../types/DataTypes";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 {{imports}}
 
 export const ZOD_INPUTS = {

@@ -1,4 +1,4 @@
-import { SCHEMA_TYPE } from "../types/DataTypes";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 export type API_NAME = "assetLog"|"asset"|"assetCategoryLog"|"assetCategory"|"assetPropertyLog"|"assetProperty"|"assetPicLog"|"assetPic"|"assetInvoiceLog"|"assetInvoice"|"task"|"taskCheckItem"|"plmCode"|"plmDefect"|"project"|"testProject"|"ttv2TestSuite"|"ttv2TestSet"|"ttv2Testcase"|"scope"|"user"|"userScope"
 export const DATABASE_APIS: Record<SCHEMA_TYPE, API_NAME> = {
   [SCHEMA_TYPE.ASSET_LOG]: "assetLog",

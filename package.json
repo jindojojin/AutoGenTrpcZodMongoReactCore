@@ -31,6 +31,6 @@
     "typescript": "latest"
   },
   "scripts": {
-    "gen": "ts-node --typeCheck=false index.ts"
+    "gen": "ts-node --typeCheck=false src/index.ts"
   }
 }

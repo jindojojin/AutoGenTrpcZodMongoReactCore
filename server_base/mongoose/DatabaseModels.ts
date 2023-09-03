@@ -1,6 +1,6 @@
 import mongoose, {Schema} from "mongoose";
-import {SCHEMA_TYPE} from "../../share/types/DataTypes";
 import {AssetLogMongooseSchema,AssetMongooseSchema,AssetCategoryLogMongooseSchema,AssetCategoryMongooseSchema,AssetPropertyLogMongooseSchema,AssetPropertyMongooseSchema,AssetPicLogMongooseSchema,AssetPicMongooseSchema,AssetInvoiceLogMongooseSchema,AssetInvoiceMongooseSchema,TaskMongooseSchema,TaskCheckItemMongooseSchema,PlmCodeMongooseSchema,PlmDefectMongooseSchema,ProjectMongooseSchema,TestProjectMongooseSchema,Ttv2TestSuiteMongooseSchema,Ttv2TestSetMongooseSchema,Ttv2TestcaseMongooseSchema,ScopeMongooseSchema,UserMongooseSchema,UserScopeMongooseSchema} from "./MongooseSchemas"
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 
 export const AssetLogModel = mongoose.model("AssetLog",  AssetLogMongooseSchema);
  AssetLogModel.syncIndexes()

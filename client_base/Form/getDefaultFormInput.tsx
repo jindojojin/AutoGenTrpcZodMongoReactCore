@@ -5,7 +5,7 @@ import {
   BASIC_TYPE,
   FILE_TYPE,
   isSchemaType,
-  SCHEMA_TYPE,
+
 } from "../../share/types/DataTypes";
 import { ISchemaFieldConfig } from "../../share/types/ISchemaDefinition";
 import {
@@ -14,6 +14,7 @@ import {
 } from "../../../src/common/custom/form/inputs";
 import { BaseFormInputs, BaseFormMultiInputs } from "./inputs";
 import { FormInputProps, FormMultiInputProps } from "./inputs/Types";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 
 export function getDefaultFormInput<
   T extends FieldValues,
