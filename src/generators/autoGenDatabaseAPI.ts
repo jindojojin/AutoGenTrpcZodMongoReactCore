@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from "fs";
 import path from "path";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 
-export function autoGenDatabaseAPI(outDir:string,GenList: Record<SCHEMA_TYPE, GenConfig>) {
+export function autoGenDatabaseAPI(outDir:string[],GenList: Record<SCHEMA_TYPE, GenConfig>) {
   const export_routerLines: string[] = [];
   const api_names: string[] = [];
   Object.keys(GenList).forEach((_key) => {
@@ -13,8 +13,8 @@ export function autoGenDatabaseAPI(outDir:string,GenList: Record<SCHEMA_TYPE, Ge
     api_names.push(`"${routeName}"`);
   });
 
-  const filePath = path.resolve(`${outDir}/constants/database_apis.ts`);
-  createFolderIfNotExist(filePath);
+  const filePaths = outDir.map(outDir=> path.resolve(`${outDir}/constants/database_apis.ts`));
+  filePaths.forEach(filePath=>createFolderIfNotExist(filePath));
 
   const template = readFileSync(
     path.resolve("src/templates/DatabaseAPITemplate.txt"),
@@ -23,5 +23,5 @@ export function autoGenDatabaseAPI(outDir:string,GenList: Record<SCHEMA_TYPE, Ge
   const fileContent = template
     .replaceAll("{{export_apis}}", export_routerLines.join(",\n  "))
     .replaceAll("{{api_names}}", api_names.join("|"));
-  writeFileSync(filePath, fileContent);
+  filePaths.forEach(filePath=>writeFileSync(filePath, fileContent));
 }
