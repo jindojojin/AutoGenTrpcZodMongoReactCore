@@ -24,6 +24,7 @@ copyFiles(path.resolve('server_base'), serverPath("server_base"))
 copyFiles(path.resolve('share'), clientPath("share"))
 copyFiles(path.resolve('share'), serverPath("share"))
 copyFiles(path.resolve('schemas'), serverPath("schemas"))
+copyFile(path.resolve('schemas/SchemaTypes.ts'), clientPath("schemas"))
 
 autoGenSchemaType([serverPath("share/types"), clientPath("share/types")], serverPath("server_base"), GenList);
 autoGenSchemaConfigIndex([serverPath("share"), clientPath("share")], GenList);
@@ -31,7 +32,7 @@ autoGenDatabaseModel(serverPath("server_base"), GenList);
 autoGenMongooseSchema(serverPath("server_base"), GenList);
 autoGenZodIndex(serverPath("server_base"), GenList);
 autoGenBaseRouterIndex(serverPath("server_base"), GenList);
-autoGenDatabaseAPI(serverPath("server_base"), GenList);
+autoGenDatabaseAPI([serverPath("share"),clientPath("share")], GenList);
 autoGenDatabaseAutoLog(serverPath("server_base"), GenList);
 getObjectKeys(GenList).map((schema_type) => {
     //gen zod from schema
