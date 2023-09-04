@@ -80,7 +80,7 @@ export function copyFile(sourceFile: string, targetDirectory: string) {
 
         // Sử dụng hàm copyFileSync để copy tệp từ thư mục nguồn đến thư mục đích
         fs.copyFileSync(sourceFile, targetFilePath);
-        console.log(`Đã sao chép ${sourceFile} thành công vào ${targetFilePath}`);
+        // console.log(`Đã sao chép ${sourceFile} thành công vào ${targetFilePath}`);
     } catch (error) {
         console.error(`Đã xảy ra lỗi khi sao chép ${sourceFile}:`, error);
     }
@@ -103,14 +103,14 @@ export function copyFiles(sourceDir: string, targetDir: string) {
             if (entry.isFile()) {
                 // Nếu là tệp, sử dụng hàm copyFileSync để copy
                 fs.copyFileSync(sourcePath, targetPath);
-                console.log(`Đã sao chép ${entry.name} thành công`);
+                // console.log(`Đã sao chép ${entry.name} thành công`);
             } else if (entry.isDirectory()) {
                 // Nếu là thư mục, đệ quy gọi lại hàm copyFiles để sao chép thư mục con
                 copyFiles(sourcePath, targetPath);
             }
         });
 
-        console.log('Hoàn thành việc sao chép các tệp và thư mục.');
+        // console.log('Hoàn thành việc sao chép các tệp và thư mục.');
     } catch (error) {
         console.error('Đã xảy ra lỗi:', error);
     }
