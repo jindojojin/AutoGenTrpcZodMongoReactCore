@@ -28,9 +28,9 @@ export async function uploadFiles(
       }
     else formData.append("file", files);
     const result = await axios.post(
-      `${FILE_STORAGE_URL}${temp ? "/temp" : ""}/file/${
-        isMulti ? "multi" : "single"
-      }`,
+        `${FILE_STORAGE_URL}/file/${isMulti ? "multi" : "single"}${
+            temp ? "?temp=true" : ""
+        }`,
       formData,
       {
         withCredentials: true,

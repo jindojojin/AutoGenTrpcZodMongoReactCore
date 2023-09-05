@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from "fs";
 import {
   BASIC_TYPE,
   DataType,
-  isBasicType,
+  isBasicType, isFileType,
   isSchemaType,
 
 } from "../../share/types/DataTypes";
@@ -52,6 +52,14 @@ function getFieldType(type: DataType, topType: DataType) {
         output = "z.any()";
     }
     input = output;
+  } else if(isFileType(type)){
+    input = "z.union([zObjectId(),zTempFileId()])";
+    output = //TODO: Chưa chỉnh output cho fileType
+        isSchemaType(type) && topType != type
+            ? `z${getSchemaName(type as SCHEMA_TYPE).SchemaName}Output${
+                GenList[type as SCHEMA_TYPE].dynamic ? ".passthrough()" : ""
+            }.or(zObjectId())`
+            : "zObjectId()";
   } else {
     input = "zObjectId()";
     output =
