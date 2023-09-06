@@ -23,7 +23,7 @@ if (!existsSync(TEMP_FOLDER_PATH))
 
 export type STempFile = {
   path: string;
-  name: string;
+  filename: string;
 };
 
 export type SFile = Pick<
@@ -106,8 +106,8 @@ export async function removeFiles(fileIDs: string | string[]) {
  * @param expiredAfterMinutes
  */
 export function addTempFiles(
-  files: STempFile | STempFile[],
-  expiredAfterMinutes: number = 5,
+  files: STempFile | STempFile[] | SFile | SFile[],
+  expiredAfterMinutes: number = 5
 ) {
   const ids = (Array.isArray(files) ? files : [files]).map((file) => {
     const tempID = uuid();
@@ -120,18 +120,18 @@ export function addTempFiles(
 
 export function getTempFiles(tempIDs: string | string[]) {
   const files = (Array.isArray(tempIDs) ? tempIDs : [tempIDs]).map((id) =>
-    NODE_CACHE.get<STempFile>(id),
+    NODE_CACHE.get<STempFile | SFile>(id)
   );
   return Array.isArray(tempIDs) ? _.compact(files) : _.compact(files)[0];
 }
 
 export function initTempFileSlot(filename?: string): STempFile {
   return {
-    path: path.resolve(
-      TEMP_FOLDER_PATH,
-      `${uuid().replaceAll("-", "")}_${filename}`,
-    ),
-    name: filename ?? uuid(),
+      path: path.resolve(
+          TEMP_FOLDER_PATH,
+          `${uuid().replaceAll("-", "")}_${filename}`,
+      ),
+      filename: filename ?? uuid(),
   };
 }
 

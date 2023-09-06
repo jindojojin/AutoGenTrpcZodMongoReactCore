@@ -3,6 +3,7 @@ import path from "path";
 import { Express, Request } from "express";
 import multer from "multer";
 import {
+  addTempFiles,
   delayDelete,
   getFiles,
   getTempFiles,
@@ -42,8 +43,13 @@ export function initStorage(app: Express, folderName: string) {
         const Req = req as MulterRequest;
         const file = Req.file;
         if (!file) throw "No upload file";
-        const saveResult = await saveFiles(file, folderName, Req.user?._id);
-        res.send(saveResult);
+        let fileID: string;
+        if (req.query["temp"]) {
+          fileID = addTempFiles(file) as string;
+        } else {
+          fileID = await saveFiles(file, folderName, Req.user?._id) as string;
+        }
+        res.send(fileID);
       } catch (e) {
         res.status(500).send(e);
       }
@@ -76,8 +82,14 @@ export function initStorage(app: Express, folderName: string) {
       console.log("Upload file", req.query);
       const files = (req as MulterRequest).files;
       if (files) {
+        let fileIDs: string[];
+        if (req.query["temp"]) {
+          fileIDs = addTempFiles(files) as string[];
+        } else {
+          fileIDs = await saveFiles(files, folderName, Req.user?._id) as string[];
+        }
         const result = await saveFiles(files, folderName, Req.user?._id);
-        res.send(result);
+        res.send(fileIDs);
       }
     },
   );
@@ -124,7 +136,7 @@ export function initStorage(app: Express, folderName: string) {
   app.get(`/storage/${folderName}/temp/:tempFileID`, (req, res) => {
     try {
       const tempFile = getTempFiles(req.params.tempFileID) as STempFile;
-      res.download(tempFile.path, tempFile.name);
+      res.download(tempFile.path, tempFile.filename);
     } catch (e) {
       res.status(404).send(e);
     }
