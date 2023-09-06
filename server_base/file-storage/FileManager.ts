@@ -1,23 +1,20 @@
 import * as fs from "fs";
-import { existsSync, mkdirSync } from "fs";
+import {existsSync, mkdirSync} from "fs";
 import _ from "lodash";
-import mongoose, {
-  Schema,
-  SchemaDefinition,
-  SchemaDefinitionType,
-} from "mongoose";
+import mongoose, {Schema, SchemaDefinition, SchemaDefinitionType,} from "mongoose";
 import path from "path";
-import { v4 as uuid } from "uuid";
-import { NODE_CACHE } from "../CacheManager";
+import {v4 as uuid} from "uuid";
+import {NODE_CACHE} from "../CacheManager";
+import {zObjectId} from "../zodUtils";
 
 export const STORAGE_FOLDER_PATH =
-  process.env.STORAGE_FOLDER_PATH ||
-  path.join(__dirname, "/StorageServiceData");
+    process.env.STORAGE_FOLDER_PATH ||
+    path.join(__dirname, "/StorageServiceData");
 if (!existsSync(STORAGE_FOLDER_PATH))
-  mkdirSync(STORAGE_FOLDER_PATH, { recursive: true });
+    mkdirSync(STORAGE_FOLDER_PATH, {recursive: true});
 
 export const TEMP_FOLDER_PATH =
-  process.env.TEMP_FOLDER_PATH || path.resolve(STORAGE_FOLDER_PATH, "TempData");
+    process.env.TEMP_FOLDER_PATH || path.resolve(STORAGE_FOLDER_PATH, "TempData");
 if (!existsSync(TEMP_FOLDER_PATH))
   mkdirSync(TEMP_FOLDER_PATH, { recursive: true });
 
@@ -39,48 +36,74 @@ export type SFile = Pick<
 export const SFileCollectionName = "StorageFile";
 
 const SFileSchema = new Schema<SchemaDefinition<SchemaDefinitionType<SFile>>>(
-  {
-    type: String,
-    owner: String,
-    authorizedViewers: [String],
+    {
+        type: String,
+        owner: String,
+        authorizedViewers: [String],
 
-    filename: { type: String, required: true },
-    originalname: { type: String, required: true },
-    path: { type: String, required: true },
-    size: { type: Number, required: true },
-    mimetype: { type: String, required: true },
-  },
-  {
-    timestamps: true,
-  },
+        filename: {type: String, required: true},
+        originalname: {type: String, required: true},
+        path: {type: String, required: true},
+        size: {type: Number, required: true},
+        mimetype: {type: String, required: true},
+    },
+    {
+        timestamps: true,
+    },
 );
 
 const SFileModel = mongoose.model(SFileCollectionName, SFileSchema);
 
+export async function saveTempFiles(tempFileID: string | string[], owner: string | null = null, authorizedViewers: string[] = []) {
+    const [mongoIDs, tempIDs] = _.partition(Array.isArray(tempFileID) ? tempFileID : [tempFileID], id => zObjectId().safeParse(id).success);
+    for (let i = 0; i < tempIDs.length; i++) {
+        const file = getTempFiles(tempIDs[i]) as SFile | undefined;
+        NODE_CACHE.del(tempIDs[i]); // Để file không bị tự động xoá bởi hàm DelayDelete
+        if (!file) throw "Temp File deleted";
+        else {
+            const record = await SFileModel.create({
+                ..._.pick(file, [
+                    "filename",
+                    "path",
+                    "size",
+                    "mimetype",
+                    "originalname",
+                ]),
+                owner,
+                authorizedViewers
+            }) as any
+            mongoIDs.push(record._id)
+        }
+    }
+    return Array.isArray(tempFileID) ? mongoIDs : mongoIDs[0];
+
+
+}
+
 export async function saveFiles(
-  files: Express.Multer.File | Express.Multer.File[],
-  type: string,
-  owner: string | null = null,
-  authorizedViewers: string[] = [],
+    files: Express.Multer.File | Express.Multer.File[],
+    type: string,
+    owner: string | null = null,
+    authorizedViewers: string[] = [],
 ) {
-  const docs = (Array.isArray(files) ? files : [files]).map(
-    (file) =>
-      new SFileModel({
-        ..._.pick(file, [
-          "filename",
-          "path",
-          "size",
-          "mimetype",
-          "originalname",
-        ]),
-        type,
-        owner,
-        authorizedViewers,
-      }),
-  );
-  const saveResult = await SFileModel.bulkSave(docs);
-  const ids = Object.values(saveResult.insertedIds);
-  return Array.isArray(files) ? (ids as string[]) : (ids[0] as string);
+    const docs = (Array.isArray(files) ? files : [files]).map(
+        (file) =>
+            new SFileModel({
+                ..._.pick(file, [
+                    "filename",
+                    "path",
+                    "size",
+                    "mimetype",
+                    "originalname",
+                ]),
+                type,
+                owner,
+                authorizedViewers,
+            }),
+    );
+    const saveResult = await SFileModel.bulkSave(docs);
+    const ids = Object.values(saveResult.insertedIds);
+    return Array.isArray(files) ? (ids as string[]) : (ids[0] as string);
 }
 
 export async function getFiles(fileIDs: string | string[]) {
@@ -106,23 +129,23 @@ export async function removeFiles(fileIDs: string | string[]) {
  * @param expiredAfterMinutes
  */
 export function addTempFiles(
-  files: STempFile | STempFile[] | SFile | SFile[],
-  expiredAfterMinutes: number = 5
+    files: STempFile | SFile | STempFile[] | SFile[],
+    expiredAfterMinutes: number = 5
 ) {
   const ids = (Array.isArray(files) ? files : [files]).map((file) => {
-    const tempID = uuid();
-    NODE_CACHE.set(tempID, file, expiredAfterMinutes * 60);
-    delayDelete(file.path, expiredAfterMinutes);
-    return tempID;
+      const tempID = uuid();
+      delayDelete(tempID, expiredAfterMinutes);
+      NODE_CACHE.set(tempID, file, expiredAfterMinutes * 60 + 5);
+      return tempID;
   });
   return Array.isArray(files) ? ids : ids[0];
 }
 
 export function getTempFiles(tempIDs: string | string[]) {
   const files = (Array.isArray(tempIDs) ? tempIDs : [tempIDs]).map((id) =>
-    NODE_CACHE.get<STempFile | SFile>(id)
+      NODE_CACHE.get<SFile | STempFile>(id)
   );
-  return Array.isArray(tempIDs) ? _.compact(files) : _.compact(files)[0];
+    return Array.isArray(tempIDs) ? files : (files[0] as SFile | STempFile | undefined);
 }
 
 export function initTempFileSlot(filename?: string): STempFile {
@@ -137,18 +160,21 @@ export function initTempFileSlot(filename?: string): STempFile {
 
 /**
  * Tự động xoá file sau 1 khoảng thời gian
- * @param filePath
+ * @param tempID
  * @param delayTime (minutes)
  */
-export function delayDelete(filePath: string, delayTime: number) {
-  setTimeout(
-    () => {
-      try {
-        fs.rmSync(filePath);
-      } catch (e) {
-        return;
-      }
-    },
-    delayTime * 60 * 1000,
-  );
+export function delayDelete(tempID: string, delayTime: number) {
+    setTimeout(
+        () => {
+            try {
+                const file = getTempFiles(tempID) as STempFile | SFile | undefined
+                if (file) {
+                    fs.rmSync(file.path);
+                }
+            } catch (e) {
+                return;
+            }
+        },
+        delayTime * 60 * 1000,
+    );
 }
