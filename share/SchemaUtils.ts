@@ -1,7 +1,7 @@
 import {camelCase, capitalCase, constantCase, pascalCase, snakeCase,} from "change-case";
 import _ from "lodash";
 import {SCHEMAS_CONFIG} from "./schema_configs";
-import {isBasicType, isFileType, isSchemaType} from "./types/DataTypes";
+import {FILE_TYPE, isBasicType, isFileType, isSchemaType} from "./types/DataTypes";
 import {ISchemaConfig} from "./types/ISchemaConfig";
 import {ISchemaDefinition, ISchemaFieldConfig,} from "./types/ISchemaDefinition";
 
@@ -18,7 +18,7 @@ export function getSpecialKeys<T>(SchemaDefinition: ISchemaDefinition<T>) {
         if (SchemaDefinition[field].exportKey) exportKeys.push(field);
         if (SchemaDefinition[field].searchKey) searchKeys.push(field);
         if (SchemaDefinition[field].unique) uniqueKeys.push(field);
-        if (isSchemaType(SchemaDefinition[field].type)) relationKeys.push(field);
+        if (isSchemaType(SchemaDefinition[field].type) || SchemaDefinition[field].type === FILE_TYPE.FILE) relationKeys.push(field);
         if (isFileType(SchemaDefinition[field].type)) fileTypeKeys.push(field);
     });
     return {
