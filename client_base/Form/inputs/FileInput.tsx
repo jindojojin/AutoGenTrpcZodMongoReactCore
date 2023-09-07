@@ -3,9 +3,8 @@ import { FormInputProps } from "./Types";
 import {Button, Tag, Upload, UploadFile, UploadProps} from "antd";
 import { RcFile, UploadChangeParam } from "antd/es/upload";
 import { showIf } from "../../Common/Utils";
-import { uploadFiles } from "../../Common/FileService";
+import {getUploadFileURL, uploadFiles} from "../../Common/FileService";
 import {UploadOutlined} from "@ant-design/icons";
-import {getUploadFileURL} from "../../components/ImageComponent";
 
 function FileInput(props: FormInputProps<string>) {
   const [tempFile, setTempFile] = useState();
