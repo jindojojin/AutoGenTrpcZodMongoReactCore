@@ -18,7 +18,8 @@ import {TTv2TestSetSchema} from "./projects/TTv2TestSet";
 import {TTv2TestCaseSchema} from "./projects/TTv2TestCase";
 import {SystemScopeSchema, SystemUserScopeSchema} from "../server_base/basic-auth/AuthSchemas";
 import {UserSchema} from "./users/User";
-import { SCHEMA_TYPE } from "./SchemaTypes";
+import {SCHEMA_TYPE} from "./SchemaTypes";
+import {AssetStorageSchema} from "./assets/AssetStorage";
 
 export const GenList: Record<SCHEMA_TYPE, GenConfig> = {
     ...getDynamicSchemaGenConfigs(
@@ -51,7 +52,7 @@ export const GenList: Record<SCHEMA_TYPE, GenConfig> = {
             folder: "assets",
         },
     }),
-
+    [SCHEMA_TYPE.ASSET_STORAGE]: {schema: AssetStorageSchema, folder: "assets"},
     [SCHEMA_TYPE.TASK]: {schema: TaskSchema, folder: "tasks"},
     [SCHEMA_TYPE.TASK_CHECK_ITEM]: {
         schema: TaskCheckItemSchema,

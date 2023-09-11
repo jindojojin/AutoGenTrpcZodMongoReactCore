@@ -16,12 +16,18 @@ export enum SCHEMA_TYPE {
 
     ASSET = "Asset",
     ASSET_LOG = "Asset Log",
-    ASSET_INVOICE = "Asset Invoice",
-    ASSET_INVOICE_LOG = "Asset Invoice Log",
+
     ASSET_CATEGORY = "Asset Category",
     ASSET_CATEGORY_LOG = "Asset Category Log",
+
+    ASSET_PROPERTY = "Asset Property",
+    ASSET_PROPERTY_LOG = "Asset Property Log",
+
+    ASSET_INVOICE = "Asset Invoice",
+    ASSET_INVOICE_LOG = "Asset Invoice Log",
+
     ASSET_PIC = "Asset Pic",
     ASSET_PIC_LOG = "Asset Pic Log",
-    ASSET_PROPERTY = "Asset Property",
-    ASSET_PROPERTY_LOG = "Asset Property Log"
+
+    ASSET_STORAGE = "Asset Storage",
 }
