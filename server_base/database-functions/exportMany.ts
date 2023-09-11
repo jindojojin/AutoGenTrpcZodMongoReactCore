@@ -53,6 +53,6 @@ export async function exportToExcelFile(
   );
   // Lưu workbook thành file Excel
   const data = await excelFile.xlsx.writeFile(ExcelFileForDL.path);
-  console.log(`Saved excel: ${ExcelFileForDL.name}`, data);
+  console.log(`Saved excel: ${ExcelFileForDL.filename}`, data);
   return addTempFiles(ExcelFileForDL) as string;
 }

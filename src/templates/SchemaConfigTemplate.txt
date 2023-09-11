@@ -6,7 +6,7 @@ import {{{ModuleName}}} from "../{{RelativePath}}types/DatabaseTypes";
 import _ from "lodash";
 export const {{ModuleName}}SchemaConfig: ISchemaConfig<{{ModuleName}}> = {
     name:"{{Module Name}}",
-    importKeys:{{importKeys}},
+    fileTypeKeys:{{fileTypeKeys}},
     exportKeys:{{exportKeys}},
     uniqueKeys:{{uniqueKeys}},
     searchKeys:{{searchKeys}},

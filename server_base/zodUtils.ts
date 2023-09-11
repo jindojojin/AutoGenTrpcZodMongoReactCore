@@ -10,6 +10,10 @@ export function zObjectId() {
   );
 }
 
+export function zTempFileId() {
+  return z.custom<string>((val) => String(val).split("-").length == 5);
+}
+
 //// Query operator, for each Basic Field only, to build for a object => auto gen code.
 export const ZodMongoQuery = {
   z$logical<T extends ZodTypeAny>(schema: T) {

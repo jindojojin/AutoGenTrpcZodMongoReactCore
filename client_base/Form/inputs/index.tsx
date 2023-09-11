@@ -9,6 +9,7 @@ import DateRangeInput from "./DateRangeInput";
 import NumberInput from "./NumberInput";
 import ImageInput from "./ImageInput";
 import ListEnumInput from "./ListEnumInput";
+import FileInput from "./FileInput";
 
 export const BaseFormInputs: Partial<
     Record<BASIC_TYPE | FILE_TYPE, React.ComponentType<FormInputProps>>
@@ -20,6 +21,7 @@ export const BaseFormInputs: Partial<
     [BASIC_TYPE.DATE_RANGE]: DateRangeInput,
     [BASIC_TYPE.NUMBER]: NumberInput,
     [FILE_TYPE.IMAGE]: ImageInput,
+    [FILE_TYPE.FILE]: FileInput,
 };
 
 export const BaseFormMultiInputs: Partial<

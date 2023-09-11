@@ -33,7 +33,7 @@ const RouterMethodMap = {
 
 const RouterParamsCodeMap = {
     createMany: "input, DATABASE_MODELS[{{DataType}}]",
-    createOne: "input, DATABASE_MODELS[{{DataType}}]",
+    createOne: "input, {{DataType}}",
     deleteMany: "input, DATABASE_MODELS[{{DataType}}]",
     deleteOne: "input, DATABASE_MODELS[{{DataType}}]",
     exportToExcelFile:
@@ -51,14 +51,14 @@ const RouterParamsCodeMap = {
     textSearch:
         "input, DATABASE_MODELS[{{DataType}}], SCHEMAS_CONFIG[{{DataType}}]",
     updateMany: "input, DATABASE_MODELS[{{DataType}}]",
-    updateOne: "input, DATABASE_MODELS[{{DataType}}]",
+    updateOne: "input,{{DataType}}",
     upsertMany: "input, DATABASE_MODELS[{{DataType}}]",
     upsertOne: "input, DATABASE_MODELS[{{DataType}}]",
 };
 
 const DynamicRouterParamsCodeMap = {
     createMany: "input.input, DATABASE_MODELS[{{DataType}}]",
-    createOne: "input.input, DATABASE_MODELS[{{DataType}}]",
+    createOne: "input.input, {{DataType}}",
     deleteMany: "input.input, DATABASE_MODELS[{{DataType}}]",
     deleteOne: "input.input, DATABASE_MODELS[{{DataType}}]",
     exportToExcelFile:
@@ -75,7 +75,7 @@ const DynamicRouterParamsCodeMap = {
         "input.input,ctx.ZodBase.input,DATABASE_MODELS[{{DataType}}],ctx.SchemaConfig",
     textSearch: "input.input,DATABASE_MODELS[{{DataType}}],ctx.SchemaConfig",
     updateMany: "input.input, DATABASE_MODELS[{{DataType}}]",
-    updateOne: "input.input, DATABASE_MODELS[{{DataType}}]",
+    updateOne: "input.input, {{DataType}}",
     upsertMany: "input.input, DATABASE_MODELS[{{DataType}}]",
     upsertOne: "input.input, DATABASE_MODELS[{{DataType}}]",
 };

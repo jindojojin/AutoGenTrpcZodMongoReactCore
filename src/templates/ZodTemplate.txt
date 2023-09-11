@@ -3,6 +3,7 @@ import { z } from "zod";
 import {
  ZodMongoQuery,
  zObjectId,
+ zTempFileId
 } from "../{{RelativePath}}zodUtils";
 import {zUpsertOutput} from "../{{RelativePath}}database-functions/upsertMany";
 import {zImportOutput} from "../{{RelativePath}}database-functions/importMany";

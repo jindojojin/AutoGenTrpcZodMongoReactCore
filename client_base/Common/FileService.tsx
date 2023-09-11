@@ -1,6 +1,6 @@
-import { UploadFile } from "antd";
+import {UploadFile} from "antd";
 import bytes from "bytes";
-import axios, { AxiosResponse } from "axios";
+import axios, {AxiosResponse} from "axios";
 
 export const MAX_FILE_SIZE = import.meta.env.VITE_MAX_UPLOAD_FILE_SIZE ?? "20M";
 const FILE_STORAGE_URL = (import.meta.env.VITE_API_GATEWAY_URL ?? "")+"/storage";
@@ -28,9 +28,9 @@ export async function uploadFiles(
       }
     else formData.append("file", files);
     const result = await axios.post(
-      `${FILE_STORAGE_URL}${temp ? "/temp" : ""}/file/${
-        isMulti ? "multi" : "single"
-      }`,
+        `${FILE_STORAGE_URL}/file/${isMulti ? "multi" : "single"}${
+            temp ? "?temp=true" : ""
+        }`,
       formData,
       {
         withCredentials: true,
@@ -47,18 +47,15 @@ export async function uploadFiles(
 
 export async function downloadFile(id: string, temp?: boolean) {
   try {
+    const link = document.createElement("a");
     if (!temp) {
-      const response = await axios.get(`${FILE_STORAGE_URL}/file/${id}`, {
-        responseType: "blob",
-      });
-      streamFileDownload(response);
+      link.href = getUploadFileURL(id);
     } else {
-      const link = document.createElement("a");
       link.href = `${FILE_STORAGE_URL}/file/temp/${id}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     }
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   } catch (e) {
     console.log(e);
   }
@@ -91,4 +88,10 @@ function streamFileDownload(response: AxiosResponse, filename?: string) {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+}
+
+export function getUploadFileURL(value?: string | (any & { _id: string })) {
+  return `${import.meta.env.VITE_API_GATEWAY_URL}/storage/file/single/${
+      (value as any)?._id ?? value ?? ""
+  }`;
 }

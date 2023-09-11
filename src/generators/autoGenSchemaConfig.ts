@@ -2,10 +2,11 @@ import {capitalCase} from "change-case";
 import {readFileSync, writeFileSync} from "fs";
 import _ from "lodash";
 import path from "path";
-import {DataType, isSchemaType, } from "../../share/types/DataTypes";
+import {DataType,} from "../../share/types/DataTypes";
 import {ISchemaDefinition, ISchemaFieldConfig,} from "../../share/types/ISchemaDefinition";
 import {
-    createFolderIfNotExist, GenConfig,
+    createFolderIfNotExist,
+    GenConfig,
     getRelativePath,
     getSchemaFolder,
     getSchemaName,
@@ -13,6 +14,7 @@ import {
 } from "../../server_base/genUtils";
 import {getObjectKeys} from "../../share/CommonFunctions";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import {getSpecialKeys} from "../../share/SchemaUtils";
 
 function getFieldType(type: DataType): string {
     if (Array.isArray(type)) {
@@ -33,11 +35,6 @@ function toString(key: string, data: any): any {
 }
 
 function getKeyConfigs(schema: ISchemaDefinition, schemaName: string) {
-    let importKeys: any[] = [];
-    let exportKeys: any[] = [];
-    let searchKeys: any[] = [];
-    let uniqueKeys: any[] = [];
-    let relationKeys: any[] = [];
     const result: ({
         key: keyof ISchemaFieldConfig;
         type: string;
@@ -46,11 +43,6 @@ function getKeyConfigs(schema: ISchemaDefinition, schemaName: string) {
     keys.forEach((key) => {
         const propDefinition = schema[key as any];
         if (propDefinition.private) return;
-        if (propDefinition.importKey) importKeys.push(key);
-        if (propDefinition.exportKey) exportKeys.push(key);
-        if (propDefinition.searchKey) searchKeys.push(key);
-        if (propDefinition.unique) uniqueKeys.push(key);
-        if (isSchemaType(propDefinition.type)) relationKeys.push(key);
         result.push(
             _.omitBy(
                 {
@@ -63,22 +55,15 @@ function getKeyConfigs(schema: ISchemaDefinition, schemaName: string) {
             ) as any,
         );
     });
-    return {
-        importKeys,
-        exportKeys,
-        searchKeys,
-        uniqueKeys,
-        relationKeys,
-        keyConfigs: result
-            .map(
-                (config) =>
-                    `${config.key}:{${getObjectKeys(config)
-                        .filter((e) => e != "key")
-                        .map((k) => `${k}:${toString(k, config[k])}`)
-                        .join(",")}}`,
-            )
-            .join(",\n\t"),
-    };
+    return result
+    .map(
+        (config) =>
+            `${config.key}:{${getObjectKeys(config)
+            .filter((e) => e != "key")
+            .map((k) => `${k}:${toString(k, config[k])}`)
+            .join(",")}}`,
+    )
+    .join(",\n\t");
 }
 
 export function genSchemaConfig(outDir: string | string[], name: SCHEMA_TYPE, genConfig: GenConfig) {
@@ -95,24 +80,24 @@ export function genSchemaConfig(outDir: string | string[], name: SCHEMA_TYPE, ge
     filePaths.forEach(filePath =>
         createFolderIfNotExist(filePath));
     const {
-        keyConfigs,
-        importKeys,
+        fileTypeKeys,
         exportKeys,
         searchKeys,
         uniqueKeys,
         relationKeys,
-    } = getKeyConfigs(genConfig.schema, name);
+    } = getSpecialKeys(genConfig.schema);
+    const keyConfigs = getKeyConfigs(genConfig.schema, name)
     const fileContent = template
-        .replaceAll("{{ModuleName}}", ModuleName)
-        .replaceAll("{{Module Name}}", name)
-        .replaceAll("{{keyConfigs}}", keyConfigs)
-        .replaceAll("{{SchemaFolder}}", getSchemaFolder(genConfig.folder))
-        .replaceAll("{{RelativePath}}", getRelativePath(genConfig.folder))
-        .replaceAll("{{importKeys}}", `[${importKeys.map((e) => `"${e}"`)}]`)
-        .replaceAll("{{uniqueKeys}}", `[${uniqueKeys.map((e) => `"${e}"`)}]`)
-        .replaceAll("{{exportKeys}}", `[${exportKeys.map((e) => `"${e}"`)}]`)
-        .replaceAll("{{relationKeys}}", `[${relationKeys.map((e) => `"${e}"`)}]`)
-        .replaceAll("{{searchKeys}}", `[${searchKeys.map((e) => `"${e}"`)}]`);
+    .replaceAll("{{ModuleName}}", ModuleName)
+    .replaceAll("{{Module Name}}", name)
+    .replaceAll("{{keyConfigs}}", keyConfigs)
+    .replaceAll("{{SchemaFolder}}", getSchemaFolder(genConfig.folder))
+    .replaceAll("{{RelativePath}}", getRelativePath(genConfig.folder))
+    .replaceAll("{{fileTypeKeys}}", `[${fileTypeKeys.map((e) => `"${String(e)}"`)}]`)
+    .replaceAll("{{uniqueKeys}}", `[${uniqueKeys.map((e) => `"${String(e)}"`)}]`)
+    .replaceAll("{{exportKeys}}", `[${exportKeys.map((e) => `"${String(e)}"`)}]`)
+    .replaceAll("{{relationKeys}}", `[${relationKeys.map((e) => `"${String(e)}"`)}]`)
+        .replaceAll("{{searchKeys}}", `[${searchKeys.map((e) => `"${String(e)}"`)}]`);
     filePaths.forEach(filePath =>
         writeFileSync(filePath, fileContent));
 }

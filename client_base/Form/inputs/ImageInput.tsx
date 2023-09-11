@@ -3,8 +3,9 @@ import { Upload, UploadFile, UploadProps } from "antd";
 import { RcFile, UploadChangeParam } from "antd/es/upload";
 import { EditOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { showIf } from "../../Common/Utils";
-import ImageComponent, { getImageSrc } from "../../components/ImageComponent";
+import ImageComponent from "../../components/ImageComponent";
 import { FormInputProps } from "./Types";
+import {getUploadFileURL} from "../../Common/FileService";
 
 interface IImageInputProps {
   value?: string | { _id: string };
@@ -56,7 +57,7 @@ function ImageInput(props: FormInputProps<string>) {
       multiple={false}
       onRemove={() => props.onChange?.(null)}
       accept={".png,.jpeg"}
-      action={getImageSrc()}
+      action={getUploadFileURL()}
       beforeUpload={beforeUpload}
       onChange={handleChange}
     >
