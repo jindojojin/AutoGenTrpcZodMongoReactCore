@@ -36,6 +36,7 @@ export function SchemaQuickView(props: ISchemaQuickViewProps) {
   console.log("Schemaconfig",props.SchemaConfig)
   return (
     <Card
+      type={"inner"}
       style={{
         flex: 1,
       }}
