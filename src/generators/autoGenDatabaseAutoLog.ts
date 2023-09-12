@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "fs";
+import {readFileSync, writeFileSync} from "fs";
 import {createFolderIfNotExist, GenConfig, getSchemaName} from "../../server_base/genUtils";
 import path from "path";
 import {getObjectKeys} from "../../share/CommonFunctions";

@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import {existsSync, mkdirSync} from "fs";
-import {BASIC_TYPE, DataType, FILE_TYPE, getBaseType, } from "../share/types/DataTypes";
+import {BASIC_TYPE, DataType, FILE_TYPE, getBaseType,} from "../share/types/DataTypes";
 import {ObjectId} from "mongodb";
 import {isPlainObject, mapValues} from "lodash";
 import {camelCase, constantCase, pascalCase, snakeCase} from "change-case";

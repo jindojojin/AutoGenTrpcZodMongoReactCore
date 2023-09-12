@@ -1,16 +1,10 @@
-import { Schema, SchemaDefinition, SchemaDefinitionType } from "mongoose";
-import {
-  BASIC_TYPE,
-  DataType,
-  isBasicType,
-  isFileType,
-
-} from "../../../share/types/DataTypes";
+import {Schema, SchemaDefinition, SchemaDefinitionType} from "mongoose";
+import {BASIC_TYPE, DataType, isBasicType, isFileType,} from "../../../share/types/DataTypes";
 import _ from "lodash";
-import { ISchemaDefinition } from "../../../share/types/ISchemaDefinition";
-import { SFileCollectionName } from "../../file-storage/FileManager";
-import { SystemUserCollectionName } from "../../../share/constants/database_fields";
-import { getSchemaName } from "../../../share/SchemaUtils";
+import {ISchemaDefinition} from "../../../share/types/ISchemaDefinition";
+import {SFileCollectionName} from "../../file-storage/FileManager";
+import {SystemUserCollectionName} from "../../../share/constants/database_fields";
+import {getSchemaName} from "../../../share/SchemaUtils";
 
 import {getObjectKeys} from "../../../share/CommonFunctions";
 import {SCHEMA_TYPE} from "../../../schemas/SchemaTypes";

@@ -1,4 +1,4 @@
-import { DataType } from "./DataTypes";
+import {DataType} from "./DataTypes";
 
 export type ISchemaDefinition<T extends any = any> = Record<
   keyof T,

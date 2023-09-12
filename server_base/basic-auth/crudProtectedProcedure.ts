@@ -1,8 +1,8 @@
-import { DATABASE_ACTIONS } from "../../share/constants/authentication";
-import { action2scope, ADMIN_SCOPE } from "../../share/ScopeUtils";
-import { TRPCError } from "@trpc/server";
-import { middleware, publicProcedure } from "../trpc";
-import { getSystemScopes } from "./utils/getSystemScopes";
+import {DATABASE_ACTIONS} from "../../share/constants/authentication";
+import {action2scope, ADMIN_SCOPE} from "../../share/ScopeUtils";
+import {TRPCError} from "@trpc/server";
+import {middleware, publicProcedure} from "../trpc";
+import {getSystemScopes} from "./utils/getSystemScopes";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 
 export const crudProtectedProcedure = (

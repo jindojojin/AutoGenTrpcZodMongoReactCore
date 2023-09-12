@@ -1,4 +1,4 @@
-import { ISchemaDefinition } from "./ISchemaDefinition";
+import {ISchemaDefinition} from "./ISchemaDefinition";
 
 export type ISchemaConfig<T> = {
   name: string;

@@ -1,16 +1,16 @@
 import mongoose from "mongoose";
-import { z, ZodTypeAny } from "zod";
-import { ISchemaConfig } from "../../share/types/ISchemaConfig";
-import { getTempFiles, STempFile } from "../file-storage/FileManager";
-import { getSchemaDataFromArray } from "../parsers/SchemaDataParsers";
+import {z, ZodTypeAny} from "zod";
+import {ISchemaConfig} from "../../share/types/ISchemaConfig";
+import {getTempFiles, STempFile} from "../file-storage/FileManager";
+import {getSchemaDataFromArray} from "../parsers/SchemaDataParsers";
 import {
-  getListDataFromExcelTable,
-  getListDataFromTextTable,
-  getTypedData,
-  getTypedDataFromListData,
+    getListDataFromExcelTable,
+    getListDataFromTextTable,
+    getTypedData,
+    getTypedDataFromListData,
 } from "../parsers/TableParsers";
-import { zodErrorOutput } from "../zodUtils";
-import { upsertMany, zUpsertOutput } from "./upsertMany";
+import {zodErrorOutput} from "../zodUtils";
+import {upsertMany, zUpsertOutput} from "./upsertMany";
 
 import {getObjectKeys} from "../../share/CommonFunctions";
 

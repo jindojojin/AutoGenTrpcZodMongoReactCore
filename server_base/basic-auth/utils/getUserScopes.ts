@@ -1,14 +1,8 @@
-import {
-  ADMIN_SCOPE,
-  getRawScopes,
-} from "../../../share/ScopeUtils";
-import {
-  UserModel,
-  UserScopeModel,
-} from "../../mongoose/DatabaseModels";
+import {ADMIN_SCOPE, getRawScopes,} from "../../../share/ScopeUtils";
+import {UserModel, UserScopeModel,} from "../../mongoose/DatabaseModels";
 import _ from "lodash";
-import { AUTH_USER_ID_FIELD } from "../../../share/constants/database_fields";
-import { Scope } from "../../../share/types/DatabaseTypes";
+import {AUTH_USER_ID_FIELD} from "../../../share/constants/database_fields";
+import {Scope} from "../../../share/types/DatabaseTypes";
 
 import {getObjectKeys} from "../../../share/CommonFunctions";
 

@@ -1,6 +1,29 @@
-import mongoose, {Schema} from "mongoose";
+import {Schema} from "mongoose";
 import {getSchemaFromFieldConfigs} from "../trpc-dynamic-routes/utils/SchemaBuilder";
-import type { AssetLog,Asset,AssetCategoryLog,AssetCategory,AssetPropertyLog,AssetProperty,AssetPicLog,AssetPic,AssetInvoiceLog,AssetInvoice,Task,TaskCheckItem,PlmCode,PlmDefect,Project,TestProject,Ttv2TestSuite,Ttv2TestSet,Ttv2Testcase,Scope,User,UserScope } from "./DatabaseTypes";
+import type {
+    Asset,
+    AssetCategory,
+    AssetCategoryLog,
+    AssetInvoice,
+    AssetInvoiceLog,
+    AssetLog,
+    AssetPic,
+    AssetPicLog,
+    AssetProperty,
+    AssetPropertyLog,
+    PlmCode,
+    PlmDefect,
+    Project,
+    Scope,
+    Task,
+    TaskCheckItem,
+    TestProject,
+    Ttv2Testcase,
+    Ttv2TestSet,
+    Ttv2TestSuite,
+    User,
+    UserScope
+} from "./DatabaseTypes";
 import {GenList} from "../../schemas";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 

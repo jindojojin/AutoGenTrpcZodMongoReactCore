@@ -1,6 +1,6 @@
-import { DATABASE_ACTIONS } from "./constants/authentication";
+import {DATABASE_ACTIONS} from "./constants/authentication";
 
-import { getSchemaName } from "./SchemaUtils";
+import {getSchemaName} from "./SchemaUtils";
 import {SCHEMA_TYPE} from "../schemas/SchemaTypes";
 
 export const ADMIN_SCOPE = "SYSTEM_ADMIN";

@@ -1,6 +1,6 @@
-import { ISchemaDefinition } from "../../share/types/ISchemaDefinition";
-import { BASIC_TYPE, FILE_TYPE } from "../../share/types/DataTypes";
-import { SystemUserSchema } from "../../server_base/basic-auth/AuthSchemas";
+import {ISchemaDefinition} from "../../share/types/ISchemaDefinition";
+import {BASIC_TYPE, FILE_TYPE} from "../../share/types/DataTypes";
+import {SystemUserSchema} from "../../server_base/basic-auth/AuthSchemas";
 
 export const UserSchema: ISchemaDefinition = {
   ...SystemUserSchema,

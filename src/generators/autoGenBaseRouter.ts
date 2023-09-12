@@ -1,6 +1,7 @@
 import {readFileSync, writeFileSync} from "fs";
 import {
-    createFolderIfNotExist, GenConfig,
+    createFolderIfNotExist,
+    GenConfig,
     getRelativePath,
     getSchemaFolder,
     getSchemaName,

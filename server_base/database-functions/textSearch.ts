@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { ISchemaConfig } from "../../share/types/ISchemaConfig";
-import { findMany } from "./findMany";
+import {ISchemaConfig} from "../../share/types/ISchemaConfig";
+import {findMany} from "./findMany";
 
 export async function textSearch(
   input: any,

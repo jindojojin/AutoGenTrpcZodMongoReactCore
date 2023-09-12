@@ -1,12 +1,12 @@
-import { ZodTypeAny } from "zod";
-import { getSingleType } from "../../share/types/DataTypes";
-import { ISchemaConfig } from "../../share/types/ISchemaConfig";
+import {ZodTypeAny} from "zod";
+import {getSingleType} from "../../share/types/DataTypes";
+import {ISchemaConfig} from "../../share/types/ISchemaConfig";
 
-import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
-import { SCHEMAS_CONFIG } from "../../share/schema_configs";
-import { DATABASE_MODELS } from "../mongoose/DatabaseModels";
-import { verifyWithZod } from "../zodUtils";
-import { ObjectId } from "mongodb";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import {SCHEMAS_CONFIG} from "../../share/schema_configs";
+import {DATABASE_MODELS} from "../mongoose/DatabaseModels";
+import {verifyWithZod} from "../zodUtils";
+import {ObjectId} from "mongodb";
 
 /**
  * 1) Thay thế giá trị các cột là REF tới 1 bảng khác = objectID (Thay search schema thông qua searchKey và thay bằng objectID)

@@ -8,18 +8,18 @@ import {zAssetPicLogInput, zAssetPicLogOutput, ZodAssetPicLogAPIs} from "./asset
 import {zAssetPicInput, zAssetPicOutput, ZodAssetPicAPIs} from "./assets/zAssetPic";
 import {zAssetInvoiceLogInput, zAssetInvoiceLogOutput, ZodAssetInvoiceLogAPIs} from "./assets/zAssetInvoiceLog";
 import {zAssetInvoiceInput, zAssetInvoiceOutput, ZodAssetInvoiceAPIs} from "./assets/zAssetInvoice";
-import {zTaskInput, zTaskOutput, ZodTaskAPIs} from "./tasks/zTask";
-import {zTaskCheckItemInput, zTaskCheckItemOutput, ZodTaskCheckItemAPIs} from "./tasks/zTaskCheckItem";
-import {zPlmCodeInput, zPlmCodeOutput, ZodPlmCodeAPIs} from "./projects/zPlmCode";
-import {zPlmDefectInput, zPlmDefectOutput, ZodPlmDefectAPIs} from "./projects/zPlmDefect";
-import {zProjectInput, zProjectOutput, ZodProjectAPIs} from "./projects/zProject";
-import {zTestProjectInput, zTestProjectOutput, ZodTestProjectAPIs} from "./projects/zTestProject";
-import {zTtv2TestSuiteInput, zTtv2TestSuiteOutput, ZodTtv2TestSuiteAPIs} from "./projects/zTtv2TestSuite";
-import {zTtv2TestSetInput, zTtv2TestSetOutput, ZodTtv2TestSetAPIs} from "./projects/zTtv2TestSet";
-import {zTtv2TestcaseInput, zTtv2TestcaseOutput, ZodTtv2TestcaseAPIs} from "./projects/zTtv2Testcase";
-import {zScopeInput, zScopeOutput, ZodScopeAPIs} from "./users/zScope";
-import {zUserInput, zUserOutput, ZodUserAPIs} from "./users/zUser";
-import {zUserScopeInput, zUserScopeOutput, ZodUserScopeAPIs} from "./users/zUserScope";
+import {ZodTaskAPIs, zTaskInput, zTaskOutput} from "./tasks/zTask";
+import {ZodTaskCheckItemAPIs, zTaskCheckItemInput, zTaskCheckItemOutput} from "./tasks/zTaskCheckItem";
+import {ZodPlmCodeAPIs, zPlmCodeInput, zPlmCodeOutput} from "./projects/zPlmCode";
+import {ZodPlmDefectAPIs, zPlmDefectInput, zPlmDefectOutput} from "./projects/zPlmDefect";
+import {ZodProjectAPIs, zProjectInput, zProjectOutput} from "./projects/zProject";
+import {ZodTestProjectAPIs, zTestProjectInput, zTestProjectOutput} from "./projects/zTestProject";
+import {ZodTtv2TestSuiteAPIs, zTtv2TestSuiteInput, zTtv2TestSuiteOutput} from "./projects/zTtv2TestSuite";
+import {ZodTtv2TestSetAPIs, zTtv2TestSetInput, zTtv2TestSetOutput} from "./projects/zTtv2TestSet";
+import {ZodTtv2TestcaseAPIs, zTtv2TestcaseInput, zTtv2TestcaseOutput} from "./projects/zTtv2Testcase";
+import {ZodScopeAPIs, zScopeInput, zScopeOutput} from "./users/zScope";
+import {ZodUserAPIs, zUserInput, zUserOutput} from "./users/zUser";
+import {ZodUserScopeAPIs, zUserScopeInput, zUserScopeOutput} from "./users/zUserScope";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 
 export const ZOD_INPUTS = {

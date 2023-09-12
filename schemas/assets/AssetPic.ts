@@ -1,6 +1,6 @@
-import { BASIC_TYPE } from "../../share/types/DataTypes";
-import { ISchemaDefinition } from "../../share/types/ISchemaDefinition";
-import { SCHEMA_TYPE } from "../SchemaTypes";
+import {BASIC_TYPE} from "../../share/types/DataTypes";
+import {ISchemaDefinition} from "../../share/types/ISchemaDefinition";
+import {SCHEMA_TYPE} from "../SchemaTypes";
 
 export const AssetPicSchema: ISchemaDefinition = {
   asset: {

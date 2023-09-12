@@ -1,8 +1,5 @@
-import {
-  ISchemaDefinition,
-  ISchemaFieldConfig,
-} from "../../../share/types/ISchemaDefinition";
-import { BASIC_TYPE, FILE_TYPE } from "../../../share/types/DataTypes";
+import {ISchemaDefinition, ISchemaFieldConfig,} from "../../../share/types/ISchemaDefinition";
+import {BASIC_TYPE, FILE_TYPE} from "../../../share/types/DataTypes";
 
 export const PropertySchema: ISchemaDefinition<ISchemaFieldConfig> = {
   label: {

@@ -1,7 +1,7 @@
-import { z } from "zod";
+import {z} from "zod";
 import _ from "lodash";
-import { BulkWriteResult } from "mongodb";
-import { zObjectId } from "../zodUtils";
+import {BulkWriteResult} from "mongodb";
+import {zObjectId} from "../zodUtils";
 import mongoose from "mongoose";
 
 export const zUpsertOutput = z.object({

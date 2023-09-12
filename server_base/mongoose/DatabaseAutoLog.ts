@@ -1,5 +1,17 @@
-import { watchChangeThenUpdateToLog } from "../auto-logs/watchChangeThenUpdateToLog";
-import {AssetModel,AssetLogModel,AssetCategoryModel,AssetCategoryLogModel,AssetPropertyModel,AssetPropertyLogModel,AssetPicModel,AssetPicLogModel,AssetInvoiceModel,AssetInvoiceLogModel} from "./DatabaseModels"
+import {watchChangeThenUpdateToLog} from "../auto-logs/watchChangeThenUpdateToLog";
+import {
+    AssetCategoryLogModel,
+    AssetCategoryModel,
+    AssetInvoiceLogModel,
+    AssetInvoiceModel,
+    AssetLogModel,
+    AssetModel,
+    AssetPicLogModel,
+    AssetPicModel,
+    AssetPropertyLogModel,
+    AssetPropertyModel
+} from "./DatabaseModels"
+
 export function runAutoLog(){
 watchChangeThenUpdateToLog(AssetModel, AssetLogModel);
 watchChangeThenUpdateToLog(AssetCategoryModel, AssetCategoryLogModel);

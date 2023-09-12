@@ -1,9 +1,9 @@
-import { findMany } from "./findMany";
+import {findMany} from "./findMany";
 import mongoose from "mongoose";
-import { getTableFromListData } from "../parsers/TableParsers";
-import { ISchemaConfig } from "../../share/types/ISchemaConfig";
+import {getTableFromListData} from "../parsers/TableParsers";
+import {ISchemaConfig} from "../../share/types/ISchemaConfig";
 import ExcelJS from "exceljs";
-import { addTempFiles, initTempFileSlot } from "../file-storage/FileManager";
+import {addTempFiles, initTempFileSlot} from "../file-storage/FileManager";
 import dayjs from "dayjs";
 
 export async function exportToExcelFile(

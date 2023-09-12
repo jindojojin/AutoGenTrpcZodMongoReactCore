@@ -1,15 +1,15 @@
-import mongoose, { Model, Schema } from "mongoose";
+import mongoose, {Model, Schema} from "mongoose";
 import _ from "lodash";
-import { getBaseZodFromFieldConfigs, getBasicRouteZodIO } from "./ZodBuilders";
-import { getSchemaFromFieldConfigs } from "./SchemaBuilder";
-import { ProcedureBuilder } from "@trpc/server";
-import { z } from "zod";
-import { zObjectId } from "../../zodUtils";
-import { ISchemaConfig } from "../../../share/types/ISchemaConfig";
-import { getSchemaConfigFromFieldConfigs } from "../../../share/SchemaUtils";
-import { ISchemaDefinition } from "../../../share/types/ISchemaDefinition";
+import {getBaseZodFromFieldConfigs, getBasicRouteZodIO} from "./ZodBuilders";
+import {getSchemaFromFieldConfigs} from "./SchemaBuilder";
+import {ProcedureBuilder} from "@trpc/server";
+import {z} from "zod";
+import {zObjectId} from "../../zodUtils";
+import {ISchemaConfig} from "../../../share/types/ISchemaConfig";
+import {getSchemaConfigFromFieldConfigs} from "../../../share/SchemaUtils";
+import {ISchemaDefinition} from "../../../share/types/ISchemaDefinition";
 
-import { DYNAMIC_CATEGORY_ID } from "../../../share/constants/database_fields";
+import {DYNAMIC_CATEGORY_ID} from "../../../share/constants/database_fields";
 
 export type DynamicTableCtx = {
   ZodBase: ReturnType<typeof getBaseZodFromFieldConfigs>;

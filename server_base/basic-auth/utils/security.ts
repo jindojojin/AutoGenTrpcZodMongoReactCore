@@ -1,5 +1,5 @@
-import { createHash } from "crypto";
-import { sign, verify } from "jsonwebtoken";
+import {createHash} from "crypto";
+import {sign, verify} from "jsonwebtoken";
 
 export function createJWT<T extends object>(
   user: T,

@@ -1,5 +1,5 @@
 import {createFolderIfNotExist, GenConfig, getSchemaName, getTypeEnumText} from "../../server_base/genUtils";
-import { readFileSync, writeFileSync } from "fs";
+import {readFileSync, writeFileSync} from "fs";
 import path from "path";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 

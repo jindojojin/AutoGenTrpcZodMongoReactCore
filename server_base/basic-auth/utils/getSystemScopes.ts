@@ -1,6 +1,6 @@
-import { ScopeModel } from "../../mongoose/DatabaseModels";
-import { getRawScopes } from "../../../share/ScopeUtils";
-import { NODE_CACHE } from "../../CacheManager";
+import {ScopeModel} from "../../mongoose/DatabaseModels";
+import {getRawScopes} from "../../../share/ScopeUtils";
+import {NODE_CACHE} from "../../CacheManager";
 import _ from "lodash";
 
 // ScopeModel.watch().on("change", (_data) => {

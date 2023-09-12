@@ -1,20 +1,14 @@
 import "fs";
-import { readFileSync, writeFileSync } from "fs";
+import {readFileSync, writeFileSync} from "fs";
+import {BASIC_TYPE, DataType, isBasicType, isFileType, isSchemaType,} from "../../share/types/DataTypes";
 import {
-  BASIC_TYPE,
-  DataType,
-  isBasicType, isFileType,
-  isSchemaType,
-
-} from "../../share/types/DataTypes";
-import {
-  createFolderIfNotExist, GenConfig, getRelativePath,
-  getSchemaFolder, getSchemaName,
+    createFolderIfNotExist,
+    GenConfig,
+    getRelativePath,
+    getSchemaFolder,
+    getSchemaName,
 } from "../../server_base/genUtils";
-import {
-  ISchemaDefinition,
-  ISchemaFieldConfig,
-} from "../../share/types/ISchemaDefinition";
+import {ISchemaDefinition, ISchemaFieldConfig,} from "../../share/types/ISchemaDefinition";
 import _ from "lodash";
 import path from "path";
 import {getObjectKeys} from "../../share/CommonFunctions";
