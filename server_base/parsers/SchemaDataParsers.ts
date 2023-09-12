@@ -1,11 +1,12 @@
-import { ISchemaConfig } from "../../share/types/ISchemaConfig";
 import { ZodTypeAny } from "zod";
 import { getSingleType } from "../../share/types/DataTypes";
+import { ISchemaConfig } from "../../share/types/ISchemaConfig";
 
-import { verifyWithZod } from "../zodUtils";
-import { DATABASE_MODELS } from "../mongoose/DatabaseModels";
+import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
 import { SCHEMAS_CONFIG } from "../../share/schema_configs";
-import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import { DATABASE_MODELS } from "../mongoose/DatabaseModels";
+import { verifyWithZod } from "../zodUtils";
+import { ObjectId } from "mongodb";
 
 /**
  * 1) Thay thế giá trị các cột là REF tới 1 bảng khác = objectID (Thay search schema thông qua searchKey và thay bằng objectID)
@@ -88,15 +89,15 @@ export async function getSchemaDataFromArray<T>(
         const RefSchemaConfig = SCHEMAS_CONFIG[
           schemaType as keyof typeof SCHEMAS_CONFIG
         ] as ISchemaConfig<any>;
-        const uniqueKeys = RefSchemaConfig.uniqueKeys;
+        const uniqueKeys = ["_id",...RefSchemaConfig.uniqueKeys];
         const list = uniqueKeys.length
           ? await Model.find(
               {
                 $or: uniqueKeys.map((key) => ({
-                  [key]: {
-                    $in: Array.from(RefList.get(schemaType)?.values() ?? []),
-                  },
-                })),
+                    [key]: {
+                      $in: Array.from(RefList.get(schemaType)?.values() ?? []),
+                    },
+                  })),
               },
               {
                 ...uniqueKeys.reduce((obj, key) => {
@@ -132,11 +133,11 @@ export async function getSchemaDataFromArray<T>(
             modifyData[refField] = String(raw[refField])
               .split(",")
               .map(
-                (k) => RefMap.get(schema)?.get(k.trim() as any) ?? null,
+                (k) => RefMap.get(schema)?.get(k.trim() as any) ?? new ObjectId(k.trim() as any),
               ) as any;
           else
             modifyData[refField] =
-              RefMap.get(schema)?.get(raw[refField]) ?? (null as any);
+              RefMap.get(schema)?.get(raw[refField]) ?? new ObjectId(raw[refField] as any) as any;
         }
       });
     });

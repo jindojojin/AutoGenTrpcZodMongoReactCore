@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { databaseClient } from "../../../../src/trpc/service";
 import { uploadFiles } from "../../Common/FileService";
-import { useApiInput, useApiRoute } from "./common";
+import { useApiInput, useApiRoute, useFixedData } from "./common";
 import { APICallbacks, APIConfigs } from "../configs/CommonConfig";
 import { t } from "i18next";
 import { CommonApiSettings } from "../../../../src/common/base/crud/Types";
@@ -58,6 +58,7 @@ export function useImportFromExcelFile(
   const route = useApiRoute(configs);
   const showResult = useShowResult();
   const buildInput = useApiInput(configs);
+  const initData = useFixedData(configs);
   return async (file: any) => {
     callback?.onStart?.();
     try {
@@ -67,6 +68,7 @@ export function useImportFromExcelFile(
         const result = await databaseClient[route].importFromExcelFile.mutate(
           buildInput({
             fileID: tempFileID,
+            initData
           })
         );
         callback?.onFinish?.();
@@ -90,12 +92,14 @@ export function useImportFromText<T>(
   const { message } = App.useApp();
   const showResult = useShowResult();
   const buildInput = useApiInput(configs);
+  const initData = useFixedData(configs);
   return async (text: string) => {
     callback?.onStart?.();
     try {
       const result = await databaseClient[route].importFromText.mutate(
         buildInput({
           text,
+          initData
         })
       );
       await showResult(result);

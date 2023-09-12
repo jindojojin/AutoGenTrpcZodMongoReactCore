@@ -4,17 +4,17 @@ import * as ExcelJS from "exceljs";
 import _ from "lodash";
 import { parse as CSVParser } from "papaparse";
 import {
+  getFieldsMapByTitle,
+  getLinkedSchemaConfig,
+} from "../../share/SchemaUtils";
+import {
   BASIC_TYPE,
   DataType,
   isBasicType,
 } from "../../share/types/DataTypes";
 import { ISchemaConfig } from "../../share/types/ISchemaConfig";
-import {
-  getFieldsMapByTitle,
-  getLinkedSchemaConfig,
-} from "../../share/SchemaUtils";
 
-import {getObjectKeys} from "../../share/CommonFunctions";
+import { getObjectKeys } from "../../share/CommonFunctions";
 
 function getDate(s?: any) {
   const date = new Date(s);
@@ -128,6 +128,17 @@ export function getTypedDataFromListData<T>(
   let headersInFile: any[] | undefined = undefined;
   let headersMap = getFieldsMapByTitle(schemaConfig, (t) => t.toLowerCase()); // Không biệt in hoa, in thường
   console.log("Header map", headersMap);
+  initData = initData? _.mapValues(initData, (v, k) =>
+  schemaConfig?.fieldConfigs?.[k as keyof T]
+      ? getTypedData(
+          v,
+          schemaConfig.fieldConfigs[k as keyof T].type,
+          schemaConfig.fieldConfigs[k as keyof T].enum
+        )
+      : v
+  ) :{}
+  console.log("Init data", initData)
+  
   const result = listData.reduce((arr, currentRow, currentRowIdx) => {
     if (currentRow != null) {
       // exceljs đọc hàng 0 -> bị undefined với file excel
@@ -157,7 +168,7 @@ export function getTypedDataFromListData<T>(
                 [key]: data,
               };
             },
-            { ...(initData || {}) },
+           initData
           );
           return [...(arr as any), record];
         }
