@@ -16,7 +16,7 @@ import TableExporter from "../Table/components/TableExporter";
 
 export type TableListProps<T> = ControllableListViewProps<T> &
     CommonTableConfig<T> & {
-    title?: string;
+    table_title?: string;
     headerAdditions?: JSX.Element[];
     rowAdditionActions?: RowActionConfig<T>;
 };
@@ -38,9 +38,9 @@ function TableList<T extends FieldValues>(props: TableListProps<T>) {
         fixedEndColumn: ActionsColumn,
         headerLeft: props.headerLeft ?? [
             showIf(
-                props.title,
+                props.table_title,
                 <Typography.Title level={5} style={{margin: 0}}>
-                    {props.title}
+                    {props.table_title}
                 </Typography.Title>
             ),
         ],
