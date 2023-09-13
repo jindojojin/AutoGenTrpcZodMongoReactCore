@@ -1,13 +1,16 @@
-import {capitalCase} from "change-case";
+import { capitalCase } from "change-case";
 import dayjs from "dayjs";
 import * as ExcelJS from "exceljs";
 import _ from "lodash";
-import {parse as CSVParser} from "papaparse";
-import {getFieldsMapByTitle, getLinkedSchemaConfig,} from "../../share/SchemaUtils";
-import {BASIC_TYPE, DataType, isBasicType,} from "../../share/types/DataTypes";
-import {ISchemaConfig} from "../../share/types/ISchemaConfig";
+import { parse as CSVParser } from "papaparse";
+import {
+  getFieldsMapByTitle,
+  getLinkedSchemaConfig,
+} from "../../share/SchemaUtils";
+import { BASIC_TYPE, DataType, isBasicType } from "../../share/types/DataTypes";
+import { ISchemaConfig } from "../../share/types/ISchemaConfig";
 
-import {getObjectKeys} from "../../share/CommonFunctions";
+import { getObjectKeys } from "../../share/CommonFunctions";
 
 function getDate(s?: any) {
   const date = new Date(s);
@@ -38,7 +41,7 @@ export function getTypedData(
       case BASIC_TYPE.NUMBER:
         return Number.isNaN(Number(str)) ? undefined : Number(str);
       case BASIC_TYPE.ENUM:
-        return Number.isNaN(data) ? str : enums[data];
+        return enums.includes(str) ? str : enums[data];
       case BASIC_TYPE.BOOLEAN:
         return ["true", "yes", "v", "y"].includes(str.toLowerCase());
       default:
