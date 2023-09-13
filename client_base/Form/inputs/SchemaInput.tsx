@@ -2,6 +2,7 @@ import { EditOutlined } from "@ant-design/icons";
 import { AutoComplete, Col, Input, Row } from "antd";
 import { useState } from "react";
 import { FieldValues } from "react-hook-form";
+import {DYNAMIC_CATEGORY_ID} from "../../../share/constants/database_fields";
 
 export interface ISchemaInputProps<T extends FieldValues> {
   value?: T;
@@ -74,7 +75,7 @@ function SchemaInput<T extends FieldValues>(props: ISchemaInputProps<T>) {
           onSearch={async (value) => {
             try {
               const listData = await props.trpcRoute.textSearch.query(props.categoryId || props.forceUseCategory
-                ? { categoryId: props.categoryId, input: { text: value } }
+                ? { [DYNAMIC_CATEGORY_ID]: props.categoryId, input: { text: value } }
                 : { text: value })
               setOptions(listData.records)
             } catch (error) {
