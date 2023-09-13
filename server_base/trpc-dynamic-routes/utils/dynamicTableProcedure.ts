@@ -87,14 +87,14 @@ export const dynamicTableProcedure = (
   return params.procedure
     .input(
       z.object({
-        categoryId: zObjectId().optional().nullable(),
+        [DYNAMIC_CATEGORY_ID]: zObjectId().optional().nullable(),
         input: z.any(),
       }),
     )
     .output(z.any())
     .use(async ({ ctx, input, next }) => {
       const dynamicTableCtx = await getZodAndSchemaByCategory(
-        input.categoryId,
+        input[DYNAMIC_CATEGORY_ID],
         params.PropertyModel,
         params.CategoryModel,
         params.fixedFields,

@@ -4,9 +4,9 @@ import {ISchemaConfig} from "../../share/types/ISchemaConfig";
 
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 import {SCHEMAS_CONFIG} from "../../share/schema_configs";
-import {DATABASE_MODELS} from "../mongoose/DatabaseModels";
-import {verifyWithZod} from "../zodUtils";
-import {ObjectId} from "mongodb";
+import { DATABASE_MODELS } from "../mongoose/DatabaseModels";
+import { verifyWithZod, zObjectId } from "../zodUtils";
+import { ObjectId } from "mongodb";
 
 /**
  * 1) Thay thế giá trị các cột là REF tới 1 bảng khác = objectID (Thay search schema thông qua searchKey và thay bằng objectID)
@@ -34,15 +34,6 @@ export async function getSchemaDataFromArray<T>(
       const keyType = getSingleType<SCHEMA_TYPE>(
         schemaConfig.fieldConfigs[k].type,
       );
-      // const keyType = schemaConfig.fieldConfigs[k].type as
-      //   | SCHEMA_TYPE
-      //   | SCHEMA_TYPE[];
-      // if (
-      //   Array.isArray(keyType) &&
-      //   Object.values(SCHEMA_TYPE).includes(keyType[0])
-      // )
-      //   map.get(keyType[0])?.push(k);
-      // else if (Object.values(SCHEMA_TYPE).includes(keyType as any))
       map.get(keyType as SCHEMA_TYPE)?.push(k);
       return map;
     },
@@ -65,9 +56,12 @@ export async function getSchemaDataFromArray<T>(
           String(row[f])
             .split(",")
             .forEach((v) => {
-              if (v) RefList.get(schema)?.add(v);
+              if (v && !zObjectId().safeParse(v).success)
+                // Nếu sẵn là objectID => bỏ qua
+                RefList.get(schema)?.add(v);
             });
-        } else if (row[f]) RefList.get(schema)?.add(row[f]);
+        } else if (row[f] && !zObjectId().safeParse(row[f]).success)
+          RefList.get(schema)?.add(row[f]);
       });
     });
   });
@@ -89,15 +83,15 @@ export async function getSchemaDataFromArray<T>(
         const RefSchemaConfig = SCHEMAS_CONFIG[
           schemaType as keyof typeof SCHEMAS_CONFIG
         ] as ISchemaConfig<any>;
-        const uniqueKeys = ["_id",...RefSchemaConfig.uniqueKeys];
+        const uniqueKeys = ["_id", ...RefSchemaConfig.uniqueKeys];
         const list = uniqueKeys.length
           ? await Model.find(
               {
                 $or: uniqueKeys.map((key) => ({
-                    [key]: {
-                      $in: Array.from(RefList.get(schemaType)?.values() ?? []),
-                    },
-                  })),
+                  [key]: {
+                    $in: Array.from(RefList.get(schemaType)?.values() ?? []),
+                  },
+                })),
               },
               {
                 ...uniqueKeys.reduce((obj, key) => {
@@ -121,7 +115,7 @@ export async function getSchemaDataFromArray<T>(
     }),
   );
   console.log("RefMap:", RefMap);
-  /** Step 4: Mapping lại các REF (searchKey -> _id ) và Verify bằng Zod
+  /** Step 4: Mapping lại các REF (uniqueKey -> _id ) và Verify bằng Zod
    *
    */
   records.forEach((raw, idx) => {
@@ -133,11 +127,14 @@ export async function getSchemaDataFromArray<T>(
             modifyData[refField] = String(raw[refField])
               .split(",")
               .map(
-                (k) => RefMap.get(schema)?.get(k.trim() as any) ?? new ObjectId(k.trim() as any),
+                (k) =>
+                  RefMap.get(schema)?.get(k.trim() as any) ??
+                  (safeParseObjectID(k.trim()) as any),
               ) as any;
           else
             modifyData[refField] =
-              RefMap.get(schema)?.get(raw[refField]) ?? new ObjectId(raw[refField] as any) as any;
+              RefMap.get(schema)?.get(raw[refField]) ??
+              (safeParseObjectID(raw[refField]) as any);
         }
       });
     });
@@ -145,6 +142,7 @@ export async function getSchemaDataFromArray<T>(
       ...raw,
       ...modifyData,
     };
+    console.log("data trước khi parse", data);
     //@ts-ignore
     delete data["UNDEFINED"];
     const parseResult = verifyWithZod(InputSchema, data);
@@ -169,6 +167,12 @@ export async function getSchemaDataFromArray<T>(
     verifiedIndexs,
     errorRecords,
   };
-  console.log("IMPORT RESULT with errors:", errorRecords);
+  if (errorRecords.length)
+    console.log("Parse Schema with errors:", errorRecords);
   return result;
+}
+
+function safeParseObjectID(id: any) {
+  if (id && zObjectId().safeParse(id).success) return new ObjectId(id);
+  else return null;
 }
