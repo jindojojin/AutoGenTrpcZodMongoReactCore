@@ -14,7 +14,7 @@ export async function exportToExcelFile(
   let records: any[] = [];
   if (!input.template) {
     // else, export template only
-    const data = await findMany(input.query, Model);
+    const data = await findMany(input.query, Model,schemaConfig);
     records = data.records;
   }
   const table = getTableFromListData(records, schemaConfig);

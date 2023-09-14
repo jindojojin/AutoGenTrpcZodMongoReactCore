@@ -1,23 +1,24 @@
-import {ISchemaDefinition} from "../../../share/types/ISchemaDefinition";
-import {BASIC_TYPE} from "../../../share/types/DataTypes";
-import {DYNAMIC_CATEGORY_ID} from "../../../share/constants/database_fields";
-import {withAutoLog} from "../../auto-logs/AutoLogSchema";
-import {PropertySchema} from "./PropertySchema";
-import {GenConfig} from "../../genUtils";
-import {SCHEMA_TYPE} from "../../../schemas/SchemaTypes";
+import { SCHEMA_TYPE } from "../../../schemas/SchemaTypes";
+import { DYNAMIC_CATEGORY_ID } from "../../../share/constants/database_fields";
+import { BASIC_TYPE, isSchemaType } from "../../../share/types/DataTypes";
+import { ISchemaDefinition } from "../../../share/types/ISchemaDefinition";
+import { withAutoLog } from "../../auto-logs/AutoLogSchema";
+import { GenConfig } from "../../genUtils";
+import { PropertySchema } from "./PropertySchema";
 
-type Config<T> = {
+type Config<T> = Partial<GenConfig> & {
   name: T;
-  schema?: ISchemaDefinition;
 };
 
-function getSchemaConfig<T>(config: Config<T> | T): {
+function getSchemaConfig<T extends SCHEMA_TYPE>(config: Config<T> | T): {
   type: T;
   definition: ISchemaDefinition;
+  genConfig:Partial<GenConfig>
 } {
   return {
     type: (config as Config<T>).name ?? (config as T),
     definition: (config as Config<T>).schema ?? {},
+    genConfig:  isSchemaType(config)?{} :config as any
   };
 }
 
@@ -47,6 +48,7 @@ export function getDynamicSchemaGenConfigs<
       logSchema: config.dataLog,
       dataSchema: dataSchema.type,
       dataGenConfig: {
+        ...dataSchema.genConfig,
         schema: {
           [DYNAMIC_CATEGORY_ID]: {
             type: cateSchema.type,
@@ -65,6 +67,7 @@ export function getDynamicSchemaGenConfigs<
       logSchema: config.categoryLog,
       dataSchema: cateSchema.type,
       dataGenConfig: {
+        ...cateSchema.genConfig,
         folder,
         schema: {
           [DYNAMIC_CATEGORY_ID]: {
@@ -83,6 +86,7 @@ export function getDynamicSchemaGenConfigs<
       logSchema: config.propertyLog as any,
       dataSchema: config.property as any,
       dataGenConfig: {
+        ...propSchema.genConfig,
         folder,
         schema: {
           [DYNAMIC_CATEGORY_ID]: {

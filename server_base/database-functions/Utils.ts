@@ -1,7 +1,7 @@
-import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
-import {SCHEMAS_CONFIG} from "../../share/schema_configs";
-import {saveTempFiles} from "../file-storage/FileManager";
-import {DATABASE_MODELS} from "../mongoose/DatabaseModels";
+import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
+import { SCHEMAS_CONFIG } from "../../share/schema_configs";
+import { saveTempFiles } from "../file-storage/FileManager";
+import { DATABASE_MODELS } from "../mongoose/DatabaseModels";
 
 export async function moveTempFileToDB(
   input: any | any[],
@@ -21,13 +21,18 @@ export async function moveTempFileToDB(
   return Array.isArray(input) ? Result : Result[0];
 }
 
-export function joinTable(path: string, schema: SCHEMA_TYPE, as?: string) {
+export function joinTable(
+  path: string,
+  schema: SCHEMA_TYPE,
+  as?: string,
+  foreignField?: string,
+) {
   return [
     {
       $lookup: {
         from: DATABASE_MODELS[schema].collection.name,
         localField: path,
-        foreignField: "_id",
+        foreignField: foreignField ?? "_id",
         as: as ?? path,
       },
     },

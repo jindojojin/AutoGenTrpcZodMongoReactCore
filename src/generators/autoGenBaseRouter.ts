@@ -41,7 +41,7 @@ const RouterParamsCodeMap = {
         "input,DATABASE_MODELS[{{DataType}}],SCHEMAS_CONFIG[{{DataType}}]",
     findById: "input, DATABASE_MODELS[{{DataType}}]",
     findByIds: "input, DATABASE_MODELS[{{DataType}}]",
-    findMany: "input, DATABASE_MODELS[{{DataType}}]",
+    findMany: "input, DATABASE_MODELS[{{DataType}}],SCHEMAS_CONFIG[{{DataType}}]",
     findOne: "input, DATABASE_MODELS[{{DataType}}]",
     importFromExcelFile:
         "input,ZOD_INPUTS[{{DataType}}],DATABASE_MODELS[{{DataType}}],SCHEMAS_CONFIG[{{DataType}}]",
@@ -66,7 +66,7 @@ const DynamicRouterParamsCodeMap = {
         "input.input, DATABASE_MODELS[{{DataType}}],ctx.SchemaConfig",
     findById: "input.input, DATABASE_MODELS[{{DataType}}]",
     findByIds: "input.input, DATABASE_MODELS[{{DataType}}]",
-    findMany: "input.input, DATABASE_MODELS[{{DataType}}]",
+    findMany: "input.input, DATABASE_MODELS[{{DataType}}],ctx.SchemaConfig",
     findOne: "input.input, DATABASE_MODELS[{{DataType}}]",
     importFromExcelFile:
         "input.input,ctx.ZodBase.input,DATABASE_MODELS[{{DataType}}],ctx.SchemaConfig",

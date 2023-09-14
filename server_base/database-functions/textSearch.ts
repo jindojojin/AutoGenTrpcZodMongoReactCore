@@ -18,6 +18,6 @@ export async function textSearch(
           }
         : {},
     },
-    Model,
+    Model,SchemaConfig
   );
 }
