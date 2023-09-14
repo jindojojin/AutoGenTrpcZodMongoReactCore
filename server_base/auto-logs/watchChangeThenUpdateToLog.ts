@@ -1,17 +1,17 @@
 import mongoose from "mongoose";
 
 export function watchChangeThenUpdateToLog(
-  dataModel: mongoose.Model<any>,
-  logModel: mongoose.Model<any>,
+    dataModel: mongoose.Model<any>,
+    logModel: mongoose.Model<any>,
 ) {
   dataModel.watch().on("change", async (data) => {
     const newDoc: any = await dataModel
-      .findOne({ _id: data.documentKey._id }, { lastModifyBy: 1 })
-      .lean();
+    .findOne({ _id: data._id }, { lastModifyBy: 1 })
+    .lean();
 
     if (newDoc) {
       const log = {
-        document: data.documentKey._id,
+        document: data._id,
         operation: data.operationType,
         triggerBy: newDoc.lastModifyBy,
         changeData: getChangeData(data),
