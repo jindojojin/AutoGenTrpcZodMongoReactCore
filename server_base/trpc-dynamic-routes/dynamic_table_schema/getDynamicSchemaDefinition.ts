@@ -3,8 +3,9 @@ import { DYNAMIC_CATEGORY_ID } from "../../../share/constants/database_fields";
 import { BASIC_TYPE, isSchemaType } from "../../../share/types/DataTypes";
 import { ISchemaDefinition } from "../../../share/types/ISchemaDefinition";
 import { withAutoLog } from "../../auto-logs/AutoLogSchema";
-import { GenConfig } from "../../genUtils";
 import { PropertySchema } from "./PropertySchema";
+
+import {GenConfig} from "../../../schemas";
 
 type Config<T> = Partial<GenConfig> & {
   name: T;

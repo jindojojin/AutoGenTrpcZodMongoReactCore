@@ -1,16 +1,17 @@
 import {readFileSync, writeFileSync} from "fs";
 import {
     createFolderIfNotExist,
-    GenConfig,
     getRelativePath,
     getSchemaFolder,
     getSchemaName,
     getTypeEnumText,
-} from "../../server_base/genUtils";
+} from "../genUtils";
 import path from "path";
 import {pascalCase} from "change-case";
 import {getObjectKeys} from "../../share/CommonFunctions";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+
+import {GenConfig} from "../../schemas";
 
 const RouterMethodMap = {
     createMany: "mutation",

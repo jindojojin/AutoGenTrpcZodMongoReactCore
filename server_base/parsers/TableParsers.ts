@@ -18,15 +18,15 @@ function getDate(s?: any) {
 }
 
 export function getTypedData(
-  data: any,
-  type: DataType,
-  enums: string[] = [],
-  arrayDelimiter: string = ",",
+    data: any,
+    type: DataType,
+    enums: string[] = [],
+    arrayDelimiter: string = ",",
 ): any {
   if (!data) return undefined;
   if (Array.isArray(type)) {
     return _.compact(
-      String(data)
+        String(data)
         .split(arrayDelimiter)
         .map((d) => getTypedData(d, type[0], enums, arrayDelimiter)),
     );
@@ -51,14 +51,14 @@ export function getTypedData(
 }
 
 export function getTypedString(
-  data: any,
-  type: DataType,
-  arrayDelimiter: string = ",",
+    data: any,
+    type: DataType,
+    arrayDelimiter: string = ",",
 ): string {
   if (Array.isArray(type)) {
     return _.compact(data)
-      .map((d) => getTypedString(d, type[0]))
-      .join(arrayDelimiter);
+    .map((d) => getTypedString(d, type[0]))
+    .join(arrayDelimiter);
   } else {
     if (isBasicType(type))
       switch (type) {
@@ -117,21 +117,21 @@ export async function getListDataFromTextTable<T>(content: string) {
  * @param initData
  */
 export function getTypedDataFromListData<T>(
-  listData: any[],
-  schemaConfig?: ISchemaConfig<T>,
-  initData?: Partial<T>,
+    listData: any[],
+    schemaConfig?: ISchemaConfig<T>,
+    initData?: Partial<T>,
 ) {
   let headersInFile: any[] | undefined = undefined;
   let headersMap = getFieldsMapByTitle(schemaConfig, (t) => t.toLowerCase()); // Không biệt in hoa, in thường
   console.log("Header map", headersMap);
   initData = initData? _.mapValues(initData, (v, k) =>
-  schemaConfig?.fieldConfigs?.[k as keyof T]
-      ? getTypedData(
-          v,
-          schemaConfig.fieldConfigs[k as keyof T].type,
-          schemaConfig.fieldConfigs[k as keyof T].enum
-        )
-      : v
+      schemaConfig?.fieldConfigs?.[k as keyof T]
+          ? getTypedData(
+              v,
+              schemaConfig.fieldConfigs[k as keyof T].type,
+              schemaConfig.fieldConfigs[k as keyof T].enum
+          )
+          : v
   ) :{}
   console.log("Init data", initData)
 
@@ -139,32 +139,33 @@ export function getTypedDataFromListData<T>(
     if (currentRow != null) {
       // exceljs đọc hàng 0 -> bị undefined với file excel
       const standardized_row = _(currentRow)
-        .map((cell: any) => (typeof cell === "string" ? cell.trim() : cell))
-        .value();
+      .map((cell: any) => (typeof cell === "string" ? cell.trim() : cell))
+      .value();
       if (_.compact(standardized_row).length > 0) {
         // bỏ qua những hàng trống hoàn toàn
         if (!headersInFile)
           headersInFile = standardized_row.map((t) => String(t).toLowerCase());
         else {
           const record = headersInFile.reduce(
-            (obj, colName, colIdx) => {
-              if (!colName) return obj;
-              let data = standardized_row[colIdx];
-              const key = (headersMap?.[colName] ?? colName) as keyof T;
-              if (schemaConfig) {
-                if (!getObjectKeys(headersMap).includes(colName)) return obj;
-                data = getTypedData(
-                  data,
-                  schemaConfig.fieldConfigs[key].type,
-                  schemaConfig.fieldConfigs[key]?.enum,
-                );
-              }
-              return {
-                ...obj,
-                [key]: data,
-              };
-            },
-           initData
+              (obj, colName, colIdx) => {
+                if (!colName) return obj;
+                let data = standardized_row[colIdx];
+                const key = (headersMap?.[colName] ?? colName) as keyof T;
+                if (schemaConfig) {
+                  if (!getObjectKeys(headersMap).includes(colName)) return obj;
+                  if (schemaConfig.fieldConfigs[key])
+                    data = getTypedData(
+                        data,
+                        schemaConfig.fieldConfigs[key].type,
+                        schemaConfig.fieldConfigs[key]?.enum,
+                    );
+                }
+                return {
+                  ...obj,
+                  [key]: data,
+                };
+              },
+              initData
           );
           return [...(arr as any), record];
         }
@@ -181,44 +182,44 @@ export function getTypedDataFromListData<T>(
  * @param schemaConfig
  */
 export function getTableFromListData<T extends { [key: string]: any }>(
-  listData: T[],
-  schemaConfig: ISchemaConfig<T>,
+    listData: T[],
+    schemaConfig: ISchemaConfig<T>,
 ) {
   /**
    * Step1: Xây dựng header và đường đẫn đến data
    */
   const fieldConfigs = schemaConfig.fieldConfigs;
   const schemaHeaders = getObjectKeys(fieldConfigs)
-    .filter((k) => !fieldConfigs[k]?.hidden)
-    .sort(
+  .filter((k) => !fieldConfigs[k]?.hidden)
+  .sort(
       (a, b) =>
-        (fieldConfigs[a].orderIdx ?? 0) - (fieldConfigs[b].orderIdx ?? 0),
-    );
+          (fieldConfigs[a].orderIdx ?? 0) - (fieldConfigs[b].orderIdx ?? 0),
+  );
   const tableHeadersLabel: string[] = [];
   const tableHeadersKey: string[][] = [];
   const tableHeadersType: DataType[] = [];
   schemaHeaders.forEach((field) => {
     const linkedSchema = getLinkedSchemaConfig<any>(fieldConfigs[field]);
     const defaultLabel =
-      fieldConfigs[field].label ?? capitalCase(String(field));
+        fieldConfigs[field].label ?? capitalCase(String(field));
     if (linkedSchema) {
       // Nếu trong các exportKey có truờng unique -> chọn làm key đại diện (Có thể dùng để import lại), nếu không có ->dùng _id
       const representKey =
-        _.intersection(linkedSchema.uniqueKeys, linkedSchema.exportKeys)[0] ??
-        "_id";
+          _.intersection(linkedSchema.uniqueKeys, linkedSchema.exportKeys)[0] ??
+          "_id";
       tableHeadersKey.push([String(field), String(representKey)]);
       tableHeadersLabel.push(defaultLabel);
       tableHeadersType.push(linkedSchema.fieldConfigs[representKey].type);
       // Thêm các trường export khác.
       linkedSchema.exportKeys
-        .filter((k) => k != representKey)
-        .forEach((exportKey) => {
-          tableHeadersKey.push([String(field), String(exportKey)]);
-          tableHeadersLabel.push(
+      .filter((k) => k != representKey)
+      .forEach((exportKey) => {
+        tableHeadersKey.push([String(field), String(exportKey)]);
+        tableHeadersLabel.push(
             `${defaultLabel} (${linkedSchema.fieldConfigs[exportKey].label})`,
-          );
-          tableHeadersType.push(linkedSchema.fieldConfigs[exportKey].type);
-        });
+        );
+        tableHeadersType.push(linkedSchema.fieldConfigs[exportKey].type);
+      });
     } else {
       tableHeadersKey.push([String(field)]);
       tableHeadersLabel.push(defaultLabel);

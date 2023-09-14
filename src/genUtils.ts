@@ -6,8 +6,6 @@ import {isPlainObject, mapValues} from "lodash";
 import {camelCase, constantCase, pascalCase, snakeCase} from "change-case";
 import path from "path";
 import {getObjectKeys} from "../share/CommonFunctions";
-import {ISchemaDefinition} from "../share/types/ISchemaDefinition";
-import {DB_FUNC} from "./database-functions";
 import {SCHEMA_TYPE} from "../schemas/SchemaTypes";
 
 export function convertObjectIdsToStrings(obj: any): any {
@@ -115,14 +113,3 @@ export function copyFiles(sourceDir: string, targetDir: string) {
         console.error('Đã xảy ra lỗi:', error);
     }
 }
-
-export type GenConfig = {
-    schema: ISchemaDefinition;
-    folder?: string;
-    dynamic?: {
-        category: SCHEMA_TYPE;
-        property: SCHEMA_TYPE;
-    };
-    logSchema?: SCHEMA_TYPE;
-    excludeFunctions?: (keyof typeof DB_FUNC)[];
-};

@@ -1,8 +1,10 @@
 import {readFileSync, writeFileSync} from "fs";
-import {createFolderIfNotExist, GenConfig, getSchemaName} from "../../server_base/genUtils";
+import {createFolderIfNotExist, getSchemaName} from "../genUtils";
 import path from "path";
 import {getObjectKeys} from "../../share/CommonFunctions";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+
+import {GenConfig} from "../../schemas";
 
 export function autoGenDatabaseAutoLog(
     outDir:string,

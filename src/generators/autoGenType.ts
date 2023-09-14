@@ -2,9 +2,11 @@ import {writeFileSync} from "fs";
 import _ from "lodash";
 import path from "path";
 import {BASIC_TYPE, DataType, isBasicType, isFileType, isSchemaType,} from "../../share/types/DataTypes";
-import {createFolderIfNotExist, GenConfig, getSchemaName} from "../../server_base/genUtils";
+import {createFolderIfNotExist, getSchemaName} from "../genUtils";
 import {getObjectKeys} from "../../share/CommonFunctions";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+
+import {GenConfig} from "../../schemas";
 
 const BasicTypeStr: Record<BASIC_TYPE, string> = {
     [BASIC_TYPE.BOOLEAN]: "boolean",

@@ -1,13 +1,14 @@
 import {
     createFolderIfNotExist,
-    GenConfig,
     getSchemaFolder,
     getSchemaName,
     getTypeEnumText,
-} from "../../server_base/genUtils";
+} from "../genUtils";
 import {readFileSync, writeFileSync} from "fs";
 import path from "path";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+
+import {GenConfig} from "../../schemas";
 
 export function autoGenZodIndex(outDir:string,GenList: Record<SCHEMA_TYPE, GenConfig>) {
   const importLines: string[] = [];

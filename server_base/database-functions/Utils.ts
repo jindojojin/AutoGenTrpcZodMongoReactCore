@@ -21,18 +21,63 @@ export async function moveTempFileToDB(
   return Array.isArray(input) ? Result : Result[0];
 }
 
-
-export function joinTable(
+export function $joinTable(
     path: string,
     schema: SCHEMA_TYPE,
     as?: string,
     foreignField?: string,
 ) {
-  return     {
+  return {
     $lookup: {
       from: DATABASE_MODELS[schema].collection.name,
       localField: path,
       foreignField: foreignField ?? "_id",
       as: as ?? path,
     },
-  }}
+  };
+}
+
+export function $manyToOneJoin(
+    srcPath: string,
+    tgSchema: SCHEMA_TYPE,
+    as?: string,
+) {
+  return [
+    {
+      $lookup: {
+        from: DATABASE_MODELS[tgSchema].collection.name,
+        localField: srcPath,
+        foreignField: "_id",
+        as: as ?? srcPath,
+      },
+    },
+    {
+      $unwind: {
+        path: `$${as ?? srcPath}`,
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+  ];
+}
+
+export function $objectIdToString(paths?: any[]) {
+  return paths?.length
+      ? {
+        $set: paths.reduce(
+            (acc, path) => ({ ...acc, [path]: { $toString: `$${path}` } }),
+            {},
+        ),
+      }
+      : undefined;
+}
+
+export function $stringToObjectId(paths?: any[]) {
+  return paths?.length
+      ? {
+        $set: paths.reduce(
+            (acc, path) => ({ ...acc, [path]: { $toObjectId: `$${path}` } }),
+            {},
+        ),
+      }
+      : undefined;
+}

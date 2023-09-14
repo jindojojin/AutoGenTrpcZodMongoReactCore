@@ -1,8 +1,9 @@
 import {ISchemaDefinition} from "../../share/types/ISchemaDefinition";
 import {BASIC_TYPE} from "../../share/types/DataTypes";
 
-import {GenConfig} from "../genUtils";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+
+import {GenConfig} from "../../schemas";
 
 interface AutoLogGenConfig<D, T> {
   dataSchema: D;

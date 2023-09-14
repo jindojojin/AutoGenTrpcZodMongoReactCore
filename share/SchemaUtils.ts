@@ -1,12 +1,13 @@
 import {camelCase, capitalCase, constantCase, pascalCase, snakeCase,} from "change-case";
 import _ from "lodash";
 import {SCHEMAS_CONFIG} from "./schema_configs";
-import {FILE_TYPE, isBasicType, isFileType, isSchemaType} from "./types/DataTypes";
+import {FILE_TYPE, getSingleType, isBasicType, isFileType, isSchemaType,} from "./types/DataTypes";
 import {ISchemaConfig} from "./types/ISchemaConfig";
 import {ISchemaDefinition, ISchemaFieldConfig,} from "./types/ISchemaDefinition";
 
 import {getObjectKeys} from "./CommonFunctions";
 import {SCHEMA_TYPE} from "../schemas/SchemaTypes";
+import {DYNAMIC_CATEGORY_ID} from "./constants/database_fields";
 
 export function getSpecialKeys<T>(SchemaDefinition: ISchemaDefinition<T>) {
     const fileTypeKeys: (keyof T)[] = [];
@@ -18,7 +19,11 @@ export function getSpecialKeys<T>(SchemaDefinition: ISchemaDefinition<T>) {
         if (SchemaDefinition[field].exportKey) exportKeys.push(field);
         if (SchemaDefinition[field].searchKey) searchKeys.push(field);
         if (SchemaDefinition[field].unique) uniqueKeys.push(field);
-        if (isSchemaType(SchemaDefinition[field].type) || SchemaDefinition[field].type === FILE_TYPE.FILE) relationKeys.push(field);
+        if (
+            isSchemaType(SchemaDefinition[field].type) ||
+            SchemaDefinition[field].type === FILE_TYPE.FILE
+        )
+            relationKeys.push(field);
         if (isFileType(SchemaDefinition[field].type)) fileTypeKeys.push(field);
     });
     return {
@@ -27,13 +32,13 @@ export function getSpecialKeys<T>(SchemaDefinition: ISchemaDefinition<T>) {
         fileTypeKeys,
         searchKeys,
         uniqueKeys,
-    }
+    };
 }
 
 export function getSchemaConfigFromFieldConfigs<T>(
     fieldConfigs: ISchemaDefinition<T> | ISchemaFieldConfig[],
     name: string,
-    authorize: boolean = false
+    authorize: boolean = false,
 ): ISchemaConfig<T> {
     const SchemaDefinition: ISchemaDefinition<T> = Array.isArray(fieldConfigs)
         ? _.keyBy(fieldConfigs, "_id")
@@ -45,16 +50,37 @@ export function getSchemaConfigFromFieldConfigs<T>(
     };
 }
 
+export function isDynamicSchemaType(type: any) {
+    return (
+        isSchemaType(type) &&
+        SCHEMAS_CONFIG[getSingleType<SCHEMA_TYPE>(type)].dynamic != null
+    );
+}
+
 export function getFieldsMapByTitle<T>(
     schemaConfig?: ISchemaConfig<T>,
-    transform?: (t: string) => string
+    transform?: (t: string) => string,
 ) {
     if (!schemaConfig) return {};
     const result: { [title: string]: keyof T } = {};
     getObjectKeys(schemaConfig.fieldConfigs).forEach((field) => {
-        const key =
+        const keyLabel =
             schemaConfig.fieldConfigs[field].label ?? capitalCase(String(field));
-        result[transform?.(String(key)) ?? key] = field as keyof T;
+        // nếu đây là kiểu dynamic => add thêm header category
+        const keyType = getSingleType<SCHEMA_TYPE>(
+            schemaConfig.fieldConfigs[field].type,
+        );
+        if (isDynamicSchemaType(keyType)) {
+            const DynamicSchemaConfig = SCHEMAS_CONFIG[keyType];
+            const categoryLabel =
+                DynamicSchemaConfig.fieldConfigs[
+                    DYNAMIC_CATEGORY_ID as keyof typeof DynamicSchemaConfig.fieldConfigs
+                    ].label;
+            const categoryKey = `${String(keyLabel)}-${String(categoryLabel)}`;
+            result[transform?.(categoryKey) ?? categoryKey] =
+                getCategoryKeyOfDynamicData(field);
+        }
+        result[transform?.(String(keyLabel)) ?? keyLabel] = field as keyof T;
     });
     return result;
 }
@@ -70,7 +96,7 @@ export function getLinkedSchemaConfig<T>(fieldConfig: ISchemaFieldConfig) {
 
 export function mergeSchemaConfig<S, T>(
     source: ISchemaConfig<S>,
-    target: ISchemaConfig<T>
+    target: ISchemaConfig<T>,
 ): ISchemaConfig<S & T> {
     return {
         fieldConfigs: {
@@ -93,5 +119,9 @@ export function getSchemaName(schema: SCHEMA_TYPE) {
     const SchemaName = pascalCase(SCHEMA_NAME);
     const schemaName = camelCase(SCHEMA_NAME);
     const schema_name = snakeCase(SCHEMA_NAME);
-    return {SCHEMA_NAME, SchemaName, schema_name, schemaName};
+    return { SCHEMA_NAME, SchemaName, schema_name, schemaName };
+}
+
+export function getCategoryKeyOfDynamicData<T>(field: keyof T) {
+    return `${String(field)}.${DYNAMIC_CATEGORY_ID}` as keyof T;
 }

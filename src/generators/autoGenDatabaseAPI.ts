@@ -1,7 +1,9 @@
-import {createFolderIfNotExist, GenConfig, getSchemaName, getTypeEnumText} from "../../server_base/genUtils";
+import {createFolderIfNotExist, getSchemaName, getTypeEnumText} from "../genUtils";
 import {readFileSync, writeFileSync} from "fs";
 import path from "path";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+
+import {GenConfig} from "../../schemas";
 
 export function autoGenDatabaseAPI(outDir:string[],GenList: Record<SCHEMA_TYPE, GenConfig>) {
   const export_routerLines: string[] = [];

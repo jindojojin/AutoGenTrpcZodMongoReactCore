@@ -1,4 +1,4 @@
-import {copyFile, copyFiles} from "../server_base/genUtils";
+import {copyFile, copyFiles} from "./genUtils";
 import CONFIG from '../config.json'
 import path from "path";
 import {autoGenSchemaType} from "./generators/autoGenType";

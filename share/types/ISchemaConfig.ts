@@ -1,5 +1,10 @@
-import {ISchemaDefinition} from "./ISchemaDefinition";
-import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import { ISchemaDefinition } from "./ISchemaDefinition";
+import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
+
+export type DynamicConfig = {
+  category: SCHEMA_TYPE;
+  property: SCHEMA_TYPE;
+};
 
 export type ISchemaConfig<T> = {
   name: string;
@@ -9,7 +14,5 @@ export type ISchemaConfig<T> = {
   relationKeys: (keyof T)[]; // Những thuộc tính dạng ObjectID link đến 1 Collection trong mongoDB
   fileTypeKeys: (keyof T)[]; // Những thuộc tính dạng FILE_TYPE
   fieldConfigs: ISchemaDefinition<T>;
-  dynamicConfig?:{
-    category: SCHEMA_TYPE
-  }
+  dynamic?: DynamicConfig;
 };

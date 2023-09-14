@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 import {getSingleType} from "../../share/types/DataTypes";
 import {ISchemaConfig} from "../../share/types/ISchemaConfig";
-import {joinTable} from "./Utils";
+import {$joinTable, $objectIdToString, $stringToObjectId} from "./Utils";
 
 export type CustomAggregate = (stages: {
     matchStage: any[];
@@ -17,16 +17,7 @@ function getPopulate(config: any, schemaConfig?: ISchemaConfig<any>) {
         const relType = getSingleType<SCHEMA_TYPE>(
             schemaConfig.fieldConfigs[c.path as keyof any].type,
         );
-        return joinTable(c.path, relType, c.path)
-        // return [
-        //   joinTable(c.path, relType, c.path),
-        //   {
-        //     $unwind: {
-        //       path: `$${c.path}`,
-        //       preserveNullAndEmptyArrays: true,
-        //     },
-        //   },
-        // ];
+        return $joinTable(c.path, relType, c.path) //TODO --> sẽ sai với kiểu 1-n hoặc n-1 --> need to recheck
     })
 
 }
@@ -68,13 +59,12 @@ export async function findMany(
     let records: any;
     if (advancedQuery) {
         const matchStage = _.compact([
-            stringifyRefKeys(SchemaConfig),
+            $objectIdToString(SchemaConfig?.relationKeys),
             {
                 $match: input.where,
             },
-            parseRefKeys(SchemaConfig),
+            $stringToObjectId(SchemaConfig?.relationKeys),
         ]);
-        console.log("$match", JSON.stringify(matchStage[0]));
         const selectStage = input.select
             ? {
                 $project: input.select,
