@@ -4,8 +4,8 @@ import { saveTempFiles } from "../file-storage/FileManager";
 import { DATABASE_MODELS } from "../mongoose/DatabaseModels";
 
 export async function moveTempFileToDB(
-  input: any | any[],
-  schema: SCHEMA_TYPE,
+    input: any | any[],
+    schema: SCHEMA_TYPE,
 ) {
   const FileTypeFields = SCHEMAS_CONFIG[schema].fileTypeKeys;
   const Result = Array.isArray(input) ? input : [input];
@@ -21,25 +21,18 @@ export async function moveTempFileToDB(
   return Array.isArray(input) ? Result : Result[0];
 }
 
+
 export function joinTable(
-  path: string,
-  schema: SCHEMA_TYPE,
-  as?: string,
-  foreignField?: string,
+    path: string,
+    schema: SCHEMA_TYPE,
+    as?: string,
+    foreignField?: string,
 ) {
-  return [
-    {
-      $lookup: {
-        from: DATABASE_MODELS[schema].collection.name,
-        localField: path,
-        foreignField: foreignField ?? "_id",
-        as: as ?? path,
-      },
+  return     {
+    $lookup: {
+      from: DATABASE_MODELS[schema].collection.name,
+      localField: path,
+      foreignField: foreignField ?? "_id",
+      as: as ?? path,
     },
-    {
-      $unwind: {
-        path: `$${as ?? path}`,
-      },
-    },
-  ];
-}
+  }}

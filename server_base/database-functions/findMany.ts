@@ -1,9 +1,9 @@
 import _ from "lodash";
 import mongoose from "mongoose";
-import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
-import { getSingleType } from "../../share/types/DataTypes";
-import { ISchemaConfig } from "../../share/types/ISchemaConfig";
-import { joinTable } from "./Utils";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import {getSingleType} from "../../share/types/DataTypes";
+import {ISchemaConfig} from "../../share/types/ISchemaConfig";
+import {joinTable} from "./Utils";
 
 export type CustomAggregate = (stages: {
     matchStage: any[];
@@ -13,12 +13,22 @@ export type CustomAggregate = (stages: {
 
 function getPopulate(config: any, schemaConfig?: ISchemaConfig<any>) {
     if (!Array.isArray(config) || !schemaConfig) return [];
-    return _.flattenDepth(config.map((c: { path: string }) => {
+    return config.map((c: { path: string }) => {
         const relType = getSingleType<SCHEMA_TYPE>(
             schemaConfig.fieldConfigs[c.path as keyof any].type,
         );
-        return joinTable(c.path, relType, c.path);
-    }),2);
+        return joinTable(c.path, relType, c.path)
+        // return [
+        //   joinTable(c.path, relType, c.path),
+        //   {
+        //     $unwind: {
+        //       path: `$${c.path}`,
+        //       preserveNullAndEmptyArrays: true,
+        //     },
+        //   },
+        // ];
+    })
+
 }
 
 function stringifyRefKeys(schemaConfig?: ISchemaConfig<any>) {
