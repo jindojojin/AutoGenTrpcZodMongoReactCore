@@ -1,6 +1,6 @@
-import { BASIC_TYPE } from "../../share/types/DataTypes";
-import { ISchemaDefinition } from "../../share/types/ISchemaDefinition";
-import { SCHEMA_TYPE } from "../SchemaTypes";
+import {BASIC_TYPE} from "../../share/types/DataTypes";
+import {ISchemaDefinition} from "../../share/types/ISchemaDefinition";
+import {SCHEMA_TYPE} from "../SchemaTypes";
 
 export const AssetPicSchema: ISchemaDefinition = {
   asset: {
@@ -22,6 +22,9 @@ export const AssetPicSchema: ISchemaDefinition = {
     type:BASIC_TYPE.NUMBER,
     required:true,
     label:"NOK"
+  },
+  remark:{
+    type:BASIC_TYPE.TEXT,
   },
   projects: { type: [SCHEMA_TYPE.PROJECT] },
 };

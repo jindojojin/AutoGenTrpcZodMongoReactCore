@@ -1,13 +1,29 @@
-import {camelCase, capitalCase, constantCase, pascalCase, snakeCase,} from "change-case";
+import {
+    camelCase,
+    capitalCase,
+    constantCase,
+    pascalCase,
+    snakeCase,
+} from "change-case";
 import _ from "lodash";
-import {SCHEMAS_CONFIG} from "./schema_configs";
-import {FILE_TYPE, getSingleType, isBasicType, isFileType, isSchemaType,} from "./types/DataTypes";
-import {ISchemaConfig} from "./types/ISchemaConfig";
-import {ISchemaDefinition, ISchemaFieldConfig,} from "./types/ISchemaDefinition";
+import { SCHEMAS_CONFIG } from "./schema_configs";
+import {
+    FILE_TYPE,
+    getSingleType,
+    isBasicType,
+    isFileType,
+    isSchemaType,
+} from "./types/DataTypes";
+import { ISchemaConfig } from "./types/ISchemaConfig";
+import {
+    ISchemaDefinition,
+    ISchemaFieldConfig,
+} from "./types/ISchemaDefinition";
 
-import {getObjectKeys} from "./CommonFunctions";
-import {SCHEMA_TYPE} from "../schemas/SchemaTypes";
-import {DYNAMIC_CATEGORY_ID} from "./constants/database_fields";
+import { getObjectKeys } from "./CommonFunctions";
+import { SCHEMA_TYPE } from "../schemas/SchemaTypes";
+import { DB_FUNC } from "../server_base/database-functions";
+import { DYNAMIC_CATEGORY_ID } from "./constants/database_fields";
 
 export function getSpecialKeys<T>(SchemaDefinition: ISchemaDefinition<T>) {
     const fileTypeKeys: (keyof T)[] = [];
@@ -70,6 +86,7 @@ export function getFieldsMapByTitle<T>(
         const keyType = getSingleType<SCHEMA_TYPE>(
             schemaConfig.fieldConfigs[field].type,
         );
+        if (isFileType(keyType)) return; // KHông hỗ trợ import media file
         if (isDynamicSchemaType(keyType)) {
             const DynamicSchemaConfig = SCHEMAS_CONFIG[keyType];
             const categoryLabel =
@@ -121,6 +138,17 @@ export function getSchemaName(schema: SCHEMA_TYPE) {
     const schema_name = snakeCase(SCHEMA_NAME);
     return { SCHEMA_NAME, SchemaName, schema_name, schemaName };
 }
+
+export type GenConfig = {
+    schema: ISchemaDefinition;
+    folder?: string;
+    dynamic?: {
+        category: SCHEMA_TYPE;
+        property: SCHEMA_TYPE;
+    };
+    logSchema?: SCHEMA_TYPE;
+    excludeFunctions?: (keyof typeof DB_FUNC)[];
+};
 
 export function getCategoryKeyOfDynamicData<T>(field: keyof T) {
     return `${String(field)}.${DYNAMIC_CATEGORY_ID}` as keyof T;

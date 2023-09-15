@@ -5,11 +5,11 @@ import {getSingleType} from "../../share/types/DataTypes";
 import {ISchemaConfig} from "../../share/types/ISchemaConfig";
 import {$joinTable, $objectIdToString, $stringToObjectId} from "./Utils";
 
-export type CustomAggregate = (stages: {
-    matchStage: any[];
-    selectStage: any;
-    optionStage: any[];
-}) => any[];
+export type CustomAggregate = (stages: [
+    matchStage: any,
+    selectStage: any,
+    optionStage: any]
+) => any[];
 
 function getPopulate(config: any, schemaConfig?: ISchemaConfig<any>) {
     if (!Array.isArray(config) || !schemaConfig) return [];
@@ -60,9 +60,9 @@ export async function findMany(
     if (advancedQuery) {
         const matchStage = _.compact([
             $objectIdToString(SchemaConfig?.relationKeys),
-            {
+            input.where ? {
                 $match: input.where,
-            },
+            } : null,
             $stringToObjectId(SchemaConfig?.relationKeys),
         ]);
         const selectStage = input.select
@@ -86,15 +86,20 @@ export async function findMany(
                     $limit: input.options.limit,
                 }
                 : null,
-            ...getPopulate(input.options.populate, SchemaConfig),
+            getPopulate(input.options?.populate, SchemaConfig),
         ];
-        const stages = _.compact(
-            advancedQuery({
-                matchStage,
-                selectStage,
-                optionStage: _.compact(optionStage),
-            }),
-        );
+        const stages = _.compact(_.flattenDeep(
+                advancedQuery(
+                    [
+                        matchStage
+                        ,
+                        selectStage
+                        ,
+                        optionStage
+
+                    ]),
+            ))
+        ;
         records = await Model.aggregate(stages);
     } else {
         records = await Model.find(

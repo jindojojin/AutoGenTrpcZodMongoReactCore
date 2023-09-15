@@ -38,10 +38,12 @@ export const GenList: Record<SCHEMA_TYPE, GenConfig> = {
             data: {
                 name: SCHEMA_TYPE.ASSET,
                 schema: AssetSchema,
-                excludeFunctions:["findMany"]
+                excludeFunctions: ["findMany"]
             },
             dataLog: SCHEMA_TYPE.ASSET_LOG,
-            category: SCHEMA_TYPE.ASSET_CATEGORY,
+            category: {
+                name: SCHEMA_TYPE.ASSET_CATEGORY, excludeFunctions: ["findMany"]
+            },
             categoryLog: SCHEMA_TYPE.ASSET_CATEGORY_LOG,
             property: SCHEMA_TYPE.ASSET_PROPERTY,
             propertyLog: SCHEMA_TYPE.ASSET_PROPERTY_LOG,

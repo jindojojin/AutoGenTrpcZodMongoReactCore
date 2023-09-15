@@ -9,14 +9,20 @@ export const AssetStorageSchema: ISchemaDefinition = {
     },
     quantity: {
         type: BASIC_TYPE.NUMBER,
-        label:"OK",
-        required:true
+        label: "OK",
+        required: true
     },
-    quantityNOK:{
-        type:BASIC_TYPE.NUMBER,
-        label:"NOK",
-        required:true
-      },
+    quantityNOK: {
+        type: BASIC_TYPE.NUMBER,
+        label: "NOK",
+        required: true
+    },
+    remark: {
+        type: BASIC_TYPE.TEXT,
+    },
+    area: {
+        type: BASIC_TYPE.TEXT,
+    },
     in_out_log: {
         type: [BASIC_TYPE.UNKNOWN]
     }

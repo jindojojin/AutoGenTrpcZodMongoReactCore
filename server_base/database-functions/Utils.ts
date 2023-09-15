@@ -1,7 +1,7 @@
-import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
-import { SCHEMAS_CONFIG } from "../../share/schema_configs";
-import { saveTempFiles } from "../file-storage/FileManager";
-import { DATABASE_MODELS } from "../mongoose/DatabaseModels";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import {SCHEMAS_CONFIG} from "../../share/schema_configs";
+import {saveTempFiles} from "../file-storage/FileManager";
+import {DATABASE_MODELS} from "../mongoose/DatabaseModels";
 
 export async function moveTempFileToDB(
     input: any | any[],
@@ -60,11 +60,26 @@ export function $manyToOneJoin(
   ];
 }
 
+
+export function $oneToManyJoin(
+    tgPath: string,
+    tgSchema: SCHEMA_TYPE,
+    as?: string,) {
+  return {
+    $lookup: {
+      from: DATABASE_MODELS[tgSchema].collection.name,
+      localField: "_id",
+      foreignField: tgPath,
+      as: as ?? DATABASE_MODELS[tgSchema].collection.name,
+    }
+  }
+}
+
 export function $objectIdToString(paths?: any[]) {
   return paths?.length
       ? {
         $set: paths.reduce(
-            (acc, path) => ({ ...acc, [path]: { $toString: `$${path}` } }),
+            (acc, path) => ({...acc, [path]: {$toString: `$${path}`}}),
             {},
         ),
       }

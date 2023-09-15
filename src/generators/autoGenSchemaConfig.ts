@@ -4,13 +4,7 @@ import _ from "lodash";
 import path from "path";
 import {DataType,} from "../../share/types/DataTypes";
 import {ISchemaDefinition, ISchemaFieldConfig,} from "../../share/types/ISchemaDefinition";
-import {
-    createFolderIfNotExist,
-    getRelativePath,
-    getSchemaFolder,
-    getSchemaName,
-    getTypeEnumText,
-} from "../genUtils";
+import {createFolderIfNotExist, getRelativePath, getSchemaFolder, getSchemaName, getTypeEnumText,} from "../genUtils";
 import {getObjectKeys} from "../../share/CommonFunctions";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 import {getSpecialKeys} from "../../share/SchemaUtils";
@@ -66,6 +60,17 @@ function getKeyConfigs(schema: ISchemaDefinition, schemaName: string) {
     .join(",\n\t");
 }
 
+function getDynamicConfig(genConfig: GenConfig) {
+    if (genConfig.dynamic) {
+        return `{
+            category: ${getTypeEnumText(genConfig.dynamic.category)},
+            property: ${getTypeEnumText(genConfig.dynamic.property)}
+        }`
+    } else {
+        return "undefined"
+    }
+}
+
 export function genSchemaConfig(outDir: string | string[], name: SCHEMA_TYPE, genConfig: GenConfig) {
     const ModuleName = getSchemaName(name).SchemaName;
     const template = readFileSync(
@@ -93,6 +98,7 @@ export function genSchemaConfig(outDir: string | string[], name: SCHEMA_TYPE, ge
     .replaceAll("{{keyConfigs}}", keyConfigs)
     .replaceAll("{{SchemaFolder}}", getSchemaFolder(genConfig.folder))
     .replaceAll("{{RelativePath}}", getRelativePath(genConfig.folder))
+    .replaceAll("{{dynamicConfig}}", getDynamicConfig(genConfig))
     .replaceAll("{{fileTypeKeys}}", `[${fileTypeKeys.map((e) => `"${String(e)}"`)}]`)
     .replaceAll("{{uniqueKeys}}", `[${uniqueKeys.map((e) => `"${String(e)}"`)}]`)
     .replaceAll("{{exportKeys}}", `[${exportKeys.map((e) => `"${String(e)}"`)}]`)

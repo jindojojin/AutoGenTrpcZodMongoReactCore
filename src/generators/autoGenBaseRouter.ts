@@ -94,7 +94,6 @@ function getRouterCode(functionName: string, dynamic?: boolean) {
     })`;
     return `${functionName}: publicProcedure
       .input(ZOD_APIS[{{DataType}}].${zod_name})
-      .output(ZOD_APIS[{{DataType}}].${zod_name}Output)
       .${RouterMethodMap[functionName as keyof typeof RouterMethodMap]}(({ input }) => DB_FUNC.${functionName}(${RouterParamsCodeMap[functionName as keyof typeof RouterMethodMap]}))`;
 }
 

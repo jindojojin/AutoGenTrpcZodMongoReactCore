@@ -74,7 +74,7 @@ function DialogForm<
   );
 
   return (
-    <Modal
+    <Modal width={800}
       {...props.modalProps}
       title={props.config?.label}
       onOk={() => {
