@@ -1,7 +1,7 @@
-import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
-import {SCHEMAS_CONFIG} from "../../share/schema_configs";
-import {saveTempFiles} from "../file-storage/FileManager";
-import {DATABASE_MODELS} from "../mongoose/DatabaseModels";
+import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
+import { SCHEMAS_CONFIG } from "../../share/schema_configs";
+import { saveTempFiles } from "../file-storage/FileManager";
+import { DATABASE_MODELS } from "../mongoose/DatabaseModels";
 
 export async function moveTempFileToDB(
     input: any | any[],
@@ -17,7 +17,7 @@ export async function moveTempFileToDB(
         Result[idx][key] = await saveTempFiles(Result[idx][key]);
     }
   }
-  console.log("Move file to DB done", Result);
+  console.log("Move temp file (if exist) to DB done", Result);
   return Array.isArray(input) ? Result : Result[0];
 }
 
@@ -37,6 +37,15 @@ export function $joinTable(
   };
 }
 
+export function $unwind(path: string) {
+  return {
+    $unwind: {
+      path: `$${path}`,
+      preserveNullAndEmptyArrays: true,
+    },
+  };
+}
+
 export function $manyToOneJoin(
     srcPath: string,
     tgSchema: SCHEMA_TYPE,
@@ -51,28 +60,23 @@ export function $manyToOneJoin(
         as: as ?? srcPath,
       },
     },
-    {
-      $unwind: {
-        path: `$${as ?? srcPath}`,
-        preserveNullAndEmptyArrays: true,
-      },
-    },
+    $unwind(as ?? srcPath),
   ];
 }
-
 
 export function $oneToManyJoin(
     tgPath: string,
     tgSchema: SCHEMA_TYPE,
-    as?: string,) {
+    as?: string,
+) {
   return {
     $lookup: {
       from: DATABASE_MODELS[tgSchema].collection.name,
       localField: "_id",
       foreignField: tgPath,
       as: as ?? DATABASE_MODELS[tgSchema].collection.name,
-    }
-  }
+    },
+  };
 }
 
 export function $objectIdToString(paths?: any[]) {

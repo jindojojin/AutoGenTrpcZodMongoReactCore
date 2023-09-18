@@ -21,6 +21,7 @@ import {TaskCheckItemSchema} from "./tasks/TaskCheckItem";
 import {UserSchema} from "./users/User";
 import {ISchemaDefinition} from "../share/types/ISchemaDefinition";
 import {DB_FUNC} from "../server_base/database-functions";
+import {AssetCategorySchema} from "./assets/AssetCategory";
 
 export type GenConfig = {
     schema: ISchemaDefinition;
@@ -42,7 +43,8 @@ export const GenList: Record<SCHEMA_TYPE, GenConfig> = {
             },
             dataLog: SCHEMA_TYPE.ASSET_LOG,
             category: {
-                name: SCHEMA_TYPE.ASSET_CATEGORY, excludeFunctions: ["findMany"]
+                name: SCHEMA_TYPE.ASSET_CATEGORY, excludeFunctions: ["findMany"],
+                schema: AssetCategorySchema
             },
             categoryLog: SCHEMA_TYPE.ASSET_CATEGORY_LOG,
             property: SCHEMA_TYPE.ASSET_PROPERTY,

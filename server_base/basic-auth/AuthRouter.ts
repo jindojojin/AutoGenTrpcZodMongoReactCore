@@ -2,25 +2,27 @@ import z from "zod";
 import {random} from "lodash";
 import {createJWT, generateRandomPassword, md5} from "./utils/security";
 import {privateProcedure, publicProcedure, router} from "../trpc";
-import {UserModel} from "../mongoose/DatabaseModels";
 import {AUTH_USER_ID_FIELD, AUTH_USER_PWD_FIELD, AUTH_USER_SALT_FIELD,} from "../../share/constants/database_fields";
 import {getUserScopes} from "./utils/getUserScopes";
 
 import type {AuthorizedUser} from "../../share/types/CommonTypes";
+import {getSystemScopes} from "./utils/getSystemScopes";
+import {DATABASE_MODELS} from "../mongoose/DatabaseModels";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 
 const zActiveUsersInput = z.object({
     users: z.string().array(),
     password: z.string().optional(), // password mặc định = random
 });
 const zActiveUsersOutput = z
-    .object({
-        userId: z.string(),
-        password: z.string(),
-    })
+.object({
+    userId: z.string(),
+    password: z.string(),
+})
     .array();
 
 export async function doActiveUsers(input: z.infer<typeof zActiveUsersInput>) {
-    const listUpdate = await UserModel.find({
+    const listUpdate = await DATABASE_MODELS[SCHEMA_TYPE.USER].find({
         userId: {$in: input.users},
     });
     const passMap: { [k: string]: string } = {};
@@ -31,7 +33,7 @@ export async function doActiveUsers(input: z.infer<typeof zActiveUsersInput>) {
         userDoc[AUTH_USER_PWD_FIELD] = md5(pass + salt);
         userDoc[AUTH_USER_SALT_FIELD] = salt;
     });
-    await UserModel.bulkSave(listUpdate);
+    await DATABASE_MODELS[SCHEMA_TYPE.USER].bulkSave(listUpdate);
     return listUpdate.map((u) => ({
         userId: u[AUTH_USER_ID_FIELD],
         password: passMap[String(u[AUTH_USER_ID_FIELD])],
@@ -50,7 +52,7 @@ export async function doCheckUserAuth(input: z.infer<typeof zCheckUserAuth>) {
     )
         return true;
 
-    const user = await UserModel.findOne({
+    const user = await DATABASE_MODELS[SCHEMA_TYPE.USER].findOne({
         [AUTH_USER_ID_FIELD]: input.username,
     });
     if (!user) {
@@ -73,13 +75,15 @@ export const AuthRouter = router({
         return createJWT<AuthorizedUser>({loginID: input, scopes});
     }),
 
+    getSystemScopes: publicProcedure.query(getSystemScopes),
+
     activeUsers: privateProcedure
-        .input(zActiveUsersInput)
-        .output(zActiveUsersOutput)
-        .mutation(({input}) => doActiveUsers(input)),
+    .input(zActiveUsersInput)
+    .output(zActiveUsersOutput)
+    .mutation(({input}) => doActiveUsers(input)),
 
     checkUserAuth: publicProcedure
-        .input(zCheckUserAuth)
-        .output(z.boolean())
-        .mutation(({input}) => doCheckUserAuth(input)),
+    .input(zCheckUserAuth)
+    .output(z.boolean())
+    .mutation(({input}) => doCheckUserAuth(input)),
 });

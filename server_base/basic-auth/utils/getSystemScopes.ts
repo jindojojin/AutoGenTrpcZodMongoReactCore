@@ -1,7 +1,8 @@
-import {ScopeModel} from "../../mongoose/DatabaseModels";
+import {DATABASE_MODELS} from "../../mongoose/DatabaseModels";
 import {getRawScopes} from "../../../share/ScopeUtils";
 import {NODE_CACHE} from "../../CacheManager";
 import _ from "lodash";
+import {SCHEMA_TYPE} from "../../../schemas/SchemaTypes";
 
 // ScopeModel.watch().on("change", (_data) => {
 //   //TODO: Hàm này phat hien thay doi trong bang scope de xoa cache -> chua check
@@ -9,10 +10,10 @@ import _ from "lodash";
 // });
 
 export async function getSystemScopes() {
-  if (NODE_CACHE.has("SYSTEM_SCOPES")) {
-    return NODE_CACHE.get<string[]>("SYSTEM_SCOPES") as string[];
-  } else {
-    const scopeList = await ScopeModel.find().lean();
+  // if (NODE_CACHE.has("SYSTEM_SCOPES")) {
+  //   return NODE_CACHE.get<string[]>("SYSTEM_SCOPES") as string[];
+  // } else {
+    const scopeList = await DATABASE_MODELS[SCHEMA_TYPE.SCOPE].find().lean();
     let result: string[] = [];
     if (scopeList) {
       const scope_arr = scopeList.map((e) => getRawScopes(e as any));
@@ -20,5 +21,5 @@ export async function getSystemScopes() {
     }
     NODE_CACHE.set<string[]>("SYSTEM_SCOPES", result, "5m");
     return result;
-  }
+  // }
 }

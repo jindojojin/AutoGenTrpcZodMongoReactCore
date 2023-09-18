@@ -52,6 +52,6 @@ export async function getUserScopes(loginID: string) {
     if ((process.env.SYSTEM_ADMIN ?? "").split(",").includes(loginID)) {
       specialScopes.push(ADMIN_SCOPE);
     }
-    return [...scopesFromGroup, ...specialScopes];
+    return _.flattenDeep([scopesFromGroup, specialScopes]);
   }
 }
