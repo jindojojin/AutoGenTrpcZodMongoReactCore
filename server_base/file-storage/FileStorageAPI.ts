@@ -3,14 +3,14 @@ import path from "path";
 import {Express, Request} from "express";
 import multer from "multer";
 import {
-    addTempFiles,
-    delayDelete,
-    getFiles,
-    getTempFiles,
-    saveFiles,
-    SFile,
-    STempFile,
-    STORAGE_FOLDER_PATH,
+  addTempFiles,
+  delayDelete,
+  getFiles,
+  getTempFiles,
+  saveFiles,
+  SFile,
+  STempFile,
+  STORAGE_FOLDER_PATH,
 } from "./FileManager";
 import archiver from "archiver";
 

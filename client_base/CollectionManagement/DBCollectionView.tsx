@@ -1,22 +1,23 @@
-import React, { MutableRefObject, useCallback, useRef, useState } from "react";
-import { FieldPath, FieldValues } from "react-hook-form";
-import { App, ModalProps } from "antd";
-import { APICallbacks, APIConfigs } from "./configs/CommonConfig";
-import { FORM_ACTION } from "./configs/FormConfigs";
+import React, {MutableRefObject, useCallback, useRef, useState} from "react";
+import {FieldPath, FieldValues} from "react-hook-form";
+import {App, ModalProps} from "antd";
+import {APICallbacks, APIConfigs} from "./configs/CommonConfig";
+import {FORM_ACTION} from "./configs/FormConfigs";
 import withListController, {
   ControllableListViewRef,
   ControlledListViewProps,
 } from "./list_controller/withListController";
-import TableList, { TableListProps } from "./TableList";
+import TableList, {TableListProps} from "./TableList";
 import withFormController, {
   ControllableFormViewRef,
   ControlledFormViewProps,
 } from "./form_controller/withFormController";
-import DialogForm, { FormViewProps } from "./DialogForm";
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { useTranslation } from "react-i18next";
+import DialogForm, {FormViewProps} from "./DialogForm";
+import {DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
+import {useTranslation} from "react-i18next";
 import _ from "lodash";
-import { getObjectKeys } from "../Common/Utils";
+import {getObjectKeys} from "../Common/Utils";
+import {useFormUsagesByUserScopes} from "./utils/useFormUsagesByUserScopes";
 
 type DbCollectionViewProps<
     T extends FieldValues,
@@ -50,13 +51,7 @@ function useFormProps<T extends FieldValues>(
           : props.formConfig;
 
   return {
-    usages: Object.values(FORM_ACTION).reduce(
-        (prev, act) => ({
-          ...prev,
-          [act]: true,
-        }),
-        {}
-    ),
+    usages: useFormUsagesByUserScopes(props.apiConfig.schema),
     callbacks: Object.values(FORM_ACTION).reduce(
         (prev, act) => ({
           ...prev,
@@ -85,7 +80,7 @@ function useFormProps<T extends FieldValues>(
             },
           } as APICallbacks<T>,
         }),
-        {}
+        {},
     ),
     api: props.apiConfig,
     ...FormProps,
@@ -95,7 +90,7 @@ function useFormProps<T extends FieldValues>(
 function useTableProps<T extends FieldValues>(
     showForm: (a: FORM_ACTION | undefined, v?: T) => void,
     props: DbCollectionViewProps<T>,
-    formProps: ControlledFormViewProps<T, FormViewProps<T>>
+    formProps: ControlledFormViewProps<T, FormViewProps<T>>,
 ): ControlledListViewProps<T, TableListProps<T>> {
   const rowActions = {
     [FORM_ACTION.CREATE]: {
@@ -129,17 +124,20 @@ function useTableProps<T extends FieldValues>(
     ],
     rowAdditionActions: {
       ...props.tableConfig.rowAdditionActions,
-      contextMenuItems: getObjectKeys(rowActions)
-      .filter((action) => formProps.usages?.[action] ?? true)
-      .map((action) => rowActions[action]),
+      contextMenuItems: [
+        ...getObjectKeys(rowActions)
+        .filter((action) => formProps.usages?.[action] ?? true)
+        .map((action) => rowActions[action]),
+        ...(props.tableConfig.rowAdditionActions?.contextMenuItems ?? []),
+      ],
     },
     api: props.apiConfig,
-    ..._.omit(props.tableConfig, "rowAdditionActions"),
+    ..._.omit(props.tableConfig, ["rowAdditionActions"]),
   };
 }
 
 function DbCollectionView<T extends FieldValues>(
-    props: DbCollectionViewProps<T>
+    props: DbCollectionViewProps<T>,
 ) {
   const [openForm, setOpenForm] = useState<FORM_ACTION | undefined>(undefined);
   const formRef = useRef<ControllableFormViewRef<T>>();

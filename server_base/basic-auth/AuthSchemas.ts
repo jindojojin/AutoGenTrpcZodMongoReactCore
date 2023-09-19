@@ -39,7 +39,6 @@ export const SystemScopeSchema: ISchemaDefinition<
   },
   fields: {
     type: [BASIC_TYPE.TEXT],
-    required: true,
     label: "Restricted data",
     hint: "Only support in 'View' and 'Edit' actions",
   },

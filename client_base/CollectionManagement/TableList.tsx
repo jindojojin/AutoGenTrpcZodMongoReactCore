@@ -64,7 +64,7 @@ function TableList<T extends FieldValues>(props: TableListProps<T>) {
                 showTotal={(total) => (
                     <Typography.Text strong>Total: {total}</Typography.Text>
                 )}
-                // hideOnSinglePage={true}
+                // hideOnSinglePage={true} //TODO dont hide on Single page, it cannot reverse at show All mode :))
                 current={
                     (props.listController?.pageConfig?.skip ?? 0) /
                     (props.listController?.pageConfig?.limit ?? 10) +

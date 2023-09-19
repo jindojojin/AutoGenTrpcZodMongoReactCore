@@ -1,19 +1,16 @@
-import { DynamicConfig, ISchemaConfig } from "../../share/types/ISchemaConfig";
+import {DynamicConfig, ISchemaConfig} from "../../share/types/ISchemaConfig";
 import _ from "lodash";
-import { getSingleType } from "../../share/types/DataTypes";
-import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
-import { SCHEMAS_CONFIG } from "../../share/schema_configs";
-import { ZodTypeAny } from "zod";
-import { DATABASE_MODELS } from "../mongoose/DatabaseModels";
-import { $joinTable, $manyToOneJoin } from "../database-functions/Utils";
-import { DYNAMIC_CATEGORY_ID } from "../../share/constants/database_fields";
-import { verifyWithZod, zObjectId } from "../zodUtils";
-import { ObjectId } from "mongodb";
-import { ISchemaFieldConfig } from "../../share/types/ISchemaDefinition";
-import {
-  getCategoryKeyOfDynamicData,
-  isDynamicSchemaType,
-} from "../../share/SchemaUtils";
+import {getSingleType} from "../../share/types/DataTypes";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import {SCHEMAS_CONFIG} from "../../share/schema_configs";
+import {ZodTypeAny} from "zod";
+import {DATABASE_MODELS} from "../mongoose/DatabaseModels";
+import {$joinTable, $manyToOneJoin} from "../database-functions/Utils";
+import {DYNAMIC_CATEGORY_ID} from "../../share/constants/database_fields";
+import {verifyWithZod, zObjectId} from "../zodUtils";
+import {ObjectId} from "mongodb";
+import {ISchemaFieldConfig} from "../../share/types/ISchemaDefinition";
+import {getCategoryKeyOfDynamicData, isDynamicSchemaType,} from "../../share/SchemaUtils";
 
 type DynamicValue = {
   value: any;

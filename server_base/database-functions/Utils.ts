@@ -1,7 +1,7 @@
-import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
-import { SCHEMAS_CONFIG } from "../../share/schema_configs";
-import { saveTempFiles } from "../file-storage/FileManager";
-import { DATABASE_MODELS } from "../mongoose/DatabaseModels";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import {SCHEMAS_CONFIG} from "../../share/schema_configs";
+import {saveTempFiles} from "../file-storage/FileManager";
+import {DATABASE_MODELS} from "../mongoose/DatabaseModels";
 
 export async function moveTempFileToDB(
     input: any | any[],

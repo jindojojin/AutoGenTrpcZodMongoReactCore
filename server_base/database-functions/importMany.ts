@@ -1,18 +1,18 @@
 import mongoose from "mongoose";
-import { z, ZodTypeAny } from "zod";
-import { ISchemaConfig } from "../../share/types/ISchemaConfig";
-import { getTempFiles, STempFile } from "../file-storage/FileManager";
-import { getSchemaDataFromArray } from "../parsers/DynamicParser";
+import {z, ZodTypeAny} from "zod";
+import {ISchemaConfig} from "../../share/types/ISchemaConfig";
+import {getTempFiles, STempFile} from "../file-storage/FileManager";
+import {getSchemaDataFromArray} from "../parsers/DynamicParser";
 import {
-  getListDataFromExcelTable,
-  getListDataFromTextTable,
-  getTypedData,
-  getTypedDataFromListData,
+    getListDataFromExcelTable,
+    getListDataFromTextTable,
+    getTypedData,
+    getTypedDataFromListData,
 } from "../parsers/TableParsers";
-import { zodErrorOutput } from "../zodUtils";
-import { upsertMany, zUpsertOutput } from "./upsertMany";
+import {zodErrorOutput} from "../zodUtils";
+import {upsertMany, zUpsertOutput} from "./upsertMany";
 
-import { getObjectKeys } from "../../share/CommonFunctions";
+import {getObjectKeys} from "../../share/CommonFunctions";
 
 export async function importFromExcelFile(
     input: any,
@@ -20,7 +20,7 @@ export async function importFromExcelFile(
     Model: mongoose.Model<any>,
     schemaConfig: ISchemaConfig<any>,
 ) {
-  const file = getTempFiles(input) as STempFile;
+    const file = getTempFiles(input) as STempFile;
   const rows = await getListDataFromExcelTable(file.path);
   return doImport(rows, {
     InputSchema,

@@ -1,16 +1,13 @@
-import { capitalCase } from "change-case";
+import {capitalCase} from "change-case";
 import dayjs from "dayjs";
 import * as ExcelJS from "exceljs";
 import _ from "lodash";
-import { parse as CSVParser } from "papaparse";
-import {
-  getFieldsMapByTitle,
-  getLinkedSchemaConfig,
-} from "../../share/SchemaUtils";
-import { BASIC_TYPE, DataType, isBasicType } from "../../share/types/DataTypes";
-import { ISchemaConfig } from "../../share/types/ISchemaConfig";
+import {parse as CSVParser} from "papaparse";
+import {getFieldsMapByTitle, getLinkedSchemaConfig,} from "../../share/SchemaUtils";
+import {BASIC_TYPE, DataType, isBasicType} from "../../share/types/DataTypes";
+import {ISchemaConfig} from "../../share/types/ISchemaConfig";
 
-import { getObjectKeys } from "../../share/CommonFunctions";
+import {getObjectKeys} from "../../share/CommonFunctions";
 
 function getDate(s?: any) {
   const date = new Date(s);

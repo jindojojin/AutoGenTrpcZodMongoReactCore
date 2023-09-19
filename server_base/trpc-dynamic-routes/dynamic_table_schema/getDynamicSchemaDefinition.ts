@@ -1,9 +1,9 @@
-import { SCHEMA_TYPE } from "../../../schemas/SchemaTypes";
-import { DYNAMIC_CATEGORY_ID } from "../../../share/constants/database_fields";
-import { BASIC_TYPE, isSchemaType } from "../../../share/types/DataTypes";
-import { ISchemaDefinition } from "../../../share/types/ISchemaDefinition";
-import { withAutoLog } from "../../auto-logs/AutoLogSchema";
-import { PropertySchema } from "./PropertySchema";
+import {SCHEMA_TYPE} from "../../../schemas/SchemaTypes";
+import {DYNAMIC_CATEGORY_ID} from "../../../share/constants/database_fields";
+import {BASIC_TYPE, isSchemaType} from "../../../share/types/DataTypes";
+import {ISchemaDefinition} from "../../../share/types/ISchemaDefinition";
+import {withAutoLog} from "../../auto-logs/AutoLogSchema";
+import {PropertySchema} from "./PropertySchema";
 
 import {GenConfig} from "../../../schemas";
 
