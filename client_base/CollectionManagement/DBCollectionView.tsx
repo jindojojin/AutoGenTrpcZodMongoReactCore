@@ -1,23 +1,26 @@
-import React, {MutableRefObject, useCallback, useRef, useState} from "react";
-import {FieldPath, FieldValues} from "react-hook-form";
-import {App, ModalProps} from "antd";
-import {APICallbacks, APIConfigs} from "./configs/CommonConfig";
-import {FORM_ACTION} from "./configs/FormConfigs";
+import React, { MutableRefObject, useCallback, useRef, useState } from "react";
+import { FieldPath, FieldValues } from "react-hook-form";
+import { App, ModalProps } from "antd";
+import { APICallbacks, APIConfigs } from "./configs/CommonConfig";
+import { FORM_ACTION } from "./configs/FormConfigs";
 import withListController, {
   ControllableListViewRef,
   ControlledListViewProps,
 } from "./list_controller/withListController";
-import TableList, {TableListProps} from "./TableList";
+import TableList, { TableListProps } from "./TableList";
 import withFormController, {
   ControllableFormViewRef,
   ControlledFormViewProps,
 } from "./form_controller/withFormController";
-import DialogForm, {FormViewProps} from "./DialogForm";
-import {DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
-import {useTranslation} from "react-i18next";
+import DialogForm, { FormViewProps } from "./DialogForm";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { useTranslation } from "react-i18next";
 import _ from "lodash";
-import {getObjectKeys} from "../Common/Utils";
-import {useFormUsagesByUserScopes} from "./utils/useFormUsagesByUserScopes";
+import { getObjectKeys } from "../Common/Utils";
+import {
+  useFormUsagesByUserScopes,
+  useListUsagesByUserScopes,
+} from "./utils/useFormUsagesByUserScopes";
 
 type DbCollectionViewProps<
     T extends FieldValues,
@@ -114,14 +117,17 @@ function useTableProps<T extends FieldValues>(
     },
   };
   return {
-    headerAdditions: [
-      <PlusOutlined
-          title={"Create"}
-          onClick={() => {
-            showForm(FORM_ACTION.CREATE);
-          }}
-      />,
-    ],
+    usages: useListUsagesByUserScopes(props.apiConfig.schema),
+    headerAdditions: _.compact([
+      formProps.usages?.Create ? (
+          <PlusOutlined
+              title={"Create"}
+              onClick={() => {
+                showForm(FORM_ACTION.CREATE);
+              }}
+          />
+      ) : null,
+    ]),
     rowAdditionActions: {
       ...props.tableConfig.rowAdditionActions,
       contextMenuItems: [

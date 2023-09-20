@@ -1,16 +1,29 @@
-import React, {useCallback, useMemo} from "react";
-import {ControllableListViewProps} from "./list_controller/withListController";
-import useRowActions, {RowActionConfig} from "../Table/hooks/useRowActions";
-import {CommonTableConfig, useCommonTableConfig,} from "../Table/hooks/useCommonTableConfig";
-import {getObjectKeys, showIf} from "../Common/Utils";
-import {Pagination, Table, TablePaginationConfig, TableProps, Typography,} from "antd";
-import {ReloadOutlined} from "@ant-design/icons";
+import React, { useCallback, useMemo } from "react";
+import { ControllableListViewProps } from "./list_controller/withListController";
+import useRowActions, { RowActionConfig } from "../Table/hooks/useRowActions";
+import {
+    CommonTableConfig,
+    useCommonTableConfig,
+} from "../Table/hooks/useCommonTableConfig";
+import { getObjectKeys, showIf } from "../Common/Utils";
+import {
+    Pagination,
+    Table,
+    TablePaginationConfig,
+    TableProps,
+    Typography,
+} from "antd";
+import { ReloadOutlined } from "@ant-design/icons";
 import _ from "lodash";
-import {DataType} from "../../share/types/DataTypes";
-import {FilterValue, SorterResult, TableCurrentDataSource,} from "antd/es/table/interface";
-import {IColumnType} from "../Table/Utils";
-import {getFilterQuery} from "../Table/getTypedColumnFilter";
-import {FieldValues} from "react-hook-form";
+import { DataType } from "../../share/types/DataTypes";
+import {
+    FilterValue,
+    SorterResult,
+    TableCurrentDataSource,
+} from "antd/es/table/interface";
+import { IColumnType } from "../Table/Utils";
+import { getFilterQuery } from "../Table/getTypedColumnFilter";
+import { FieldValues } from "react-hook-form";
 import TableImporter from "../Table/components/TableImporter";
 import TableExporter from "../Table/components/TableExporter";
 
@@ -39,25 +52,24 @@ function TableList<T extends FieldValues>(props: TableListProps<T>) {
         headerLeft: props.headerLeft ?? [
             showIf(
                 props.table_title,
-                <Typography.Title level={5} style={{margin: 0}}>
+                <Typography.Title level={5} style={{ margin: 0 }}>
                     {props.table_title}
-                </Typography.Title>
+                </Typography.Title>,
             ),
         ],
-        headerRight: [
+        headerRight: _.compact([
             ...(props.headerAdditions || []),
-            <TableImporter {...props.listController}/>,
-            <TableExporter {...props.listController}/>,
-            showIf(
-                props.listController?.reload,
+            <TableImporter {...props.listController} />,
+            <TableExporter {...props.listController} />,
+            props.listController?.reload ? (
                 <ReloadOutlined
                     disabled={props.listController?.loading}
                     spin={props.listController?.loading}
                     title={"Reload data"}
                     onClick={props.listController?.reload}
                 />
-            ),
-        ],
+            ) : null,
+        ]),
         footerRight: [
             <Pagination
                 total={props.listController?.total ?? 0}

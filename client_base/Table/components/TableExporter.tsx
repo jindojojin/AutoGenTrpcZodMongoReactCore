@@ -1,13 +1,17 @@
 import React from "react";
-import {CopyOutlined, ExportOutlined, FileExcelOutlined,} from "@ant-design/icons";
-import {Dropdown} from "antd";
-import {showIf} from "../../Common/Utils";
+import {
+    CopyOutlined,
+    ExportOutlined,
+    FileExcelOutlined,
+} from "@ant-design/icons";
+import { Dropdown } from "antd";
+import { showIf } from "../../Common/Utils";
 
 TableExporter.propTypes = {};
 
 function TableExporter<T>(props: {
-    onExportToExcelData?: () => Promise<void>,
-    onExportToExcelTemplate?: () => Promise<void>
+    onExportToExcelData?: () => Promise<void>;
+    onExportToExcelTemplate?: () => Promise<void>;
 }) {
     return showIf(
         props.onExportToExcelData || props.onExportToExcelTemplate,
@@ -15,19 +19,23 @@ function TableExporter<T>(props: {
             <Dropdown
                 trigger={["click", "click"]}
                 menu={{
-                    items: [
-                        {
-                            label: "To excel template file",
-                            key: "excel_template",
-                            icon: <FileExcelOutlined/>,
-                        },
-                        {
-                            label: "To excel data file",
-                            key: "excel_data",
-                            icon: <CopyOutlined/>,
-                        },
-                    ],
-                    onClick: async ({key}) => {
+                    items: _.compact([
+                        props.onExportToExcelTemplate
+                            ? {
+                                label: "To excel template file",
+                                key: "excel_template",
+                                icon: <FileExcelOutlined />,
+                            }
+                            : null,
+                        props.onExportToExcelData
+                            ? {
+                                label: "To excel data file",
+                                key: "excel_data",
+                                icon: <CopyOutlined />,
+                            }
+                            : null,
+                    ]),
+                    onClick: async ({ key }) => {
                         switch (key) {
                             case "excel_data":
                                 await props.onExportToExcelData?.();
@@ -39,9 +47,9 @@ function TableExporter<T>(props: {
                     },
                 }}
             >
-                <ExportOutlined title={"Export"}/>
+                <ExportOutlined title={"Export"} />
             </Dropdown>
-        </>
+        </>,
     );
 }
 
