@@ -1,14 +1,18 @@
 import z from "zod";
-import {random} from "lodash";
-import {createJWT, generateRandomPassword, md5} from "./utils/security";
-import {privateProcedure, publicProcedure, router} from "../trpc";
-import {AUTH_USER_ID_FIELD, AUTH_USER_PWD_FIELD, AUTH_USER_SALT_FIELD,} from "../../share/constants/database_fields";
-import {getUserScopes} from "./utils/getUserScopes";
+import { random } from "lodash";
+import { createJWT, generateRandomPassword, md5 } from "./utils/security";
+import { privateProcedure, publicProcedure, router } from "../trpc";
+import {
+    AUTH_USER_ID_FIELD,
+    AUTH_USER_PWD_FIELD,
+    AUTH_USER_SALT_FIELD,
+} from "../../share/constants/database_fields";
 
-import type {AuthorizedUser} from "../../share/types/CommonTypes";
-import {getSystemScopes} from "./utils/getSystemScopes";
-import {DATABASE_MODELS} from "../mongoose/DatabaseModels";
-import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import type { AuthorizedUser } from "../../share/types/CommonTypes";
+import { getSystemScopes } from "./utils/getSystemScopes";
+import { DATABASE_MODELS } from "../mongoose/DatabaseModels";
+import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
+import { getUserScopes } from "./utils/getUserScopes";
 
 const zActiveUsersInput = z.object({
     users: z.string().array(),
@@ -19,7 +23,7 @@ const zActiveUsersOutput = z
     userId: z.string(),
     password: z.string(),
 })
-    .array();
+.array();
 
 export async function doActiveUsers(input: z.infer<typeof zActiveUsersInput>) {
     const listUpdate = await DATABASE_MODELS[SCHEMA_TYPE.USER].find({
@@ -70,20 +74,23 @@ export async function doCheckUserAuth(input: z.infer<typeof zCheckUserAuth>) {
 }
 
 export const AuthRouter = router({
-    getUserToken: privateProcedure.input(z.string()).query(async ({input}) => {
-        const scopes = await getUserScopes(input);
-        return createJWT<AuthorizedUser>({loginID: input, scopes});
+    getUserToken: privateProcedure.input(z.string()).query(async ({ input }) => {
+        // const scopes = await getUserScopes(input);
+        return createJWT<AuthorizedUser>({ loginID: input, scopes: [] });
     }),
 
     getSystemScopes: publicProcedure.query(getSystemScopes),
+    getUserScopes: publicProcedure.query(({ ctx }) =>
+        getUserScopes(ctx?.user?.loginID),
+    ),
 
     activeUsers: privateProcedure
     .input(zActiveUsersInput)
     .output(zActiveUsersOutput)
-    .mutation(({input}) => doActiveUsers(input)),
+    .mutation(({ input }) => doActiveUsers(input)),
 
     checkUserAuth: publicProcedure
     .input(zCheckUserAuth)
     .output(z.boolean())
-    .mutation(({input}) => doCheckUserAuth(input)),
+    .mutation(({ input }) => doCheckUserAuth(input)),
 });

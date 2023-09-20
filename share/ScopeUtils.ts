@@ -26,10 +26,15 @@ type Scope = {
   fields?: string[];
 };
 
+type SingleScope = {
+  table: SCHEMA_TYPE;
+  action: DATABASE_ACTIONS;
+  field?: string;
+};
+
 export function getRawScopes(scope?: Scope) {
   if (!scope) return [];
   const { table, fields, actions } = scope;
-  const result: string[] = [];
   const combinations: any[] = _.flatMap(actions, (action) =>
       fields?.length
           ? _.flatMap(fields, (field) => ({ table: scope.table, action, field }))
@@ -43,7 +48,19 @@ export function getRawScopes(scope?: Scope) {
   );
 }
 
-export function checkScope(
+function checkScope(requiredScope: string, scope: string) {
+  try {
+    const required = JSON.parse(requiredScope) as SingleScope;
+    const available = JSON.parse(requiredScope) as SingleScope;
+    return available.field
+        ? _.isEqual(required, available)
+        : _.isEqual(_.omit(required, ["field"]), available);
+  } catch (e) {
+    return false;
+  }
+}
+
+export function checkScopes(
     systemScopes: string[],
     requiredScopes: string | string[],
     userScopes: string[],
@@ -52,26 +69,19 @@ export function checkScope(
   requiredScopes = Array.isArray(requiredScopes)
       ? requiredScopes
       : [requiredScopes];
-  const actualRequiredScopes = requiredScopes.filter((scope) => {
-    if (
-        scope.endsWith(DATABASE_ACTIONS.READ) ||
-        scope.endsWith(DATABASE_ACTIONS.UPDATE)
-    ) {
-      return (
-          systemScopes.find((systemScope) => systemScope.startsWith(scope)) !=
-          null
-      );
-    } else return systemScopes.includes(scope);
-  });
-  console.log(
-      "User scope",
-      userScopes,
-      "Required scopes",
-      actualRequiredScopes,
+  const actualRequiredScopes = requiredScopes.filter(
+      (scope) => systemScopes.find((sc) => checkScope(scope, sc)) != null,
   );
+  // console.log(
+  //   "User scope",
+  //   userScopes,
+  //   "Required scopes",
+  //   actualRequiredScopes,
+  // );
   for (let i = 0; i < actualRequiredScopes.length; i++) {
     const requiredScope = actualRequiredScopes[i];
-    if (!userScopes.includes(requiredScope)) return false;
+    if (userScopes.find((us) => checkScope(requiredScope, us)) == null)
+      return false;
   }
   console.log("true here!");
   return true;
