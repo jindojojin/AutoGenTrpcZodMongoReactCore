@@ -1,13 +1,21 @@
-import {capitalCase} from "change-case";
+import { capitalCase } from "change-case";
 import dayjs from "dayjs";
 import * as ExcelJS from "exceljs";
 import _ from "lodash";
-import {parse as CSVParser} from "papaparse";
-import {getFieldsMapByTitle, getLinkedSchemaConfig,} from "../../share/SchemaUtils";
-import {BASIC_TYPE, DataType, isBasicType} from "../../share/types/DataTypes";
-import {ISchemaConfig} from "../../share/types/ISchemaConfig";
+import { parse as CSVParser } from "papaparse";
+import {
+  getFieldsMapByTitle,
+  getLinkedSchemaConfig,
+} from "../../share/SchemaUtils";
+import {
+  BASIC_TYPE,
+  DataType,
+  isBasicType,
+  isFileType,
+} from "../../share/types/DataTypes";
+import { ISchemaConfig } from "../../share/types/ISchemaConfig";
 
-import {getObjectKeys} from "../../share/CommonFunctions";
+import { getObjectKeys } from "../../share/CommonFunctions";
 
 function getDate(s?: any) {
   const date = new Date(s);
@@ -196,6 +204,7 @@ export function getTableFromListData<T extends { [key: string]: any }>(
   const tableHeadersKey: string[][] = [];
   const tableHeadersType: DataType[] = [];
   schemaHeaders.forEach((field) => {
+    if (isFileType(fieldConfigs[field].type)) return; // Bỏ qua media file type khi export.
     const linkedSchema = getLinkedSchemaConfig<any>(fieldConfigs[field]);
     const defaultLabel =
         fieldConfigs[field].label ?? capitalCase(String(field));

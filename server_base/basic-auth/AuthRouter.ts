@@ -76,7 +76,7 @@ export async function doCheckUserAuth(input: z.infer<typeof zCheckUserAuth>) {
 export const AuthRouter = router({
     getUserToken: privateProcedure.input(z.string()).query(async ({ input }) => {
         // const scopes = await getUserScopes(input);
-        return createJWT<AuthorizedUser>({ loginID: input, scopes: [] });
+        return createJWT<AuthorizedUser>({ loginID: input });
     }),
 
     getSystemScopes: publicProcedure.query(getSystemScopes),
