@@ -12,7 +12,8 @@ import type { AuthorizedUser } from "../../share/types/CommonTypes";
 import { getSystemScopes } from "./utils/getSystemScopes";
 import { DATABASE_MODELS } from "../mongoose/DatabaseModels";
 import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
-import { getUserScopes } from "./utils/getUserScopes";
+import { getUserAndScopes } from "./utils/getUserAndScopes";
+import { NODE_CACHE } from "../CacheManager";
 
 const zActiveUsersInput = z.object({
     users: z.string().array(),
@@ -75,15 +76,22 @@ export async function doCheckUserAuth(input: z.infer<typeof zCheckUserAuth>) {
 
 export const AuthRouter = router({
     getUserToken: privateProcedure.input(z.string()).query(async ({ input }) => {
-        // const scopes = await getUserScopes(input);
-        return createJWT<AuthorizedUser>({ loginID: input });
+        const auth = await getUserAndScopes(input);
+        NODE_CACHE.set(input, auth, "24h");
+        return createJWT<AuthorizedUser>(
+            { loginID: input, _id: auth.userProfile._id },
+            "24h",
+        );
     }),
 
     getSystemScopes: publicProcedure.query(getSystemScopes),
-    getUserScopes: publicProcedure.query(({ ctx }) =>
-        getUserScopes(ctx?.user?.loginID),
-    ),
-
+    getUserScopes: publicProcedure.query(async ({ ctx }) => {
+        const loginID = ctx?.user?.loginID;
+        if (!loginID) throw "NO PERMISSION! PLEASE LOGIN FIRST";
+        const data = await getUserAndScopes(loginID);
+        NODE_CACHE.set(loginID, data, "24h");
+        return data;
+    }),
     activeUsers: privateProcedure
     .input(zActiveUsersInput)
     .output(zActiveUsersOutput)

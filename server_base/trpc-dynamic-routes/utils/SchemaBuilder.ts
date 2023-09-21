@@ -63,12 +63,7 @@ export function getSchemaFromFieldConfigs<T>(
           : fieldConfig,
       };
     },
-    {
-      lastModifyBy: {
-        type: Schema.Types.ObjectId,
-        ref: SystemUserCollectionName,
-      },
-    } as unknown as SchemaDefinition<SchemaDefinitionType<T>>,
+    {} as unknown as SchemaDefinition<SchemaDefinitionType<T>>,
   );
   return new Schema(schema as SchemaDefinition<SchemaDefinitionType<T>>, {
     timestamps: true,

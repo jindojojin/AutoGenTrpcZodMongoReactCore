@@ -30,4 +30,5 @@ export enum SCHEMA_TYPE {
     ASSET_PIC_LOG = "Asset Pic Log",
 
     ASSET_STORAGE = "Asset Storage",
+    ASSET_STORAGE_LOG = "Asset Storage Log",
 }

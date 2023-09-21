@@ -44,6 +44,7 @@ export function getDynamicSchemaGenConfigs<
   const dataSchema = getSchemaConfig(config.data);
   const cateSchema = getSchemaConfig(config.category);
   const propSchema = getSchemaConfig(config.property);
+  console.log(propSchema)
   return {
     ...withAutoLog({
       logSchema: config.dataLog,
@@ -84,8 +85,8 @@ export function getDynamicSchemaGenConfigs<
       },
     }),
     ...withAutoLog({
-      logSchema: config.propertyLog as any,
-      dataSchema: config.property as any,
+      logSchema: config.propertyLog,
+      dataSchema: propSchema.type,
       dataGenConfig: {
         ...propSchema.genConfig,
         folder,
@@ -94,7 +95,6 @@ export function getDynamicSchemaGenConfigs<
             type: cateSchema.type,
             hidden: true,
           },
-          ...propSchema.definition,
           ...PropertySchema,
         },
       },

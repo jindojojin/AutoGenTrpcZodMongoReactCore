@@ -22,6 +22,7 @@ import {UserSchema} from "./users/User";
 import {ISchemaDefinition} from "../share/types/ISchemaDefinition";
 import {DB_FUNC} from "../server_base/database-functions";
 import {AssetCategorySchema} from "./assets/AssetCategory";
+import {getObjectKeys} from "../share/CommonFunctions";
 
 export type GenConfig = {
     schema: ISchemaDefinition;
@@ -32,6 +33,7 @@ export type GenConfig = {
     };
     logSchema?: SCHEMA_TYPE;
     excludeFunctions?: (keyof typeof DB_FUNC)[];
+    useSoftDelete?: boolean;
 };
 export const GenList: Record<SCHEMA_TYPE, GenConfig> = {
     ...getDynamicSchemaGenConfigs(
@@ -39,15 +41,17 @@ export const GenList: Record<SCHEMA_TYPE, GenConfig> = {
             data: {
                 name: SCHEMA_TYPE.ASSET,
                 schema: AssetSchema,
-                excludeFunctions: ["findMany"]
+                excludeFunctions: ["findMany"],
+                useSoftDelete: true,
             },
             dataLog: SCHEMA_TYPE.ASSET_LOG,
             category: {
                 name: SCHEMA_TYPE.ASSET_CATEGORY, excludeFunctions: ["findMany"],
-                schema: AssetCategorySchema
+                schema: AssetCategorySchema,
+                useSoftDelete: true
             },
             categoryLog: SCHEMA_TYPE.ASSET_CATEGORY_LOG,
-            property: SCHEMA_TYPE.ASSET_PROPERTY,
+            property: {name: SCHEMA_TYPE.ASSET_PROPERTY, useSoftDelete: true},
             propertyLog: SCHEMA_TYPE.ASSET_PROPERTY_LOG,
         },
         "assets",
@@ -66,9 +70,16 @@ export const GenList: Record<SCHEMA_TYPE, GenConfig> = {
         dataGenConfig: {
             schema: AssetInvoiceSchema,
             folder: "assets",
+            useSoftDelete: true
         },
     }),
-    [SCHEMA_TYPE.ASSET_STORAGE]: {schema: AssetStorageSchema, folder: "assets"},
+    ...withAutoLog({
+        logSchema: SCHEMA_TYPE.ASSET_STORAGE_LOG,
+        dataSchema: SCHEMA_TYPE.ASSET_STORAGE,
+        dataGenConfig: {
+            schema: AssetStorageSchema, folder: "assets"
+        }
+    }),
     [SCHEMA_TYPE.TASK]: {schema: TaskSchema, folder: "tasks"},
     [SCHEMA_TYPE.TASK_CHECK_ITEM]: {
         schema: TaskCheckItemSchema,
@@ -99,6 +110,8 @@ export const GenList: Record<SCHEMA_TYPE, GenConfig> = {
         folder: "projects",
     },
     [SCHEMA_TYPE.SCOPE]: {schema: SystemScopeSchema, folder: "users"},
-    [SCHEMA_TYPE.USER]: {schema: UserSchema, folder: "users"},
+    [SCHEMA_TYPE.USER]: {schema: UserSchema, folder: "users", useSoftDelete: true},
     [SCHEMA_TYPE.USER_SCOPE]: {schema: SystemUserScopeSchema, folder: "users"},
 };
+
+console.log(getObjectKeys(GenList))

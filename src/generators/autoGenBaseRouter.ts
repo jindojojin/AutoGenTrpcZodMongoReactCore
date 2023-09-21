@@ -1,11 +1,5 @@
 import {readFileSync, writeFileSync} from "fs";
-import {
-    createFolderIfNotExist,
-    getRelativePath,
-    getSchemaFolder,
-    getSchemaName,
-    getTypeEnumText,
-} from "../genUtils";
+import {createFolderIfNotExist, getRelativePath, getSchemaFolder, getSchemaName, getTypeEnumText,} from "../genUtils";
 import path from "path";
 import {pascalCase} from "change-case";
 import {getObjectKeys} from "../../share/CommonFunctions";
@@ -89,6 +83,7 @@ function getRouterCode(functionName: string, dynamic?: boolean) {
       "${zod_name}",
       "${zod_name}Output"
     ).${RouterMethodMap[functionName as keyof typeof RouterMethodMap]}(async ({ ctx, input }) => {
+      console.log("CTX", ctx.auth)
       const result = await DB_FUNC.${functionName}(${DynamicRouterParamsCodeMap[functionName as keyof typeof DynamicRouterParamsCodeMap]});
       return ctx.ZodOutput.parseAsync(result);
     })`;

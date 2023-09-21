@@ -1,12 +1,9 @@
 import React from "react";
-import {
-    CopyOutlined,
-    ExportOutlined,
-    FileExcelOutlined,
-} from "@ant-design/icons";
-import { Dropdown } from "antd";
-import { showIf } from "../../Common/Utils";
+import {CopyOutlined, ExportOutlined, FileExcelOutlined,} from "@ant-design/icons";
+import {Dropdown} from "antd";
+import {showIf} from "../../Common/Utils";
 import _ from "lodash"
+
 TableExporter.propTypes = {};
 
 function TableExporter<T>(props: {

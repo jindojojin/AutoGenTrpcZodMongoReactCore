@@ -40,6 +40,13 @@ export function withAutoLog<D extends SCHEMA_TYPE, L extends SCHEMA_TYPE>(
     },
     [config.dataSchema]: {
       ...config.dataGenConfig,
+      schema: {
+        ...config.dataGenConfig.schema,
+        lastModifiedBy: {
+          type: SCHEMA_TYPE.USER,
+          nullable: true,
+        },
+      },
       logSchema: config.logSchema,
     },
   } as any;
