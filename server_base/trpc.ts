@@ -1,14 +1,15 @@
 import {inferAsyncReturnType, initTRPC} from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import superjson from "superjson";
-import {ZodTypeAny} from "zod";
-import {getBaseZodFromFieldConfigs} from "./trpc-dynamic-routes/utils/ZodBuilders";
-import {ISchemaConfig} from "../share/types/ISchemaConfig";
 import {verifyJWT} from "./basic-auth/utils/security";
 
 import {AuthorizedUser} from "../share/types/CommonTypes";
 import {NODE_CACHE} from "./CacheManager";
 import {UserWithScope} from "./basic-auth/utils/getUserAndScopes";
+import {DynamicTableCtx} from "./trpc-dynamic-routes/utils/dynamicTableProcedure";
+import {ISchemaConfig} from "../share/types/ISchemaConfig";
+import {ZodTypeAny} from "zod";
+import {getBaseZodFromFieldConfigs} from "./trpc-dynamic-routes/utils/ZodBuilders";
 
 export const createContext = ({
                                   req,
@@ -21,14 +22,14 @@ export const createContext = ({
     return {user, req, auth};
 }; // no context
 
-type Context = inferAsyncReturnType<typeof createContext> & {
+export type TRPCContext = inferAsyncReturnType<typeof createContext> & {
     SchemaConfig?: ISchemaConfig<any>;
     ZodInput?: ZodTypeAny;
     ZodOutput?: ZodTypeAny;
     ZodBase?: ReturnType<typeof getBaseZodFromFieldConfigs>;
 };
 
-const t = initTRPC.context<Context>().create({
+const t = initTRPC.context<TRPCContext>().create({
     transformer: superjson,
 });
 

@@ -42,7 +42,7 @@ export function withAutoLog<D extends SCHEMA_TYPE, L extends SCHEMA_TYPE>(
       ...config.dataGenConfig,
       schema: {
         ...config.dataGenConfig.schema,
-        lastModifiedBy: {
+        [LAST_MODIFIED_BY]: {
           type: SCHEMA_TYPE.USER,
           nullable: true,
         },
@@ -51,3 +51,5 @@ export function withAutoLog<D extends SCHEMA_TYPE, L extends SCHEMA_TYPE>(
     },
   } as any;
 }
+
+export const LAST_MODIFIED_BY = "lastModifiedBy"

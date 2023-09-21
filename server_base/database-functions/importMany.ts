@@ -13,24 +13,27 @@ import {zodErrorOutput} from "../zodUtils";
 import {upsertMany, zUpsertOutput} from "./upsertMany";
 
 import {getObjectKeys} from "../../share/CommonFunctions";
+import {TRPCContext} from "../trpc";
 
 export async function importFromExcelFile(
+    ctx: TRPCContext,
     input: any,
     InputSchema: ZodTypeAny,
     Model: mongoose.Model<any>,
     schemaConfig: ISchemaConfig<any>,
 ) {
     const file = getTempFiles(input) as STempFile;
-  const rows = await getListDataFromExcelTable(file.path);
-  return doImport(rows, {
-    InputSchema,
-    Model,
-    schemaConfig,
-    initData: input.initData,
-  });
+    const rows = await getListDataFromExcelTable(file.path);
+    return doImport(rows, {
+        InputSchema,
+        Model,
+        schemaConfig,
+        initData: input.initData,
+    }, ctx);
 }
 
 export async function importFromJsonArray(
+    ctx: TRPCContext,
     input: any[],
     InputSchema: ZodTypeAny,
     Model: mongoose.Model<any>,
@@ -50,22 +53,23 @@ export async function importFromJsonArray(
       }, new Object({})),
   );
   console.log(`Import ${records.length} record(s) from JSON Aray...`);
-  return transformThenImport(records, schemaConfig, InputSchema, Model);
+    return transformThenImport(records, schemaConfig, InputSchema, Model, ctx);
 }
 
 export async function importFromText(
+    ctx: TRPCContext,
     input: any,
     InputSchema: ZodTypeAny,
     Model: mongoose.Model<any>,
     schemaConfig: ISchemaConfig<any>,
 ) {
-  const rows = await getListDataFromTextTable(input.text);
-  return doImport(rows, {
-    InputSchema,
-    Model,
-    schemaConfig,
-    initData: input.initData,
-  });
+    const rows = await getListDataFromTextTable(input.text);
+    return doImport(rows, {
+        InputSchema,
+        Model,
+        schemaConfig,
+        initData: input.initData,
+    }, ctx);
 }
 
 export const zImportOutput = zUpsertOutput.omit({ errors: true }).extend({
@@ -85,6 +89,7 @@ export async function doImport(
       schemaConfig: ISchemaConfig<any>;
       initData?: any;
     },
+    ctx: TRPCContext
 ) {
   const records = getTypedDataFromListData(
       rows,
@@ -97,6 +102,7 @@ export async function doImport(
       config.schemaConfig,
       config.InputSchema,
       config.Model,
+      ctx
   );
 }
 
@@ -105,6 +111,7 @@ async function transformThenImport(
     schemaConfig: ISchemaConfig<any>,
     zodInputSchema: ZodTypeAny,
     Model: mongoose.Model<any>,
+    ctx: TRPCContext
 ): Promise<z.infer<typeof zImportOutput>> {
   if (!records.length) {
     return {
@@ -121,14 +128,14 @@ async function transformThenImport(
   );
   console.log("Try to upsert these records:", data.verifiedRecords);
   console.log("Errors:", data.errorRecords);
-  const upsertResult = await upsertMany(
-      {
-        key: schemaConfig.uniqueKeys,
-        data: data.verifiedRecords,
-      },
-      Model,
-      true,
-  );
+    const upsertResult = await upsertMany(ctx,
+        {
+            key: schemaConfig.uniqueKeys,
+            data: data.verifiedRecords,
+        },
+        Model,
+        true,
+    );
 
   console.log("Upsert result", upsertResult);
 

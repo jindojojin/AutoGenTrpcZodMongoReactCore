@@ -3,6 +3,8 @@ import _ from "lodash";
 import {BulkWriteResult} from "mongodb";
 import {zObjectId} from "../zodUtils";
 import mongoose from "mongoose";
+import {TRPCContext} from "../trpc";
+import {LAST_MODIFIED_BY} from "../auto-logs/AutoLogSchema";
 
 export const zUpsertOutput = z.object({
     insertedIds: zObjectId().array(),
@@ -24,6 +26,7 @@ export const zUpsertOutput = z.object({
  * @param strictFilter nếu key là 1 mảng, sử dụng and thay vì or (default)
  */
 export async function upsertMany(
+    ctx: TRPCContext,
     input: {
         key: any;
         data: any[];
@@ -36,7 +39,10 @@ export async function upsertMany(
         console.log("Upsert by keys", keys);
         const bulkWriteResult = await Model.bulkWrite(
             input.data
-            .map((v) => _.omitBy(v, _.isUndefined))
+            .map((v) => ({
+                ..._.omitBy(v, _.isUndefined),
+                [LAST_MODIFIED_BY]: ctx.auth?.userProfile._id
+            }))
             .map((value: any) =>
                 keys.length
                     ? {
