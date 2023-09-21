@@ -5,8 +5,7 @@ import {verifyJWT} from "./basic-auth/utils/security";
 
 import {AuthorizedUser} from "../share/types/CommonTypes";
 import {NODE_CACHE} from "./CacheManager";
-import {UserWithScope} from "./basic-auth/utils/getUserAndScopes";
-import {DynamicTableCtx} from "./trpc-dynamic-routes/utils/dynamicTableProcedure";
+import {getUserAndScopes, UserWithScope} from "./basic-auth/utils/getUserAndScopes";
 import {ISchemaConfig} from "../share/types/ISchemaConfig";
 import {ZodTypeAny} from "zod";
 import {getBaseZodFromFieldConfigs} from "./trpc-dynamic-routes/utils/ZodBuilders";
@@ -36,6 +35,14 @@ const t = initTRPC.context<TRPCContext>().create({
 export const middleware = t.middleware;
 export const router = t.router;
 export const publicProcedure = t.procedure;
+export const protectedProcedure = publicProcedure.use(async ({ctx, next}) => {
+    if (!ctx.user) throw new Error("Please login!")
+    let auth = ctx.auth
+    if (!auth)
+        auth = await getUserAndScopes(ctx.user.loginID)
+    NODE_CACHE.set(ctx.user.loginID, auth)
+    return next({ctx: {...ctx, auth}})
+})
 export const privateProcedure = t.procedure.use(
     t.middleware(({ctx, next}) => {
         const token = ctx.req.ip;

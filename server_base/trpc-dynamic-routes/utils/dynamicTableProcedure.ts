@@ -1,16 +1,15 @@
-import mongoose, { Model, Schema } from "mongoose";
+import mongoose, {Model, Schema} from "mongoose";
 import _ from "lodash";
-import { getBaseZodFromFieldConfigs, getBasicRouteZodIO } from "./ZodBuilders";
-import { getSchemaFromFieldConfigs } from "./SchemaBuilder";
-import { ProcedureBuilder } from "@trpc/server";
-import { z } from "zod";
-import { zObjectId } from "../../zodUtils";
-import { ISchemaConfig } from "../../../share/types/ISchemaConfig";
-import { getSchemaConfigFromFieldConfigs } from "../../../share/SchemaUtils";
-import { ISchemaDefinition } from "../../../share/types/ISchemaDefinition";
+import {getBaseZodFromFieldConfigs, getBasicRouteZodIO} from "./ZodBuilders";
+import {getSchemaFromFieldConfigs} from "./SchemaBuilder";
+import {z} from "zod";
+import {zObjectId} from "../../zodUtils";
+import {ISchemaConfig} from "../../../share/types/ISchemaConfig";
+import {getSchemaConfigFromFieldConfigs} from "../../../share/SchemaUtils";
+import {ISchemaDefinition} from "../../../share/types/ISchemaDefinition";
 
-import { DYNAMIC_CATEGORY_ID } from "../../../share/constants/database_fields";
-import {publicProcedure, TRPCContext} from "../../trpc";
+import {DYNAMIC_CATEGORY_ID} from "../../../share/constants/database_fields";
+import {protectedProcedure, publicProcedure, TRPCContext} from "../../trpc";
 
 export type DynamicTableCtx = {
   ZodBase: ReturnType<typeof getBaseZodFromFieldConfigs>;
@@ -47,7 +46,6 @@ export async function getZodAndSchemaByCategory(
       ...fixedFields,
       ...(_.keyBy(listFields, "_id") as any),
     };
-    console.log("FieldConfigs", fieldConfigs);
     const ZodBase = getBaseZodFromFieldConfigs(fieldConfigs);
     const result = {
       ZodBase,
@@ -63,6 +61,7 @@ export async function getZodAndSchemaByCategory(
   }
 }
 
+publicProcedure
 /**
  *
  * @param procedure
@@ -72,7 +71,7 @@ export async function getZodAndSchemaByCategory(
  * @param categoryField Tên trường chỉ định _id của category, yêu cầu giống nhau ở DataModel và PropertyModel
  */
 export interface DynamicTableProcedureParams {
-  procedure: typeof publicProcedure;
+  procedure: typeof protectedProcedure;
   MongoDataSchema: Schema;
   PropertyModel: Model<any>;
   CategoryModel: Model<any>;

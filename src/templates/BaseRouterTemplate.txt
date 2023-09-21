@@ -1,7 +1,7 @@
 /**
  * This file is auto generated _ do not fix manually
  */
-import { publicProcedure, router } from "../{{RelativePath}}trpc";
+import { protectedProcedure, router } from "../{{RelativePath}}trpc";
 import { ZOD_APIS, ZOD_INPUTS } from "../{{RelativePath}}zods";
 import { DB_FUNC } from "../{{RelativePath}}database-functions";
 import {SCHEMA_TYPE} from "../../{{RelativePath}}schemas/SchemaTypes";

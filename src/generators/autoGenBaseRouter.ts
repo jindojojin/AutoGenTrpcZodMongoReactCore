@@ -86,7 +86,7 @@ function getRouterCode(functionName: string, dynamic?: boolean) {
       const result = await DB_FUNC.${functionName}(${DynamicRouterParamsCodeMap[functionName as keyof typeof DynamicRouterParamsCodeMap]});
       return ctx.ZodOutput?.parseAsync(result);
     })`;
-    return `${functionName}: publicProcedure
+    return `${functionName}: protectedProcedure
       .input(ZOD_APIS[{{DataType}}].${zod_name})
       .${RouterMethodMap[functionName as keyof typeof RouterMethodMap]}(({ ctx, input }) => DB_FUNC.${functionName}(${RouterParamsCodeMap[functionName as keyof typeof RouterMethodMap]}))`;
 }
