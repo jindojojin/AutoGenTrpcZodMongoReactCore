@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import {TRPCContext} from "../trpc";
-import {LAST_MODIFIED_BY} from "../auto-logs/AutoLogSchema";
+
+import {LAST_MODIFIED_BY} from "../../share/constants/database_fields";
 
 export async function updateMany(ctx: TRPCContext, input: any, Model: mongoose.Model<any>) {
     const result = await Model.bulkWrite(

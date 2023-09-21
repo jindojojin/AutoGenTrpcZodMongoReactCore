@@ -4,7 +4,8 @@ import {BulkWriteResult} from "mongodb";
 import {zObjectId} from "../zodUtils";
 import mongoose from "mongoose";
 import {TRPCContext} from "../trpc";
-import {LAST_MODIFIED_BY} from "../auto-logs/AutoLogSchema";
+
+import {LAST_MODIFIED_BY} from "../../share/constants/database_fields";
 
 export const zUpsertOutput = z.object({
     insertedIds: zObjectId().array(),

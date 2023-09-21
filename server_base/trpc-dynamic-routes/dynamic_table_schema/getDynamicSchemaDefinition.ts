@@ -44,7 +44,6 @@ export function getDynamicSchemaGenConfigs<
   const dataSchema = getSchemaConfig(config.data);
   const cateSchema = getSchemaConfig(config.category);
   const propSchema = getSchemaConfig(config.property);
-  console.log(propSchema)
   return {
     ...withAutoLog({
       logSchema: config.dataLog,

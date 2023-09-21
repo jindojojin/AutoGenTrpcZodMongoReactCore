@@ -1,25 +1,22 @@
 import _ from "lodash";
 import mongoose from "mongoose";
-import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
-import {getSingleType} from "../../share/types/DataTypes";
-import {ISchemaConfig} from "../../share/types/ISchemaConfig";
-import {$joinTable, $objectIdToString, $stringToObjectId} from "./Utils";
+import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
+import { getSingleType } from "../../share/types/DataTypes";
+import { ISchemaConfig } from "../../share/types/ISchemaConfig";
+import { $manyToOneJoin, $objectIdToString, $stringToObjectId } from "./Utils";
 
-export type CustomAggregate = (stages: [
-    matchStage: any,
-    selectStage: any,
-    optionStage: any]
+export type CustomAggregate = (
+    stages: [matchStage: any, selectStage: any, optionStage: any],
 ) => any[];
 
 function getPopulate(config: any, schemaConfig?: ISchemaConfig<any>) {
     if (!Array.isArray(config) || !schemaConfig) return [];
     return config.map((c: { path: string }) => {
-        const relType = getSingleType<SCHEMA_TYPE>(
-            schemaConfig.fieldConfigs[c.path as keyof any].type,
-        );
-        return $joinTable(c.path, relType, c.path) //TODO --> sẽ sai với kiểu 1-n hoặc n-1 --> need to recheck
-    })
-
+        const refType = schemaConfig.fieldConfigs[c.path as keyof any].type;
+        if (Array.isArray(refType)) return null; // khong ho tro populate 1 mang objectID
+        const relType = getSingleType<SCHEMA_TYPE>(refType);
+        return $manyToOneJoin(c.path, relType);
+    });
 }
 
 function stringifyRefKeys(schemaConfig?: ISchemaConfig<any>) {

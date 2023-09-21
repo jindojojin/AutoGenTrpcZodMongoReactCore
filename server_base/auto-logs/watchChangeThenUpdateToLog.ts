@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import {LAST_MODIFIED_BY} from "./AutoLogSchema";
+
+import {LAST_MODIFIED_BY} from "../../share/constants/database_fields";
 
 export function watchChangeThenUpdateToLog(
     dataModel: mongoose.Model<any>,

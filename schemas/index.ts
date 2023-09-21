@@ -113,5 +113,3 @@ export const GenList: Record<SCHEMA_TYPE, GenConfig> = {
     [SCHEMA_TYPE.USER]: {schema: UserSchema, folder: "users", useSoftDelete: true},
     [SCHEMA_TYPE.USER_SCOPE]: {schema: SystemUserScopeSchema, folder: "users"},
 };
-
-console.log(getObjectKeys(GenList))
