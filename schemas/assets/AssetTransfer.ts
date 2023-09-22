@@ -12,6 +12,7 @@ export const AssetTransferSchema: ISchemaDefinition = {
     transferType: {
         type: BASIC_TYPE.ENUM,
         enum: ["Return to the storage", "Change PIC", "Assign to PIC"],
+        label: "Request",
         required: true,
     },
     asset: {
@@ -20,10 +21,12 @@ export const AssetTransferSchema: ISchemaDefinition = {
     },
     fromPIC: {
         type: SCHEMA_TYPE.USER,
+        label: "From",
         nullable: true,
     },
     toPIC: {
         type: SCHEMA_TYPE.USER,
+        label: "To",
         nullable: true
     },
     quantity: {
@@ -39,5 +42,8 @@ export const AssetTransferSchema: ISchemaDefinition = {
     status: {
         type: BASIC_TYPE.ENUM,
         enum: ["REQUESTED", "ACCEPTED", "REJECTED"]
+    },
+    note: {
+        type: BASIC_TYPE.TEXT,
     }
 }
