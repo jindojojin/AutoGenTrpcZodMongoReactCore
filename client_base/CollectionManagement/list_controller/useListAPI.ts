@@ -7,6 +7,7 @@ import {
     useExportTemplateToExcel,
     useExportToExcel,
 } from "../api_hooks/useExportMany";
+import { useListUsagesByUserScopes } from "../utils/useFormUsagesByUserScopes";
 
 function useListAPI<T>(configs: ListConfigProps<T>) {
     const onImportFromText = useImportFromText(
@@ -29,17 +30,18 @@ function useListAPI<T>(configs: ListConfigProps<T>) {
         configs.callbacks?.[LIST_ACTION.EXPORT_EXCEL_TEMPLATE],
     );
 
+    const usages =
+        configs.usages ?? useListUsagesByUserScopes(configs.api.schema);
+
     return {
-        onImportFromText: configs.usages?.ImportFromText
-            ? onImportFromText
-            : undefined,
-        onImportFromExcelFile: configs.usages?.ImportFromExcel
+        onImportFromText: usages?.ImportFromText ? onImportFromText : undefined,
+        onImportFromExcelFile: usages?.ImportFromExcel
             ? onImportFromExcelFile
             : undefined,
-        onExportToExcelData: configs.usages?.ExportExcelData
+        onExportToExcelData: usages?.ExportExcelData
             ? onExportToExcelData
             : undefined,
-        onExportToExcelTemplate: configs.usages?.ExportExcelTemplate
+        onExportToExcelTemplate: usages?.ExportExcelTemplate
             ? onExportToExcelTemplate
             : undefined,
     };

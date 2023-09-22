@@ -22,7 +22,7 @@ import {UserSchema} from "./users/User";
 import {ISchemaDefinition} from "../share/types/ISchemaDefinition";
 import {DB_FUNC} from "../server_base/database-functions";
 import {AssetCategorySchema} from "./assets/AssetCategory";
-import {getObjectKeys} from "../share/CommonFunctions";
+import {AssetTransferSchema} from "./assets/AssetTransfer";
 
 export type GenConfig = {
     schema: ISchemaDefinition;
@@ -78,6 +78,14 @@ export const GenList: Record<SCHEMA_TYPE, GenConfig> = {
         dataSchema: SCHEMA_TYPE.ASSET_STORAGE,
         dataGenConfig: {
             schema: AssetStorageSchema, folder: "assets"
+        }
+    }),
+    ...withAutoLog({
+        logSchema: SCHEMA_TYPE.ASSET_TRANSFER_LOG,
+        dataSchema: SCHEMA_TYPE.ASSET_TRANSFER,
+        dataGenConfig: {
+            schema: AssetTransferSchema, folder: "assets",
+            useSoftDelete: true
         }
     }),
     [SCHEMA_TYPE.TASK]: {schema: TaskSchema, folder: "tasks"},

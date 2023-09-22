@@ -1,10 +1,11 @@
 import {ADMIN_SCOPE, getRawScopes} from "../../../share/ScopeUtils";
-import {UserModel, UserScopeModel} from "../../mongoose/DatabaseModels";
+import {DATABASE_MODELS} from "../../mongoose/DatabaseModels";
 import _ from "lodash";
 import {AUTH_USER_ID_FIELD} from "../../../share/constants/database_fields";
 import {Scope, User} from "../../../share/types/DatabaseTypes";
 
 import {getObjectKeys} from "../../../share/CommonFunctions";
+import {SCHEMA_TYPE} from "../../../schemas/SchemaTypes";
 
 function getCombineUserGroupsScopes(userScopes: (any & Scope)[]) {
   return _.chain(userScopes)
@@ -18,13 +19,13 @@ function getCombineUserGroupsScopes(userScopes: (any & Scope)[]) {
 //TODO: Memo user scope at server to recheck scope in token
 
 export async function getUserAndScopes(loginID: string) {
-  const userProfile = (await UserModel.findOne({
+  const userProfile = (await DATABASE_MODELS[SCHEMA_TYPE.USER].findOne({
     [AUTH_USER_ID_FIELD]: loginID,
   }).lean()) as User;
 
   if (!userProfile) throw new Error("User's loginID not exist!");
   else {
-    const userScopeList = await UserScopeModel.find({}, undefined, {
+    const userScopeList = await DATABASE_MODELS[SCHEMA_TYPE.USER_SCOPE].find({}, undefined, {
       flattenObjectIds: true,
       flattenMaps: true,
       populate: "scopes",

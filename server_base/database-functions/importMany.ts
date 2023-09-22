@@ -1,6 +1,4 @@
-import mongoose from "mongoose";
-import {z, ZodTypeAny} from "zod";
-import {ISchemaConfig} from "../../share/types/ISchemaConfig";
+import {z} from "zod";
 import {getTempFiles, STempFile} from "../file-storage/FileManager";
 import {getSchemaDataFromArray} from "../parsers/DynamicParser";
 import {
@@ -14,62 +12,50 @@ import {upsertMany, zUpsertOutput} from "./upsertMany";
 
 import {getObjectKeys} from "../../share/CommonFunctions";
 import {TRPCContext} from "../trpc";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import {SCHEMAS_CONFIG} from "../../share/schema_configs";
+import {ZOD_INPUTS} from "../zods";
 
 export async function importFromExcelFile(
     ctx: TRPCContext,
-    input: any,
-    InputSchema: ZodTypeAny,
-    Model: mongoose.Model<any>,
-    schemaConfig: ISchemaConfig<any>,
+    schema: SCHEMA_TYPE,
+    input: any
 ) {
     const file = getTempFiles(input) as STempFile;
     const rows = await getListDataFromExcelTable(file.path);
-    return doImport(rows, {
-        InputSchema,
-        Model,
-        schemaConfig,
-        initData: input.initData,
-    }, ctx);
+    return doImport(ctx, schema, rows, input.initData);
 }
 
 export async function importFromJsonArray(
     ctx: TRPCContext,
-    input: any[],
-    InputSchema: ZodTypeAny,
-    Model: mongoose.Model<any>,
-    schemaConfig: ISchemaConfig<any>,
+    schema: SCHEMA_TYPE,
+    input: any[]
 ) {
-  const records = input.map((data) =>
-      getObjectKeys(schemaConfig.fieldConfigs).reduce((prev, field) => {
-        return {
-          ...prev,
-          [field]: getTypedData(
-              data[field] ??
-              data[schemaConfig.fieldConfigs[field].label as keyof typeof data],
-              schemaConfig.fieldConfigs[field].type,
-              schemaConfig.fieldConfigs[field].enum,
-          ),
-        };
-      }, new Object({})),
-  );
-  console.log(`Import ${records.length} record(s) from JSON Aray...`);
-    return transformThenImport(records, schemaConfig, InputSchema, Model, ctx);
+    const schemaConfig = ctx.SchemaConfig ?? SCHEMAS_CONFIG[schema]
+    const records = input.map((data) =>
+        getObjectKeys(schemaConfig.fieldConfigs).reduce((prev, field) => {
+            return {
+                ...prev,
+                [field]: getTypedData(
+                    data[field] ??
+                    data[schemaConfig.fieldConfigs[field].label as keyof typeof data],
+                    schemaConfig.fieldConfigs[field].type,
+                    schemaConfig.fieldConfigs[field].enum,
+                ),
+            };
+        }, new Object({})),
+    );
+    console.log(`Import ${records.length} record(s) from JSON Aray...`);
+    return transformThenImport(ctx, schema, records);
 }
 
 export async function importFromText(
     ctx: TRPCContext,
+    schema: SCHEMA_TYPE,
     input: any,
-    InputSchema: ZodTypeAny,
-    Model: mongoose.Model<any>,
-    schemaConfig: ISchemaConfig<any>,
 ) {
     const rows = await getListDataFromTextTable(input.text);
-    return doImport(rows, {
-        InputSchema,
-        Model,
-        schemaConfig,
-        initData: input.initData,
-    }, ctx);
+    return doImport(ctx, schema, rows, input.initData);
 }
 
 export const zImportOutput = zUpsertOutput.omit({ errors: true }).extend({
@@ -82,71 +68,63 @@ export const zImportOutput = zUpsertOutput.omit({ errors: true }).extend({
   .optional(),
 });
 export async function doImport(
+    ctx: TRPCContext,
+    schema: SCHEMA_TYPE,
     rows: any[],
-    config: {
-      InputSchema: ZodTypeAny;
-      Model: mongoose.Model<any>;
-      schemaConfig: ISchemaConfig<any>;
-      initData?: any;
-    },
-    ctx: TRPCContext
+    initData?: any
 ) {
   const records = getTypedDataFromListData(
       rows,
-      config.schemaConfig,
-      config.initData,
+      ctx.SchemaConfig ?? SCHEMAS_CONFIG[schema],
+      initData
   );
   console.log("Records:", records);
   return transformThenImport(
-      records,
-      config.schemaConfig,
-      config.InputSchema,
-      config.Model,
-      ctx
+      ctx,
+      schema,
+      records
   );
 }
 
 async function transformThenImport(
-    records: any[],
-    schemaConfig: ISchemaConfig<any>,
-    zodInputSchema: ZodTypeAny,
-    Model: mongoose.Model<any>,
-    ctx: TRPCContext
+    ctx: TRPCContext,
+    schema: SCHEMA_TYPE,
+    records: any[]
 ): Promise<z.infer<typeof zImportOutput>> {
-  if (!records.length) {
-    return {
-      errors: [],
-      updatedCount: 0,
-      insertedCount: 0,
-      insertedIds: [],
-    };
-  }
-  const data = await getSchemaDataFromArray(
-      records,
-      schemaConfig,
-      zodInputSchema,
-  );
-  console.log("Try to upsert these records:", data.verifiedRecords);
-  console.log("Errors:", data.errorRecords);
-    const upsertResult = await upsertMany(ctx,
+    if (!records.length) {
+        return {
+            errors: [],
+            updatedCount: 0,
+            insertedCount: 0,
+            insertedIds: [],
+        };
+    }
+    const schemaConfig = ctx.SchemaConfig ?? SCHEMAS_CONFIG[schema];
+    const zodInputSchema = ctx.ZodInput ?? ZOD_INPUTS[schema as keyof typeof ZOD_INPUTS]
+    const data = await getSchemaDataFromArray(
+        records,
+        schemaConfig,
+        zodInputSchema,
+    );
+    console.log("Try to upsert these records:", data.verifiedRecords);
+    console.log("Errors:", data.errorRecords);
+    const upsertResult = await upsertMany(ctx, schema,
         {
             key: schemaConfig.uniqueKeys,
             data: data.verifiedRecords,
         },
-        Model,
         true,
     );
+    console.log("Upsert result", upsertResult);
 
-  console.log("Upsert result", upsertResult);
-
-  return {
-    ...upsertResult,
-    errors: [
-      ...data.errorRecords,
-      ...(upsertResult.errors ?? []).map((er) => ({
-        idx: data.verifiedIndexs[er.idx], //TODO : tính lại idx
-        errors: [{ path: undefined, messages: [er.message] }],
-      })),
-    ],
-  };
+    return {
+        ...upsertResult,
+        errors: [
+            ...data.errorRecords,
+            ...(upsertResult.errors ?? []).map((er) => ({
+                idx: data.verifiedIndexs[er.idx], //TODO : tính lại idx
+                errors: [{path: undefined, messages: [er.message]}],
+            })),
+        ],
+    };
 }

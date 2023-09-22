@@ -5,7 +5,8 @@ import {SCHEMA_TYPE} from "../SchemaTypes";
 export const AssetStorageSchema: ISchemaDefinition = {
     asset: {
         type: SCHEMA_TYPE.ASSET,
-        required: true
+        required: true,
+        importKey: true
     },
     quantity: {
         type: BASIC_TYPE.NUMBER,

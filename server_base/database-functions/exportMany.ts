@@ -1,20 +1,22 @@
 import {findMany} from "./findMany";
-import mongoose from "mongoose";
 import {getTableFromListData} from "../parsers/TableParsers";
-import {ISchemaConfig} from "../../share/types/ISchemaConfig";
 import ExcelJS from "exceljs";
 import {addTempFiles, initTempFileSlot} from "../file-storage/FileManager";
 import dayjs from "dayjs";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import {TRPCContext} from "../trpc";
+import {DATABASE_MODELS} from "../mongoose/DatabaseModels";
+import {SCHEMAS_CONFIG} from "../../share/schema_configs";
 
-export async function exportToExcelFile(
-  input: any,
-  Model: mongoose.Model<any>,
-  schemaConfig: ISchemaConfig<any>,
+export async function exportToExcelFile(ctx: TRPCContext, schema: SCHEMA_TYPE,
+                                        input: any
 ) {
   let records: any[] = [];
+  const Model = DATABASE_MODELS[schema]
+  const schemaConfig = ctx.SchemaConfig ?? SCHEMAS_CONFIG[schema]
   if (!input.template) {
     // else, export template only
-    const data = await findMany(input.query, Model,schemaConfig);
+    const data = await findMany(ctx,schema,input.query);
     records = data.records;
   }
   const table = getTableFromListData(records, schemaConfig);

@@ -2,10 +2,11 @@ import {z} from "zod";
 import _ from "lodash";
 import {BulkWriteResult} from "mongodb";
 import {zObjectId} from "../zodUtils";
-import mongoose from "mongoose";
 import {TRPCContext} from "../trpc";
 
 import {LAST_MODIFIED_BY} from "../../share/constants/database_fields";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import {DATABASE_MODELS} from "../mongoose/DatabaseModels";
 
 export const zUpsertOutput = z.object({
     insertedIds: zObjectId().array(),
@@ -22,23 +23,24 @@ export const zUpsertOutput = z.object({
 
 /**
  *
+ * @param ctx
  * @param input
- * @param Model
+ * @param schema
  * @param strictFilter nếu key là 1 mảng, sử dụng and thay vì or (default)
  */
 export async function upsertMany(
     ctx: TRPCContext,
+    schema: SCHEMA_TYPE,
     input: {
         key: any;
         data: any[];
     },
-    Model: mongoose.Model<any>,
     strictFilter: boolean = false,
 ): Promise<z.infer<typeof zUpsertOutput>> {
     try {
         const keys = Array.isArray(input.key) ? input.key : _.compact([input.key]);
         console.log("Upsert by keys", keys);
-        const bulkWriteResult = await Model.bulkWrite(
+        const bulkWriteResult = await DATABASE_MODELS[schema].bulkWrite(
             input.data
             .map((v) => ({
                 ..._.omitBy(v, _.isUndefined),

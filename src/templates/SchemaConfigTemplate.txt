@@ -8,6 +8,7 @@ export const {{ModuleName}}SchemaConfig: ISchemaConfig<{{ModuleName}}> = {
     name:"{{Module Name}}",
     fileTypeKeys:{{fileTypeKeys}},
     exportKeys:{{exportKeys}},
+    importKeys:{{importKeys}},
     uniqueKeys:{{uniqueKeys}},
     searchKeys:{{searchKeys}},
     relationKeys:{{relationKeys}},
@@ -15,5 +16,6 @@ export const {{ModuleName}}SchemaConfig: ISchemaConfig<{{ModuleName}}> = {
         _id:{type: BASIC_TYPE.TEXT,label: "ID",hidden:true},
         {{keyConfigs}}
     },
-    dynamic:{{dynamicConfig}}
+    dynamic:{{dynamicConfig}},
+    softDelete:{{softDelete}}
 }

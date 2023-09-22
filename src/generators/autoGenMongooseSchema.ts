@@ -16,9 +16,9 @@ export function autoGenMongooseSchema(outDir:string,GenList: Record<SCHEMA_TYPE,
     const ModuleName = getSchemaName(key).SchemaName;
     importTypes.push(ModuleName);
     exportLines.push(
-      `export const ${ModuleName}MongooseSchema = getSchemaFromFieldConfigs\<${ModuleName}\>(GenList[${getTypeEnumText(
+      `export const ${ModuleName}MongooseSchema = getSchemaFromFieldConfigs\<${ModuleName}\>({...GenList[${getTypeEnumText(
         key,
-      )}].schema as any);`,
+      )}].schema, ...DefaultSchema} as any);`,
     );
     exportModelMappingLines.push(
       `[${getTypeEnumText(key)}] : ${ModuleName}MongooseSchema,`,

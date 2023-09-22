@@ -1,10 +1,12 @@
-import mongoose from "mongoose";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import {DATABASE_MODELS} from "../mongoose/DatabaseModels";
+import {TRPCContext} from "../trpc";
 
-export function findOne(input: any, Model: mongoose.Model<any>) {
-  console.log(`doFindOne with input ${input}`);
-  return Model.findOne(
-    input.where ?? {},
-    input.select,
-    input.options,
-  ).lean() as any;
+export function findOne(ctx: TRPCContext, schema: SCHEMA_TYPE, input: any) {
+    console.log(`doFindOne with input ${input}`);
+    return DATABASE_MODELS[schema].findOne(
+        input.where ?? {},
+        input.select,
+        input.options,
+    ).lean() as any;
 }

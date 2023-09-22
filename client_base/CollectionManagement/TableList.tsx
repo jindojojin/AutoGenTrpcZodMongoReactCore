@@ -1,5 +1,7 @@
 import React, { useCallback, useMemo } from "react";
-import { ControllableListViewProps } from "./list_controller/withListController";
+import withListController, {
+    ControllableListViewProps,
+} from "./list_controller/withListController";
 import useRowActions, { RowActionConfig } from "../Table/hooks/useRowActions";
 import {
     CommonTableConfig,
@@ -35,13 +37,13 @@ export type TableListProps<T> = ControllableListViewProps<T> &
 };
 
 function TableList<T extends FieldValues>(props: TableListProps<T>) {
-    const {onChange} = useFilterAndSorterConfig(
+    const { onChange } = useFilterAndSorterConfig(
         props.columns,
         props.listController?.setSorterConfig,
-        props.listController?.setFilterConfig
+        props.listController?.setFilterConfig,
     );
 
-    const {RowActionConfig, ContextMenuComponent, ActionsColumn} =
+    const { RowActionConfig, ContextMenuComponent, ActionsColumn } =
         useRowActions<T>({
             ...(props.rowAdditionActions || {}),
             contextMenuItems: props.rowAdditionActions?.contextMenuItems || [],
@@ -97,7 +99,7 @@ function TableList<T extends FieldValues>(props: TableListProps<T>) {
     });
     return (
         <div>
-            <ContextMenuComponent/>
+            <ContextMenuComponent />
             <Table
                 {...props}
                 rowKey={"_id"}
@@ -107,7 +109,7 @@ function TableList<T extends FieldValues>(props: TableListProps<T>) {
                 dataSource={props.listController?.data}
                 {...RowActionConfig}
                 {...TableConfig}
-                scroll={{x: true}}
+                scroll={{ x: true }}
             />
         </div>
     );
@@ -117,7 +119,7 @@ function TableList<T extends FieldValues>(props: TableListProps<T>) {
 function useFilterAndSorterConfig<T>(
     columns: IColumnType<T>[],
     setSorterConfig: any,
-    setFilterConfig: any
+    setFilterConfig: any,
 ): Partial<TableProps<T>> {
     const ColumnType = useMemo(() => {
         return _.reduce(
@@ -126,7 +128,7 @@ function useFilterAndSorterConfig<T>(
                 ...result,
                 [String(value.dataIndex)]: value.type,
             }),
-            {} as Record<string, DataType>
+            {} as Record<string, DataType>,
         );
     }, [columns]);
     const onChange = useCallback(
@@ -134,7 +136,7 @@ function useFilterAndSorterConfig<T>(
             p: TablePaginationConfig,
             f: Record<string, FilterValue | null>,
             s: SorterResult<T> | SorterResult<T>[],
-            e: TableCurrentDataSource<T>
+            e: TableCurrentDataSource<T>,
         ) => {
             console.log("Sorter Config", s);
             console.log("Filter Config", f);
@@ -148,10 +150,10 @@ function useFilterAndSorterConfig<T>(
                             ...prev,
                             ...getFilterQuery(field, ColumnType[field], f[field]),
                         }),
-                        new Object({})
+                        new Object({}),
                     ),
-                    _.isNil
-                )
+                    _.isNil,
+                ),
             );
 
             setSorterConfig(
@@ -162,13 +164,13 @@ function useFilterAndSorterConfig<T>(
                             ...acc,
                             [value.field as unknown as any]: getSortValue(value.order),
                         }),
-                        {}
+                        {},
                     ),
-                    _.isNil
-                )
+                    _.isNil,
+                ),
             );
         },
-        [setFilterConfig, ColumnType, setSorterConfig]
+        [setFilterConfig, ColumnType, setSorterConfig],
     );
     return {
         onChange,
@@ -187,3 +189,4 @@ function getSortValue(order: any) {
 }
 
 export default TableList;
+export const SchemaTableList = withListController(TableList);

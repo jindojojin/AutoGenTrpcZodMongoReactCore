@@ -2,6 +2,7 @@ import mongoose, {Schema} from "mongoose";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 import {getSchemaFromFieldConfigs} from "../trpc-dynamic-routes/utils/SchemaBuilder";
 import {GenList} from "../../schemas";
+import {DefaultSchema} from "../trpc-dynamic-routes/utils/DefaultSchema";
 import type { {{importTypes}} } from "./DatabaseTypes";
 
 {{exports}}

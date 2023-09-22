@@ -90,18 +90,21 @@ export function genSchemaConfig(outDir: string | string[], name: SCHEMA_TYPE, ge
         searchKeys,
         uniqueKeys,
         relationKeys,
+        importKeys
     } = getSpecialKeys(genConfig.schema);
     const keyConfigs = getKeyConfigs(genConfig.schema, name)
     const fileContent = template
     .replaceAll("{{ModuleName}}", ModuleName)
     .replaceAll("{{Module Name}}", name)
     .replaceAll("{{keyConfigs}}", keyConfigs)
+    .replaceAll("{{softDelete}}", genConfig.useSoftDelete ? "true" : "false")
     .replaceAll("{{SchemaFolder}}", getSchemaFolder(genConfig.folder))
     .replaceAll("{{RelativePath}}", getRelativePath(genConfig.folder))
     .replaceAll("{{dynamicConfig}}", getDynamicConfig(genConfig))
     .replaceAll("{{fileTypeKeys}}", `[${fileTypeKeys.map((e) => `"${String(e)}"`)}]`)
     .replaceAll("{{uniqueKeys}}", `[${uniqueKeys.map((e) => `"${String(e)}"`)}]`)
     .replaceAll("{{exportKeys}}", `[${exportKeys.map((e) => `"${String(e)}"`)}]`)
+    .replaceAll("{{importKeys}}", `[${importKeys.map((e) => `"${String(e)}"`)}]`)
     .replaceAll("{{relationKeys}}", `[${relationKeys.map((e) => `"${String(e)}"`)}]`)
         .replaceAll("{{searchKeys}}", `[${searchKeys.map((e) => `"${String(e)}"`)}]`);
     filePaths.forEach(filePath =>

@@ -1,9 +1,11 @@
 import _ from "lodash";
-import mongoose from "mongoose";
-import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
-import { getSingleType } from "../../share/types/DataTypes";
-import { ISchemaConfig } from "../../share/types/ISchemaConfig";
-import { $manyToOneJoin, $objectIdToString, $stringToObjectId } from "./Utils";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import {getSingleType} from "../../share/types/DataTypes";
+import {ISchemaConfig} from "../../share/types/ISchemaConfig";
+import {$manyToOneJoin, $objectIdToString, $stringToObjectId} from "./Utils";
+import {TRPCContext} from "../trpc";
+import {SCHEMAS_CONFIG} from "../../share/schema_configs";
+import {DATABASE_MODELS} from "../mongoose/DatabaseModels";
 
 export type CustomAggregate = (
     stages: [matchStage: any, selectStage: any, optionStage: any],
@@ -19,40 +21,14 @@ function getPopulate(config: any, schemaConfig?: ISchemaConfig<any>) {
     });
 }
 
-function stringifyRefKeys(schemaConfig?: ISchemaConfig<any>) {
-    return schemaConfig && schemaConfig.relationKeys.length
-        ? {
-            $set: schemaConfig.relationKeys.reduce(
-                (obj, k) => ({
-                    ...obj,
-                    [k]: { $toString: `$${String(k)}` },
-                }),
-                {},
-            ),
-        }
-        : null;
-}
-
-function parseRefKeys(schemaConfig?: ISchemaConfig<any>) {
-    return schemaConfig && schemaConfig.relationKeys.length
-        ? {
-            $set: schemaConfig.relationKeys.reduce(
-                (obj, k) => ({
-                    ...obj,
-                    [k]: { $toObjectId: `$${String(k)}` },
-                }),
-                {},
-            ),
-        }
-        : null;
-}
-
 export async function findMany(
+    ctx:TRPCContext,
+    schema: SCHEMA_TYPE,
     input: any,
-    Model: mongoose.Model<any>,
-    SchemaConfig?: ISchemaConfig<any>,
     advancedQuery?: CustomAggregate,
 ) {
+    const SchemaConfig = ctx.SchemaConfig??SCHEMAS_CONFIG[schema]
+    const Model= DATABASE_MODELS[schema]
     let records: any;
     if (advancedQuery) {
         const matchStage = _.compact([

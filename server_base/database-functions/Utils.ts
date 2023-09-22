@@ -2,6 +2,7 @@ import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 import {SCHEMAS_CONFIG} from "../../share/schema_configs";
 import {saveTempFiles} from "../file-storage/FileManager";
 import {DATABASE_MODELS} from "../mongoose/DatabaseModels";
+import mongoose from "mongoose";
 
 export async function moveTempFileToDB(
     input: any | any[],
@@ -99,4 +100,12 @@ export function $stringToObjectId(paths?: any[]) {
         ),
       }
       : undefined;
+}
+
+export async function findOneOrCreateNew<T>(
+    Model: mongoose.Model<T>,
+    query: any,
+) {
+  const document = await Model.findOne(query).exec();
+  return document ? document : new Model();
 }

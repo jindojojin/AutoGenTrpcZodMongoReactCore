@@ -4,7 +4,6 @@ import {BASIC_TYPE} from "../../share/types/DataTypes";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 
 import {GenConfig} from "../../schemas";
-import {LAST_MODIFIED_BY} from "../../share/constants/database_fields";
 
 interface AutoLogGenConfig<D, T> {
   dataSchema: D;
@@ -41,14 +40,6 @@ export function withAutoLog<D extends SCHEMA_TYPE, L extends SCHEMA_TYPE>(
     },
     [config.dataSchema]: {
       ...config.dataGenConfig,
-      schema: {
-        ...config.dataGenConfig.schema,
-        [LAST_MODIFIED_BY]: {
-          type: SCHEMA_TYPE.USER,
-          nullable: true,
-          hidden: true,
-        },
-      },
       logSchema: config.logSchema,
     },
   } as any;

@@ -4,4 +4,6 @@ export const AUTH_USER_PWD_FIELD = "_user_login_pwd_";
 export const AUTH_USER_SALT_FIELD = "_user_login_salt_";
 export const AUTH_LINK_ID_FIELD = "_auth_link_id_"; // Dùng cho bảng UserInfo link vào.
 export const SystemUserCollectionName = "AuthenSchemas";
-export const LAST_MODIFIED_BY = "_last_modified_by_"
+export const LAST_MODIFIED_BY = "_last_modified_by_";
+export const CREATED_BY = "_created_by_";
+export const DELETED_BY = "_deleted_by_";

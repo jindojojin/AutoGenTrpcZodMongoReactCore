@@ -28,33 +28,28 @@ const RouterMethodMap = {
 };
 
 const RouterParamsCodeMap = {
-    createMany: "ctx, input, DATABASE_MODELS[{{DataType}}]",
-    createOne: "ctx, input, {{DataType}}",
-    deleteMany: "input, DATABASE_MODELS[{{DataType}}]",
-    deleteOne: "input, DATABASE_MODELS[{{DataType}}]",
-    exportToExcelFile:
-        "input,DATABASE_MODELS[{{DataType}}],SCHEMAS_CONFIG[{{DataType}}]",
-    findById: "input, DATABASE_MODELS[{{DataType}}]",
-    findByIds: "input, DATABASE_MODELS[{{DataType}}]",
-    findMany: "input, DATABASE_MODELS[{{DataType}}],SCHEMAS_CONFIG[{{DataType}}]",
-    findOne: "input, DATABASE_MODELS[{{DataType}}]",
-    importFromExcelFile:
-        "ctx, input,ZOD_INPUTS[{{DataType}}],DATABASE_MODELS[{{DataType}}],SCHEMAS_CONFIG[{{DataType}}]",
-    importFromJsonArray:
-        "ctx, input,ZOD_INPUTS[{{DataType}}],DATABASE_MODELS[{{DataType}}],SCHEMAS_CONFIG[{{DataType}}]",
-    importFromText:
-        "ctx, input,ZOD_INPUTS[{{DataType}}],DATABASE_MODELS[{{DataType}}],SCHEMAS_CONFIG[{{DataType}}]",
-    textSearch:
-        "input, DATABASE_MODELS[{{DataType}}], SCHEMAS_CONFIG[{{DataType}}]",
-    updateMany: "ctx, input, DATABASE_MODELS[{{DataType}}]",
+    createMany: "ctx, {{DataType}}, input",
+    createOne: "ctx, {{DataType}}, input",
+    deleteMany: "ctx, {{DataType}}, input",
+    deleteOne: "ctx, {{DataType}}, input",
+    exportToExcelFile: "ctx, {{DataType}}, input",
+    findById: "ctx, {{DataType}}, input",
+    findByIds: "ctx, {{DataType}}, input",
+    findMany: "ctx, {{DataType}}, input",
+    findOne: "ctx, {{DataType}}, input",
+    importFromExcelFile: "ctx, {{DataType}}, input",
+    importFromJsonArray: "ctx, {{DataType}}, input",
+    importFromText: "ctx, {{DataType}}, input",
+    textSearch: "ctx, {{DataType}}, input",
+    updateMany: "ctx, {{DataType}}, input",
     updateOne: "ctx, input,{{DataType}}",
-    upsertMany: "ctx, input, DATABASE_MODELS[{{DataType}}]",
-    upsertOne: "ctx, input, DATABASE_MODELS[{{DataType}}]",
+    upsertMany: "ctx, input,{{DataType}}",
+    upsertOne: "ctx, input,{{DataType}}",
 };
 
 const DynamicRouterParamsCodeMap = {
     createMany: "ctx,input.input, DATABASE_MODELS[{{DataType}}]",
-    createOne: "ctx,input.input, {{DataType}}",
+    createOne: "ctx,input.ctx, {{DataType}}, input",
     deleteMany: "input.input, DATABASE_MODELS[{{DataType}}]",
     deleteOne: "input.input, DATABASE_MODELS[{{DataType}}]",
     exportToExcelFile:
@@ -71,7 +66,7 @@ const DynamicRouterParamsCodeMap = {
         "ctx, input.input,ctx.ZodBase?.input as any,DATABASE_MODELS[{{DataType}}],ctx.SchemaConfig as any",
     textSearch: "input.input,DATABASE_MODELS[{{DataType}}],ctx.SchemaConfig as any",
     updateMany: "ctx, input.input, DATABASE_MODELS[{{DataType}}]",
-    updateOne: "ctx, input.input, {{DataType}}",
+    updateOne: "ctx, input.ctx, {{DataType}}, input",
     upsertMany: "ctx, input.input, DATABASE_MODELS[{{DataType}}]",
     upsertOne: "ctx, input.input, DATABASE_MODELS[{{DataType}}]",
 };
@@ -83,12 +78,12 @@ function getRouterCode(functionName: string, dynamic?: boolean) {
       "${zod_name}",
       "${zod_name}Output"
     ).${RouterMethodMap[functionName as keyof typeof RouterMethodMap]}(async ({ ctx, input }) => {
-      const result = await DB_FUNC.${functionName}(${DynamicRouterParamsCodeMap[functionName as keyof typeof DynamicRouterParamsCodeMap]});
+      const result = await DB_FUNC.${functionName}(ctx, {{DataType}}, input.input);
       return ctx.ZodOutput?.parseAsync(result);
     })`;
     return `${functionName}: protectedProcedure
       .input(ZOD_APIS[{{DataType}}].${zod_name})
-      .${RouterMethodMap[functionName as keyof typeof RouterMethodMap]}(({ ctx, input }) => DB_FUNC.${functionName}(${RouterParamsCodeMap[functionName as keyof typeof RouterMethodMap]}))`;
+      .${RouterMethodMap[functionName as keyof typeof RouterMethodMap]}(({ ctx, input }) => DB_FUNC.${functionName}(ctx, {{DataType}}, input))`;
 }
 
 export function genBaseRouter(outDir: string,schema_type:SCHEMA_TYPE, genConfig: GenConfig) {

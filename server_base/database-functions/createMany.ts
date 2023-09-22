@@ -1,11 +1,13 @@
-import mongoose from "mongoose";
 import {TRPCContext} from "../trpc";
 
-import {LAST_MODIFIED_BY} from "../../share/constants/database_fields";
+import {CREATED_BY, LAST_MODIFIED_BY} from "../../share/constants/database_fields";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import {DATABASE_MODELS} from "../mongoose/DatabaseModels";
 
-export async function createMany(ctx: TRPCContext,input: any[], Model: mongoose.Model<any>) {
-    return (await Model.insertMany(input.map(v => ({
+export async function createMany(ctx: TRPCContext, schema: SCHEMA_TYPE, input: any[]) {
+    return (await DATABASE_MODELS[schema].insertMany(input.map(v => ({
         ...v,
+        [CREATED_BY]: ctx.auth?.userProfile._id,
         [LAST_MODIFIED_BY]: ctx.auth?.userProfile._id
     })))) as unknown as string[];
 }
