@@ -20,7 +20,7 @@ import {TaskSchema} from "./tasks/Task";
 import {TaskCheckItemSchema} from "./tasks/TaskCheckItem";
 import {UserSchema} from "./users/User";
 import {ISchemaDefinition} from "../share/types/ISchemaDefinition";
-import {DB_FUNC} from "../server_base/database-functions";
+import {DB_FUNC, excludeAllExcept} from "../server_base/database-functions";
 import {AssetCategorySchema} from "./assets/AssetCategory";
 import {AssetTransferSchema} from "./assets/AssetTransfer";
 
@@ -85,6 +85,7 @@ export const GenList: Record<SCHEMA_TYPE, GenConfig> = {
         dataSchema: SCHEMA_TYPE.ASSET_TRANSFER,
         dataGenConfig: {
             schema: AssetTransferSchema, folder: "assets",
+            excludeFunctions: excludeAllExcept(["findMany", "findOne"]),
             useSoftDelete: true
         }
     }),

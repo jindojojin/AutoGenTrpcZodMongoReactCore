@@ -13,7 +13,7 @@ export function useListDataState<T>(config: APIConfigs) {
   const [total, setTotal] = useState<number>();
   const [checkList, setCheckList] = useState<number[]>();
   const [filterConfig, setFilterConfig] = useState<FilterConfig>({});
-  const [sorterConfig, setSorterConfig] = useState<SorterConfig>({});
+  const [sorterConfig, setSorterConfig] = useState<SorterConfig>(config.initSort);
   const [pageConfig, setPageConfig] = useState<{ skip: number; limit: number }>(
       {
         limit: 10,

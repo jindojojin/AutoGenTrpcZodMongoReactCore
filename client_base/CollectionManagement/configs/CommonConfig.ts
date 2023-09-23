@@ -7,6 +7,7 @@ export type APIConfigs<T = any> = {
   };
   fixedQuery?: any;
   fixedInfo?: Partial<T>;
+  initSort?: Partial<Record<keyof T, 1 | -1>>
 };
 
 export type APICallbacks<Output, Error = any> = {

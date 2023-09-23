@@ -13,6 +13,8 @@ import {upsertOne} from "./upsertOne";
 import {upsertMany} from "./upsertMany";
 import {importFromExcelFile, importFromJsonArray, importFromText,} from "./importMany";
 import {exportToExcelFile} from "./exportMany";
+import {getObjectKeys} from "../../share/CommonFunctions";
+import _ from "lodash"
 
 export const DB_FUNC = {
   createOne,
@@ -33,3 +35,6 @@ export const DB_FUNC = {
   importFromText,
   exportToExcelFile,
 };
+export const excludeAllExcept = (arr: (keyof typeof DB_FUNC)[]) => {
+  return _.difference(getObjectKeys(DB_FUNC), arr) as (keyof typeof DB_FUNC)[]
+}

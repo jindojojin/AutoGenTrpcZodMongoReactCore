@@ -12,4 +12,4 @@ export const DATABASE_MODELS = {
     [SCHEMA_TYPE.USER]: UserModel,
     [SCHEMA_TYPE.SCOPE]: ScopeModel,
     [SCHEMA_TYPE.USER_SCOPE]: UserScopeModel
-};
+} as Record<SCHEMA_TYPE, any>;

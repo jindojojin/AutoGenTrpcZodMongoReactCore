@@ -140,13 +140,13 @@ export async function getAllUniqueKeysByCategory(config: DynamicConfig) {
     $joinTable("_id", config.property, "properties", DYNAMIC_CATEGORY_ID),
   ]);
   const result: Record<string, string[]> = categoryInfos.reduce(
-      (acc, catInfo) => ({
+      (acc:any, catInfo:any) => ({
         ...acc,
         [catInfo[DYNAMIC_CATEGORY_ID]]: catInfo["properties"]
         .filter((p: ISchemaFieldConfig) => p.unique)
         .map((p: any) => String(p._id)),
       }),
-      {},
+      {} as Record<string, string[]>
   );
   console.log("uniqueKey of Dynamic categories:", result);
   return result;
