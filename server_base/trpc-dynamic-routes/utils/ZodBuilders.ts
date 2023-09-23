@@ -109,7 +109,7 @@ export function getBasicRouteZodIO<
     baseZod: { input: I; output: O; query: Q },
     _zKeys: K | undefined = undefined,
 ) {
-    const zKeys = _zKeys ?? baseZod.output.keyof();
+    const zKeys = (_zKeys ?? baseZod.output.keyof()).or(z.enum(["createAt", "updateAt"]));
     const projectionSchema = z.union([
         zKeys,
         zKeys.array(),

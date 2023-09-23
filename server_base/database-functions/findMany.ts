@@ -6,6 +6,8 @@ import {$manyToOneJoin, $objectIdToString, $stringToObjectId} from "./Utils";
 import {TRPCContext} from "../trpc";
 import {SCHEMAS_CONFIG} from "../../share/schema_configs";
 import {DATABASE_MODELS} from "../mongoose/DatabaseModels";
+import {$notAvailable} from "../../share/MongoDBUtils";
+import {DELETED_BY} from "../../share/constants/database_fields";
 
 export type CustomAggregate = (
     stages: [matchStage: any, selectStage: any, optionStage: any],
@@ -27,14 +29,16 @@ export async function findMany(
     input: any,
     advancedQuery?: CustomAggregate,
 ) {
-    const SchemaConfig = ctx.SchemaConfig??SCHEMAS_CONFIG[schema]
-    const Model= DATABASE_MODELS[schema]
+    const SchemaConfig = ctx.SchemaConfig ?? SCHEMAS_CONFIG[schema]
+    const excludeSoftDelete = SchemaConfig.softDelete ? $notAvailable(DELETED_BY) : {}
+    const Model = DATABASE_MODELS[schema]
     let records: any;
+    let total: any;
     if (advancedQuery) {
         const matchStage = _.compact([
             $objectIdToString(SchemaConfig?.relationKeys),
             input.where ? {
-                $match: input.where,
+                $match: {$and: [input.where, $notAvailable(DELETED_BY)]},
             } : null,
             $stringToObjectId(SchemaConfig?.relationKeys),
         ]);
@@ -76,13 +80,13 @@ export async function findMany(
         records = await Model.aggregate(stages);
     } else {
         records = await Model.find(
-            input.where ?? {},
+            {$and: [input.where ?? {}, $notAvailable(DELETED_BY)]},
             input.select,
             input.options as any,
         ).lean();
     }
+    total = await Model.countDocuments(input.where ?? {});// TODO total có thể khác khi aggregate
 
-    const total = await Model.countDocuments(input.where ?? {});
     return {
         total,
         limit: input.options?.limit,
