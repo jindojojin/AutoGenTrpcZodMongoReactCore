@@ -110,7 +110,7 @@ async function transformThenImport(
     console.log("Errors:", data.errorRecords);
     const upsertResult = await upsertMany(ctx, schema,
         {
-            key: schemaConfig.uniqueKeys,
+            key: schemaConfig.importKeys,
             data: data.verifiedRecords,
         },
         true,
