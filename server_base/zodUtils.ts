@@ -6,8 +6,9 @@ import {getObjectKeys} from "../share/CommonFunctions";
 export function zObjectId() {
   return z.custom<string>(
     (val) =>
-      mongoose.Types.ObjectId.isValid(val as any) ||
-      mongoose.Types.ObjectId.isValid(val?.["_id" as keyof {}] as any),
+        (String(val).length == 24 &&
+            mongoose.Types.ObjectId.isValid(val as any)) ||
+        mongoose.Types.ObjectId.isValid(val?.["_id" as keyof {}] as any),
   );
 }
 

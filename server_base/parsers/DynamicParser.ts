@@ -19,7 +19,7 @@ type DynamicValue = {
 
 function safeParseObjectID(id: any) {
   if (id && zObjectId().safeParse(id).success) return new ObjectId(id);
-  else return undefined;
+  else return null;
 }
 
 function getUniqueRefValues<T>(
