@@ -7,6 +7,7 @@ export const PLMCodeSchema: ISchemaDefinition = {
   plmCode: {
     type: BASIC_TYPE.TEXT,
     unique: true,
+    exportKey:true,
     importKey: true,
     required: true,
     label: "Dev. Mdl. Name/Item Name",

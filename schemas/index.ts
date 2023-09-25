@@ -85,7 +85,7 @@ export const GenList: Record<SCHEMA_TYPE, GenConfig> = {
         dataSchema: SCHEMA_TYPE.ASSET_TRANSFER,
         dataGenConfig: {
             schema: AssetTransferSchema, folder: "assets",
-            excludeFunctions: excludeAllExcept(["findMany", "findOne"]),
+            excludeFunctions: excludeAllExcept([]),
             useSoftDelete: true
         }
     }),

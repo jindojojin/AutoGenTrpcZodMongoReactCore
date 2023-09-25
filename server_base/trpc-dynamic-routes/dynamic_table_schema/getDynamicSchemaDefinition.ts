@@ -53,6 +53,8 @@ export function getDynamicSchemaGenConfigs<
         schema: {
           [DYNAMIC_CATEGORY_ID]: {
             type: cateSchema.type,
+            importKey:true,
+            exportKey:true,
             hidden: true,
           },
           ...dataSchema.definition,
