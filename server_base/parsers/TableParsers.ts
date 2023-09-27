@@ -28,14 +28,16 @@ export function getTypedData(
     enums: string[] = [],
     arrayDelimiter: string = ",",
 ): any {
-  if (!data) return undefined;
   if (Array.isArray(type)) {
-    return _.compact(
-        String(data)
-        .split(arrayDelimiter)
-        .map((d) => getTypedData(d, type[0], enums, arrayDelimiter)),
+    return (
+        _.compact(
+            String(data)
+            .split(arrayDelimiter)
+            .map((d) => getTypedData(d, type[0], enums, arrayDelimiter)),
+        ) ?? []
     );
   } else {
+    if (!data) return undefined;
     const str = String(data).trim();
     if (!str.length) return undefined; // Không điền gì = undefined
     switch (type) {

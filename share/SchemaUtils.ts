@@ -70,18 +70,18 @@ export function getFieldsMapByTitle<T>(
     getObjectKeys(schemaConfig.fieldConfigs).forEach((field) => {
         const keyLabel =
             schemaConfig.fieldConfigs[field].label ?? capitalCase(String(field));
-        // nếu đây là kiểu dynamic => add thêm header category
         const keyType = getSingleType<SCHEMA_TYPE>(
             schemaConfig.fieldConfigs[field].type,
         );
         if (isFileType(keyType)) return; // KHông hỗ trợ import media file
+        // nếu đây là kiểu dynamic => add thêm header category
         if (isDynamicSchemaType(keyType)) {
             const DynamicSchemaConfig = SCHEMAS_CONFIG[keyType];
             const categoryLabel =
                 DynamicSchemaConfig.fieldConfigs[
                     DYNAMIC_CATEGORY_ID as keyof typeof DynamicSchemaConfig.fieldConfigs
                     ].label;
-            const categoryKey = `${String(keyLabel)}-${String(categoryLabel)}`;
+            const categoryKey = `${String(keyLabel)} (${String(categoryLabel)})`;
             result[transform?.(categoryKey) ?? categoryKey] =
                 getCategoryKeyOfDynamicData(field);
         }

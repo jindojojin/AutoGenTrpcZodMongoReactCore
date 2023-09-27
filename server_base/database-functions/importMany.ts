@@ -59,13 +59,13 @@ export async function importFromText(
 }
 
 export const zImportOutput = zUpsertOutput.omit({ errors: true }).extend({
-  errors: z
-  .object({
-    idx: z.number(),
-    errors: zodErrorOutput.array(),
-  })
-  .array()
-  .optional(),
+    errors: z
+    .object({
+        idx: z.number(),
+        errors: zodErrorOutput.array(),
+    })
+    .array()
+    .optional(),
 });
 export async function doImport(
     ctx: TRPCContext,
@@ -73,17 +73,17 @@ export async function doImport(
     rows: any[],
     initData?: any
 ) {
-  const records = getTypedDataFromListData(
-      rows,
-      ctx.SchemaConfig ?? SCHEMAS_CONFIG[schema],
-      initData
-  );
-  console.log("Records:", records);
-  return transformThenImport(
-      ctx,
-      schema,
-      records
-  );
+    const records = getTypedDataFromListData(
+        rows,
+        ctx.SchemaConfig ?? SCHEMAS_CONFIG[schema],
+        initData
+    );
+    console.log("Records:", records);
+    return transformThenImport(
+        ctx,
+        schema,
+        records
+    );
 }
 
 async function transformThenImport(
@@ -100,7 +100,8 @@ async function transformThenImport(
         };
     }
     const schemaConfig = ctx.SchemaConfig ?? SCHEMAS_CONFIG[schema];
-    const zodInputSchema = ctx.ZodInput ?? ZOD_INPUTS[schema as keyof typeof ZOD_INPUTS]
+    console.log("Context",ctx)
+    const zodInputSchema = ctx.ZodBase?.input ?? ZOD_INPUTS[schema as keyof typeof ZOD_INPUTS]
     const data = await getSchemaDataFromArray(
         records,
         schemaConfig,

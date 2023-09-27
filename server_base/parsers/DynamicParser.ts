@@ -1,16 +1,19 @@
-import {DynamicConfig, ISchemaConfig} from "../../share/types/ISchemaConfig";
+import { DynamicConfig, ISchemaConfig } from "../../share/types/ISchemaConfig";
 import _ from "lodash";
-import {getSingleType} from "../../share/types/DataTypes";
-import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
-import {SCHEMAS_CONFIG} from "../../share/schema_configs";
-import {ZodTypeAny} from "zod";
-import {DATABASE_MODELS} from "../mongoose/DatabaseModels";
-import {$joinTable, $manyToOneJoin} from "../database-functions/Utils";
-import {DYNAMIC_CATEGORY_ID} from "../../share/constants/database_fields";
-import {verifyWithZod, zObjectId} from "../zodUtils";
-import {ObjectId} from "mongodb";
-import {ISchemaFieldConfig} from "../../share/types/ISchemaDefinition";
-import {getCategoryKeyOfDynamicData, isDynamicSchemaType,} from "../../share/SchemaUtils";
+import { getSingleType } from "../../share/types/DataTypes";
+import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
+import { SCHEMAS_CONFIG } from "../../share/schema_configs";
+import { ZodTypeAny } from "zod";
+import { DATABASE_MODELS } from "../mongoose/DatabaseModels";
+import { $joinTable, $manyToOneJoin } from "../database-functions/Utils";
+import { DYNAMIC_CATEGORY_ID } from "../../share/constants/database_fields";
+import { verifyWithZod, zObjectId } from "../zodUtils";
+import { ObjectId } from "mongodb";
+import { ISchemaFieldConfig } from "../../share/types/ISchemaDefinition";
+import {
+  getCategoryKeyOfDynamicData,
+  isDynamicSchemaType,
+} from "../../share/SchemaUtils";
 
 type DynamicValue = {
   value: any;
@@ -20,6 +23,14 @@ type DynamicValue = {
 function safeParseObjectID(id: any) {
   if (id && zObjectId().safeParse(id).success) return new ObjectId(id);
   else return null;
+}
+
+function safeMapping(data: any, Map?: Map<any, any>) {
+  if (Array.isArray(data)) {
+    return data.map((item) => Map?.get(item));
+  } else {
+    return Map?.get(data);
+  }
 }
 
 function getUniqueRefValues<T>(
@@ -96,7 +107,8 @@ export async function getSchemaDataFromArray<T>(
   records.forEach((data, idx) => {
     //2A: Mapping
     staticKeys.forEach((k) => {
-      data[k] = StaticRefMap.get(k)?.get(data[k]) ?? safeParseObjectID(data[k]);
+      data[k] =
+          safeMapping(data[k], StaticRefMap.get(k)) ?? safeParseObjectID(data[k]);
     });
     dynamicKeys.forEach((k) => {
       const categoryKey = getCategoryKeyOfDynamicData(k);
@@ -104,7 +116,8 @@ export async function getSchemaDataFromArray<T>(
         value: data[k],
         category: data[categoryKey],
       });
-      data[k] = DynamicRefMap.get(k)?.get(mapKey) ?? safeParseObjectID(data[k]);
+      data[k] =
+          safeMapping(mapKey, DynamicRefMap.get(k)) ?? safeParseObjectID(data[k]);
     });
     //2B: Verify with Zod
     console.log("Data before parse zod", data);
@@ -113,6 +126,7 @@ export async function getSchemaDataFromArray<T>(
       verifiedRecords.push(parseResult.data as any);
       verifiedIndexes.push(idx);
     } else {
+      console.log("Raw zod errors", parseResult);
       errorRecords.push({
         idx,
         errors: parseResult.errors.map((error) => ({

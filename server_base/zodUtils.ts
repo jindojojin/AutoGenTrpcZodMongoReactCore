@@ -5,10 +5,10 @@ import {getObjectKeys} from "../share/CommonFunctions";
 
 export function zObjectId() {
   return z.custom<string>(
-    (val) =>
-        (String(val).length == 24 &&
-            mongoose.Types.ObjectId.isValid(val as any)) ||
-        mongoose.Types.ObjectId.isValid(val?.["_id" as keyof {}] as any),
+      (val) =>
+          (String(val).length == 24 &&
+              mongoose.Types.ObjectId.isValid(val as any)) ||
+          mongoose.Types.ObjectId.isValid(val?.["_id" as keyof {}] as any),
   );
 }
 
@@ -20,29 +20,29 @@ export function zTempFileId() {
 export const ZodMongoQuery = {
   z$logical<T extends ZodTypeAny>(schema: T) {
     return z
-      .object({
-        $or: z.array(schema),
-        $and: z.array(schema),
-        $nor: z.array(schema),
-        $not: z.array(schema),
-      })
-      .partial();
+    .object({
+      $or: z.array(schema),
+      $and: z.array(schema),
+      $nor: z.array(schema),
+      $not: z.array(schema),
+    })
+    .partial();
   },
 
   z$comparison<T extends ZodTypeAny>(schema: T) {
     return z
-      .object({
-        $gt: schema,
-        $lt: schema,
-        $eq: schema,
-        $ne: schema,
-        $gte: schema,
-        $lte: schema,
-        $in: z.array(schema),
-        $nin: z.array(schema), // not in
-        $regex: z.string(),
-      })
-      .partial();
+    .object({
+      $gt: schema,
+      $lt: schema,
+      $eq: schema,
+      $ne: schema,
+      $gte: schema,
+      $lte: schema,
+      $in: z.array(schema),
+      $nin: z.array(schema), // not in
+      $regex: z.string(),
+    })
+    .partial();
   },
 
   z$query<T extends ZodTypeAny>(schema: T) {
@@ -50,12 +50,12 @@ export const ZodMongoQuery = {
   },
   z$array<T extends ZodTypeAny>(schema: T) {
     return z
-      .object({
-        $all: z.array(schema), //https://www.mongodb.com/docs/v6.0/reference/operator/query/all/#mongodb-query-op.-all
-        $elemMatch: this.z$query(schema),
-        $size: z.number(),
-      })
-      .partial();
+    .object({
+      $all: z.array(schema), //https://www.mongodb.com/docs/v6.0/reference/operator/query/all/#mongodb-query-op.-all
+      $elemMatch: this.z$query(schema),
+      $size: z.number(),
+    })
+    .partial();
   },
 
   z$arrayQuery<T extends ZodTypeAny>(schema: T) {
@@ -70,14 +70,16 @@ export const zodErrorOutput = z.object({
 });
 
 export function verifyWithZod<T>(
-  zodSchema: ZodTypeAny,
-  rawData: T,
+    zodSchema: ZodTypeAny,
+    rawData: T,
 ):
-  | { success: true; data: T }
-  | { success: false; errors: z.infer<typeof zodErrorOutput>[] } {
+    | { success: true; data: T }
+    | { success: false; errors: z.infer<typeof zodErrorOutput>[] } {
   const parseResult = zodSchema.safeParse(rawData);
   if (parseResult.success) return parseResult;
   else {
+    // console.log(JSON.stringify(zodSchema))
+    // console.log("Raw zod errors",parseResult.error)
     const zodErr = parseResult.error.format() as any;
     const errors: { path: keyof T; messages: any }[] = [];
     getObjectKeys(rawData).forEach((k) => {
@@ -87,9 +89,9 @@ export function verifyWithZod<T>(
           for (let idx in zodErr[k]) {
             if (!isNaN(Number(idx))) {
               messages.push(
-                `${(rawData[k] as unknown as any[])[Number(idx)]}: ${
-                  zodErr[k][idx]._errors
-                }`,
+                  `${(rawData[k] as unknown as any[])[Number(idx)]}: ${
+                      zodErr[k][idx]._errors
+                  }`,
               );
             }
           }
