@@ -1,6 +1,7 @@
 import {BASIC_TYPE} from "../../share/types/DataTypes";
 import {ISchemaDefinition} from "../../share/types/ISchemaDefinition";
 import {SCHEMA_TYPE} from "../SchemaTypes";
+import {TTV2_STATES} from "./TTv2TestCase";
 
 export const TTv2TestSetSchema: ISchemaDefinition = {
   tpid: { type: SCHEMA_TYPE.TTV2_TEST_SUITE, hidden: true },
@@ -13,6 +14,6 @@ export const TTv2TestSetSchema: ISchemaDefinition = {
   },
   category: { type: BASIC_TYPE.TEXT },
   title: { type: BASIC_TYPE.TEXT },
-  state: { type: BASIC_TYPE.NUMBER, hidden: true },
+  state: { type: BASIC_TYPE.ENUM, enum: TTV2_STATES.slice(-2), hidden: true },
   syncFlag: { type: BASIC_TYPE.BOOLEAN },
 };

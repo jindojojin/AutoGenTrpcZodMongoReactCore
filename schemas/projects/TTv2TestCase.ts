@@ -26,7 +26,7 @@ export const TTv2TestCaseSchema: ISchemaDefinition = {
     pid: {type: SCHEMA_TYPE.TTV2_TESTCASE, label: "Folder", nullable: true},
     tcid: {type: BASIC_TYPE.NUMBER},
     title: {type: BASIC_TYPE.TEXT},
-    state: {type: BASIC_TYPE.ENUM, enum: TTV2_STATES},
+    state: {type: BASIC_TYPE.ENUM, enum: TTV2_STATES.slice(0,-2), default: TTV2_STATES[0]},
     tester: {type: SCHEMA_TYPE.USER, nullable: true},
     reviewer: {type: SCHEMA_TYPE.USER, nullable: true},
     assigned_tester: {type: SCHEMA_TYPE.USER, nullable: true},
