@@ -108,7 +108,9 @@ export async function getSchemaDataFromArray<T>(
     //2A: Mapping
     staticKeys.forEach((k) => {
       data[k] =
-          safeMapping(data[k], StaticRefMap.get(k)) ?? safeParseObjectID(data[k]);
+          safeMapping(data[k], StaticRefMap.get(k)) ??
+          safeParseObjectID(data[k]) ??
+          SchemaConfig.fieldConfigs[k].default;
     });
     dynamicKeys.forEach((k) => {
       const categoryKey = getCategoryKeyOfDynamicData(k);
@@ -117,7 +119,9 @@ export async function getSchemaDataFromArray<T>(
         category: data[categoryKey],
       });
       data[k] =
-          safeMapping(mapKey, DynamicRefMap.get(k)) ?? safeParseObjectID(data[k]);
+          safeMapping(mapKey, DynamicRefMap.get(k)) ??
+          safeParseObjectID(data[k]) ??
+          SchemaConfig.fieldConfigs[k].default;
     });
     //2B: Verify with Zod
     console.log("Data before parse zod", data);
