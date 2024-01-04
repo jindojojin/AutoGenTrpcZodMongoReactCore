@@ -2,6 +2,8 @@ import {ISchemaDefinition} from "../../share/types/ISchemaDefinition";
 import {BASIC_TYPE} from "../../share/types/DataTypes";
 import {SCHEMA_TYPE} from "../SchemaTypes";
 
+export const DEFFECT_TYPE=["DEFECT","NOT A DEFECT"]
+
 export const PLMDefectSchema: ISchemaDefinition = {
   plm_code: {
     type: SCHEMA_TYPE.PLM_CODE,

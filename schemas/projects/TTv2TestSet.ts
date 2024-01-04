@@ -12,8 +12,9 @@ export const TTv2TestSetSchema: ISchemaDefinition = {
     importKey: true,
     label: "Set ID",
   },
-  category: { type: BASIC_TYPE.TEXT },
-  title: { type: BASIC_TYPE.TEXT },
-  state: { type: BASIC_TYPE.ENUM, enum: TTV2_STATES.slice(-2), hidden: true },
-  syncFlag: { type: BASIC_TYPE.BOOLEAN },
+  category: {type: BASIC_TYPE.TEXT},
+  title: {type: BASIC_TYPE.TEXT},
+  state: {type: BASIC_TYPE.ENUM, enum: TTV2_STATES.slice(-2), hidden: true},
+  schedule: {type: BASIC_TYPE.DATE_RANGE},
+  syncFlag: {type: BASIC_TYPE.BOOLEAN},
 };

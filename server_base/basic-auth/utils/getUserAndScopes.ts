@@ -31,8 +31,8 @@ export async function getUserAndScopes(loginID: string) {
       populate: "scopes",
     }).lean();
     const GroupMap = userScopeList
-        ? _.keyBy(userScopeList, (ug) => ug._id.toString())
-        : {};
+        ? _.keyBy(userScopeList, (ug:any) => ug._id.toString())
+        : {} as any;
     let userGroups: any[] = getObjectKeys(GroupMap).filter((gr_id) =>
         _.some(
             GroupMap[gr_id]?.members,
