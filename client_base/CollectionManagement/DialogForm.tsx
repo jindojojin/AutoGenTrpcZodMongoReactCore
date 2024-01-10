@@ -6,6 +6,7 @@ import { QuestionCircleOutlined } from "@ant-design/icons";
 import { getObjectKeys, showIf } from "../Common/Utils";
 import { ControllableFormViewProps } from "./form_controller/withFormController";
 import _ from "lodash";
+import { FORM_ACTION } from "./configs/FormConfigs";
 
 export type FormViewProps<
     T extends FieldValues,
@@ -15,11 +16,12 @@ export type FormViewProps<
     onClose?: () => void;
     config: IFormConfig<T, TName>;
     layout?: (keyof T)[][];
+    mode?: FORM_ACTION;
 };
 
 function DialogForm<
     T extends FieldValues,
-    TName extends FieldPath<T> = FieldPath<T>
+    TName extends FieldPath<T> = FieldPath<T>,
 >(props: FormViewProps<T, TName>) {
     const {
         control,
@@ -36,7 +38,7 @@ function DialogForm<
         if (props.initValue) reset(props.initValue);
         else
             getObjectKeys(getValues()).forEach((k) =>
-                setValue(k as any, undefined as any)
+                setValue(k as any, undefined as any),
             );
     }, [props.initValue]);
     const getController = (formItem: IFormItemConfig<T, TName>) => (
@@ -49,6 +51,7 @@ function DialogForm<
             }}
             control={control}
             name={formItem?.key}
+            disabled={props.mode == FORM_ACTION.DELETE}
             render={(renderProps) => (
                 <Form.Item
                     label={formItem?.label}

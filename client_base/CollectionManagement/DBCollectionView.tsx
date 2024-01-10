@@ -1,23 +1,26 @@
-import React, {MutableRefObject, useCallback, useRef, useState} from "react";
-import {FieldPath, FieldValues} from "react-hook-form";
-import {App, ModalProps} from "antd";
-import {APICallbacks, APIConfigs} from "./configs/CommonConfig";
-import {FORM_ACTION} from "./configs/FormConfigs";
+import React, { MutableRefObject, useCallback, useRef, useState } from "react";
+import { FieldPath, FieldValues } from "react-hook-form";
+import { App, ModalProps } from "antd";
+import { APICallbacks, APIConfigs } from "./configs/CommonConfig";
+import { FORM_ACTION } from "./configs/FormConfigs";
 import withListController, {
   ControllableListViewRef,
   ControlledListViewProps,
 } from "./list_controller/withListController";
-import TableList, {TableListProps} from "./TableList";
+import TableList, { TableListProps } from "./TableList";
 import withFormController, {
   ControllableFormViewRef,
   ControlledFormViewProps,
 } from "./form_controller/withFormController";
-import DialogForm, {FormViewProps} from "./DialogForm";
-import {DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
-import {useTranslation} from "react-i18next";
+import DialogForm, { FormViewProps } from "./DialogForm";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { useTranslation } from "react-i18next";
 import _ from "lodash";
-import {getObjectKeys} from "../Common/Utils";
-import {useFormUsagesByUserScopes, useListUsagesByUserScopes,} from "./utils/useFormUsagesByUserScopes";
+import { getObjectKeys } from "../Common/Utils";
+import {
+  useFormUsagesByUserScopes,
+  useListUsagesByUserScopes,
+} from "./utils/useFormUsagesByUserScopes";
 
 type DbCollectionViewProps<
     T extends FieldValues,
@@ -38,15 +41,15 @@ type DbCollectionViewProps<
 
 const TableComponent = withListController(TableList);
 const FormComponent = withFormController(DialogForm);
-
 function useFormProps<T extends FieldValues>(
     openForm: FORM_ACTION | undefined,
     showForm: (a: FORM_ACTION | undefined, v?: T) => void,
     props: DbCollectionViewProps<T>,
-    listRef: MutableRefObject<any>
+    listRef: MutableRefObject<any>,
 ): ControlledFormViewProps<T, FormViewProps<T>> {
   const { notification } = App.useApp();
   const { t } = useTranslation("crud");
+  const { t: tForm } = useTranslation("form");
   const FormProps =
       openForm && Object.hasOwn(props.formConfig, openForm as FORM_ACTION)
           ? (props.formConfig as any)[openForm]
@@ -84,7 +87,25 @@ function useFormProps<T extends FieldValues>(
         }),
         {},
     ),
+    modalProps: {
+      [FORM_ACTION.CREATE]: {
+        title: tForm("createTitle", { name: FormProps.label }),
+        okText: tForm("createOkBtn"),
+        okType: "primary",
+      },
+      [FORM_ACTION.UPDATE]: {
+        title: tForm("updateTitle", { name: FormProps.label }),
+        okText: tForm("updateOkBtn"),
+        okType: "primary",
+      },
+      [FORM_ACTION.DELETE]: {
+        title: tForm("deleteTitle", { name: FormProps.label }),
+        okText: tForm("deleteOkBtn"),
+        okType: "danger",
+      },
+    }[openForm],
     api: props.apiConfig,
+    mode: openForm,
     ...FormProps,
   };
 }
