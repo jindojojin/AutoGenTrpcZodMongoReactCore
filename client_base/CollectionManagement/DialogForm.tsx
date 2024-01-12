@@ -51,7 +51,7 @@ function DialogForm<
             }}
             control={control}
             name={formItem?.key}
-            disabled={props.mode == FORM_ACTION.DELETE}
+            disabled={props.mode == FORM_ACTION.DELETE ? true : undefined}
             render={(renderProps) => (
                 <Form.Item
                     label={formItem?.label}
