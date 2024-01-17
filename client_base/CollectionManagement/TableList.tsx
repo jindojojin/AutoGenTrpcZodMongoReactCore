@@ -1,13 +1,4 @@
-import React, { useCallback, useMemo } from "react";
-import withListController, {
-    ControllableListViewProps,
-} from "./list_controller/withListController";
-import useRowActions, { RowActionConfig } from "../Table/hooks/useRowActions";
-import {
-    CommonTableConfig,
-    useCommonTableConfig,
-} from "../Table/hooks/useCommonTableConfig";
-import { getObjectKeys, showIf } from "../Common/Utils";
+import { ReloadOutlined } from "@ant-design/icons";
 import {
     Pagination,
     Table,
@@ -15,33 +6,46 @@ import {
     TableProps,
     Typography,
 } from "antd";
-import { ReloadOutlined } from "@ant-design/icons";
-import _ from "lodash";
-import { DataType } from "../../share/types/DataTypes";
 import {
     FilterValue,
     SorterResult,
     TableCurrentDataSource,
 } from "antd/es/table/interface";
-import { IColumnType } from "../Table/Utils";
-import { getFilterQuery } from "../Table/getTypedColumnFilter";
+import _ from "lodash";
+import { useCallback, useMemo, useRef } from "react";
 import { FieldValues } from "react-hook-form";
-import TableImporter from "../Table/components/TableImporter";
+import { DataType } from "../../share/types/DataTypes";
+import { getObjectKeys, showIf } from "../Common/Utils";
+import { IColumnType } from "../Table/Utils";
 import TableExporter from "../Table/components/TableExporter";
+import TableImporter from "../Table/components/TableImporter";
+import { getFilterQuery } from "../Table/getTypedColumnFilter";
+import {
+    CommonTableConfig,
+    useCommonTableConfig,
+} from "../Table/hooks/useCommonTableConfig";
+import useRowActions, { RowActionConfig } from "../Table/hooks/useRowActions";
+import withListController, {
+    ControllableListViewProps,
+} from "./list_controller/withListController";
 
 export type TableListProps<T> = ControllableListViewProps<T> &
     CommonTableConfig<T> & {
-    table_title?: string;
-    headerAdditions?: JSX.Element[];
-    rowAdditionActions?: RowActionConfig<T>;
-};
+        table_title?: string;
+        headerAdditions?: JSX.Element[];
+        rowAdditionActions?: RowActionConfig<T>;
+    };
 
-function TableList<T extends FieldValues>(props: TableListProps<T>) {
+export function TableList<T extends FieldValues>(props: TableListProps<T>) {
     const { onChange } = useFilterAndSorterConfig(
         props.columns,
         props.listController?.setSorterConfig,
         props.listController?.setFilterConfig,
     );
+
+    const tableRef = useRef();
+
+    console.log(tableRef.current);
 
     const { RowActionConfig, ContextMenuComponent, ActionsColumn } =
         useRowActions<T>({
@@ -62,7 +66,7 @@ function TableList<T extends FieldValues>(props: TableListProps<T>) {
         headerRight: _.compact([
             ...(props.headerAdditions || []),
             <TableImporter {...props.listController} />,
-            <TableExporter {...props.listController} />,
+            <TableExporter {...props.listController} tableRef={tableRef} />,
             props.listController?.reload ? (
                 <ReloadOutlined
                     disabled={props.listController?.loading}
@@ -110,13 +114,14 @@ function TableList<T extends FieldValues>(props: TableListProps<T>) {
                 {...RowActionConfig}
                 {...TableConfig}
                 scroll={{ x: true }}
+                ref={tableRef as any}
             />
         </div>
     );
 }
 
 /////////////Filter & Sorter//////////////////
-function useFilterAndSorterConfig<T>(
+export function useFilterAndSorterConfig<T>(
     columns: IColumnType<T>[],
     setSorterConfig: any,
     setFilterConfig: any,
@@ -138,10 +143,10 @@ function useFilterAndSorterConfig<T>(
             s: SorterResult<T> | SorterResult<T>[],
             e: TableCurrentDataSource<T>,
         ) => {
-            console.log("Sorter Config", s);
-            console.log("Filter Config", f);
-            console.log("Paging Config", p);
-            console.log("Extra", e);
+            // console.log("Sorter Config", s);
+            // console.log("Filter Config", f);
+            // console.log("Paging Config", p);
+            // console.log("Extra", e);
             if (!Array.isArray(s)) s = [s];
             setFilterConfig(
                 _.omitBy(

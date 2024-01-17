@@ -4,6 +4,7 @@ export enum SCHEMA_TYPE {
     USER_SCOPE = "User Group" /* default, dont remove*/,
 
     PROJECT = "Project",
+    PROJECT_MEMBER="Project member",
     TEST_PROJECT = "Test Project",
     PLM_CODE = "PLM Code",
     PLM_DEFECT = "PLM Defect",

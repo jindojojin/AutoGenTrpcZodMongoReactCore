@@ -2,7 +2,8 @@
   "compilerOptions": {
     "strict": true,
     "esModuleInterop": true,
-    "lib": ["ESNext"],
+    "lib": [ "DOM",
+    "DOM.Iterable","ESNext"],
     "target": "ESNext",
     "module": "commonjs",
     "moduleResolution": "node",
@@ -10,6 +11,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
+    "jsx":"react-jsx",
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "resolveJsonModule": true

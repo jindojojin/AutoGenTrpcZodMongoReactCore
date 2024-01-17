@@ -1,13 +1,13 @@
-import React, { useCallback, useRef, useState } from "react";
-import { Dropdown } from "antd";
 import {
     CopyOutlined,
     FileExcelOutlined,
     ImportOutlined,
 } from "@ant-design/icons";
+import { Button, Dropdown } from "antd";
+import { useCallback, useRef, useState } from "react";
 
-import { showIf } from "../../Common/Utils";
 import _ from "lodash";
+import { showIf } from "../../Common/Utils";
 
 const EXTENSIONS = {
     excel: ".xlsx,.xls",
@@ -77,7 +77,7 @@ function TableImporter<T>(props: {
                     },
                 }}
             >
-                <ImportOutlined title={"Import"} />
+                <Button type="primary" size="small" icon={<ImportOutlined />}>Import</Button>
             </Dropdown>
             <input
                 ref={fileInput as any}
