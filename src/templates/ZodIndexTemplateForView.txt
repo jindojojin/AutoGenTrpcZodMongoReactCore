@@ -1,0 +1,14 @@
+import {VIEW_TYPE} from "../../views/ViewTypes";
+{{imports}}
+
+export const ZOD_INPUTS = {
+  {{exports}}
+};
+
+export const ZOD_OUTPUTS = {
+  {{export_outputs}}
+};
+
+export const ZOD_APIS = {
+  {{export_apis}}
+}

@@ -1,22 +1,26 @@
-import {findMany} from "./findMany";
-import {getTableFromListData} from "../parsers/TableParsers";
-import ExcelJS from "exceljs";
-import {addTempFiles, initTempFileSlot} from "../file-storage/FileManager";
 import dayjs from "dayjs";
-import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
-import {TRPCContext} from "../trpc";
-import {DATABASE_MODELS} from "../mongoose/DatabaseModels";
-import {SCHEMAS_CONFIG} from "../../share/schema_configs";
+import ExcelJS from "exceljs";
+import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
+import { SCHEMAS_CONFIG } from "../../share/schema_configs";
+import { isSchemaType } from "../../share/types/DataTypes";
+import { VIEWS_CONFIG } from "../../share/view_configs";
+import { VIEW_TYPE } from "../../views/ViewTypes";
+import { addTempFiles, initTempFileSlot } from "../file-storage/FileManager";
+import { DATABASE_MODELS } from "../mongoose/DatabaseModels";
+import { DATABASE_VIEWS } from "../mongoose/DatabaseViews";
+import { getTableFromListData } from "../parsers/TableParsers";
+import { TRPCContext } from "../trpc";
+import { findMany } from "./findMany";
 
-export async function exportToExcelFile(ctx: TRPCContext, schema: SCHEMA_TYPE,
-                                        input: any
+export async function exportToExcelFile(ctx: TRPCContext, schema: SCHEMA_TYPE | VIEW_TYPE,
+  input: any
 ) {
   let records: any[] = [];
-  const Model = DATABASE_MODELS[schema]
-  const schemaConfig = ctx.SchemaConfig ?? SCHEMAS_CONFIG[schema]
+  const Model = isSchemaType(schema) ? DATABASE_MODELS[schema as SCHEMA_TYPE] : DATABASE_VIEWS[schema as VIEW_TYPE]
+  const schemaConfig = ctx.SchemaConfig ?? (isSchemaType(schema) ? SCHEMAS_CONFIG[schema as SCHEMA_TYPE] : VIEWS_CONFIG[schema as VIEW_TYPE])
   if (!input.template) {
     // else, export template only
-    const data = await findMany(ctx,schema,input.query);
+    const data = await findMany(ctx, schema, input.query);
     records = data.records;
   }
   const table = getTableFromListData(records, schemaConfig);

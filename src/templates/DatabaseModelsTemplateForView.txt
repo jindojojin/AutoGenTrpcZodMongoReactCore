@@ -1,0 +1,10 @@
+import mongoose, {Schema} from "mongoose";
+import {VIEW_TYPE} from "../../views/ViewTypes";
+import { getViewConfig } from "../database-functions/ViewUtils";
+
+{{imports}}
+
+{{exports}}
+export const DATABASE_VIEWS: Record<VIEW_TYPE, mongoose.Model<any>> = {
+  {{exportModelMapping}}
+};

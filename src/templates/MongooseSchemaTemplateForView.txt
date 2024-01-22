@@ -1,0 +1,11 @@
+import mongoose, {Schema} from "mongoose";
+import {VIEW_TYPE} from "../../views/ViewTypes";
+import {getSchemaFromFieldConfigs} from "../trpc-dynamic-routes/utils/SchemaBuilder";
+import {ViewGenList} from "../../views";
+import {DefaultSchema} from "../trpc-dynamic-routes/utils/DefaultSchema";
+import type { {{importTypes}} } from "./DatabaseTypes";
+
+{{exports}}
+export const MONGOOSE_VIEW: Record<VIEW_TYPE, Schema> = {
+  {{exportModelMapping}}
+};

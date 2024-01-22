@@ -1,11 +1,12 @@
-import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
+import { VIEW_TYPE } from "../../views/ViewTypes";
 
 export enum BASIC_TYPE {
   DATE = "Date",
   DATE_RANGE = "DateRange",
   TIME = "Time",
-  DATE_TIME="DateTime",
-  DATE_TIME_RANGE="DateTimeRange",
+  DATE_TIME = "DateTime",
+  DATE_TIME_RANGE = "DateTimeRange",
   TEXT = "String",
   NUMBER = "Number",
   ENUM = "Enum",
@@ -23,6 +24,7 @@ export enum FILE_TYPE {
 export type DataType =
   | BASIC_TYPE
   | SCHEMA_TYPE
+  | VIEW_TYPE
   | FILE_TYPE
   | BASIC_TYPE[]
   | SCHEMA_TYPE[]
@@ -45,10 +47,14 @@ export function isSchemaType(type: any) {
 
 export function getBaseType(
   type: DataType
-): "SCHEMA_TYPE" | "BASIC_TYPE" | "FILE_TYPE" {
+): "SCHEMA_TYPE" | "BASIC_TYPE" | "FILE_TYPE" | "VIEW_TYPE" {
   const _type = Array.isArray(type) ? type[0] : type;
+
+  if (type == "Test project members view") console.log(Object.keys(SCHEMA_TYPE), Object.values(SCHEMA_TYPE))
   if (Object.values(SCHEMA_TYPE).includes(_type as SCHEMA_TYPE))
     return "SCHEMA_TYPE";
+  if (Object.values(VIEW_TYPE).includes(_type as VIEW_TYPE))
+    return "VIEW_TYPE";
   if (Object.values(FILE_TYPE).includes(_type as FILE_TYPE)) return "FILE_TYPE";
   return "BASIC_TYPE";
 }

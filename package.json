@@ -5,12 +5,12 @@
     "@trpc/client": "^10.45.0",
     "@trpc/react-query": "^10.45.0",
     "@trpc/server": "^10.45.0",
-    "@types/lodash": "^4.14.202",
+
     "antd": "^5.13.1",
     "archiver": "^6.0.1",
     "axios": "^1.6.5",
     "bytes": "^3.1.2",
-    "change-case": "^5.4.2",
+    "change-case": "^4.1.2",
     "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
     "exceljs": "^4.4.0",
@@ -37,11 +37,12 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.202",
+    "@types/xlsx": "^0.0.36",
     "@types/archiver": "^6.0.2",
     "@types/bytes": "^3.1.4",
     "@types/jest": "^29.5.11",
     "@types/jsonwebtoken": "^9.0.5",
-    "@types/lodash": "",
     "@types/multer": "^1.4.11",
     "@types/node": "^20.11.4",
     "@types/papaparse": "^5.3.14",

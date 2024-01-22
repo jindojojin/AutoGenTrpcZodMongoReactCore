@@ -1,18 +1,20 @@
 import "fs";
-import {readFileSync, writeFileSync} from "fs";
-import {BASIC_TYPE, DataType, isBasicType, isFileType, isSchemaType,} from "../../share/types/DataTypes";
-import {
-    createFolderIfNotExist,
-    getRelativePath,
-    getSchemaFolder,
-    getSchemaName,
-} from "../genUtils";
-import {ISchemaDefinition, ISchemaFieldConfig,} from "../../share/types/ISchemaDefinition";
+import { readFileSync, writeFileSync } from "fs";
 import _ from "lodash";
 import path from "path";
-import {getObjectKeys} from "../../share/CommonFunctions";
-import {GenConfig, GenList} from "../../schemas";
-import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import { GenConfig, GenList } from "../../schemas";
+import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
+import { getObjectKeys } from "../../share/CommonFunctions";
+import { BASIC_TYPE, DataType, isBasicType, isFileType, isSchemaType, } from "../../share/types/DataTypes";
+import { ISchemaDefinition, ISchemaFieldConfig, } from "../../share/types/ISchemaDefinition";
+import { ViewGenConfig } from "../../views";
+import { VIEW_TYPE } from "../../views/ViewTypes";
+import {
+  createFolderIfNotExist,
+  getRelativePath,
+  getSchemaFolder,
+  getSchemaName,
+} from "../genUtils";
 
 function getFieldType(type: DataType, topType: DataType) {
   let input;
@@ -45,28 +47,26 @@ function getFieldType(type: DataType, topType: DataType) {
         output = "z.any()";
     }
     input = output;
-  } else if(isFileType(type)){
+  } else if (isFileType(type)) {
     input = "z.union([zObjectId(),zTempFileId()])";
     output = //TODO: Chưa chỉnh output cho fileType
-        isSchemaType(type) && topType != type
-            ? `z${getSchemaName(type as SCHEMA_TYPE).SchemaName}Output${
-                GenList[type as SCHEMA_TYPE].dynamic ? ".passthrough()" : ""
-            }.or(zObjectId())`
-            : "zObjectId()";
+      isSchemaType(type) && topType != type
+        ? `z${getSchemaName(type as SCHEMA_TYPE).SchemaName}Output${GenList[type as SCHEMA_TYPE].dynamic ? ".passthrough()" : ""
+        }.or(zObjectId())`
+        : "zObjectId()";
   } else {
     input = "zObjectId()";
     output =
       isSchemaType(type) && topType != type
-        ? `z${getSchemaName(type as SCHEMA_TYPE).SchemaName}Output${
-            GenList[type as SCHEMA_TYPE].dynamic ? ".passthrough()" : ""
-          }.or(zObjectId())`
+        ? `z${getSchemaName(type as SCHEMA_TYPE).SchemaName}Output${GenList[type as SCHEMA_TYPE].dynamic ? ".passthrough()" : ""
+        }.or(zObjectId())`
         : "zObjectId()";
   }
   return { input, query: `ZodMongoQuery.z$query(${input})`, output };
 }
 
 function getFieldFromObj(
-  type: SCHEMA_TYPE,
+  type: SCHEMA_TYPE | VIEW_TYPE,
   FieldConfig: ISchemaFieldConfig,
   inArray?: boolean,
 ) {
@@ -112,7 +112,7 @@ function getFieldFromObj(
 }
 
 function getZodSchema(
-  type: SCHEMA_TYPE,
+  type: SCHEMA_TYPE | VIEW_TYPE,
   Obj: ISchemaDefinition,
   with_id: boolean = true,
 ) {
@@ -137,18 +137,21 @@ function getZodSchema(
   };
 }
 
-function getImportZodList(schema: SCHEMA_TYPE) {
+function getImportZodList(schema?: SCHEMA_TYPE) {
+  //schema=undefined -> sử dụng cho view --> import tất cả
+  const relativePath = schema ? getRelativePath(
+    GenList[schema].folder,
+  ) : "../zods/"
+
   return getObjectKeys(GenList)
     .filter((s) => s != schema)
     .map((otherSchema) => {
       const ModuleName = getSchemaName(otherSchema).SchemaName;
-      return `import {z${ModuleName}Input, z${ModuleName}Output} from '${getRelativePath(
-        GenList[schema].folder,
-      )}${getSchemaFolder(GenList[otherSchema].folder)}z${ModuleName}';`;
+      return `import {z${ModuleName}Input, z${ModuleName}Output} from '${relativePath}${getSchemaFolder(GenList[otherSchema].folder)}z${ModuleName}';`;
     });
 }
 
-export function genZodFile(outDir:string,schema_type: SCHEMA_TYPE, genConfig: GenConfig) {
+export function genZodFile(outDir: string, schema_type: SCHEMA_TYPE, genConfig: GenConfig) {
   const ModuleName = getSchemaName(schema_type).SchemaName;
   const template = readFileSync(
     path.resolve("src/templates/ZodTemplate.txt"),
@@ -170,5 +173,28 @@ export function genZodFile(outDir:string,schema_type: SCHEMA_TYPE, genConfig: Ge
       getImportZodList(schema_type).join("\n"),
     )
     .replaceAll("{{RelativePath}}", getRelativePath(genConfig.folder));
+  writeFileSync(filePath, fileContent);
+}
+
+export function genZodFileForView(outDir: string, view_type: VIEW_TYPE, viewGenConfig: ViewGenConfig) {
+  const ViewName = getSchemaName(view_type).SchemaName;
+  const template = readFileSync(
+    path.resolve("src/templates/ZodViewTemplate.txt"),
+  ).toString();
+  const filePath = path.resolve(
+    `${outDir}/view_zods/${getSchemaFolder(viewGenConfig.folder)}z${ViewName}.ts`,
+  );
+  createFolderIfNotExist(filePath);
+  const { output, query, input } = getZodSchema(view_type, viewGenConfig.view.schema);
+  const fileContent = template
+    .replaceAll("{{ZodOutput}}", output)
+    .replaceAll("{{ZodQuery}}", query)
+    .replaceAll("{{ZodInput}}", input)
+    .replaceAll("{{ModuleName}}", ViewName)
+    .replaceAll(
+      "{{import_other_zods}}",
+      getImportZodList().join("\n"),
+    )
+    .replaceAll("{{RelativePath}}", getRelativePath(viewGenConfig.folder));
   writeFileSync(filePath, fileContent);
 }

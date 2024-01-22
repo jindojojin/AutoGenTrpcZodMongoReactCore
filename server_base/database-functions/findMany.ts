@@ -1,13 +1,16 @@
 import _ from "lodash";
-import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
-import {getSingleType} from "../../share/types/DataTypes";
-import {ISchemaConfig} from "../../share/types/ISchemaConfig";
-import {$manyToOneJoin, $objectIdToString, $stringToObjectId} from "./Utils";
-import {TRPCContext} from "../trpc";
-import {SCHEMAS_CONFIG} from "../../share/schema_configs";
-import {DATABASE_MODELS} from "../mongoose/DatabaseModels";
-import {$notAvailable} from "../../share/MongoDBUtils";
-import {DELETED_BY} from "../../share/constants/database_fields";
+import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
+import { $notAvailable } from "../../share/MongoDBUtils";
+import { DELETED_BY } from "../../share/constants/database_fields";
+import { SCHEMAS_CONFIG } from "../../share/schema_configs";
+import { getSingleType, isSchemaType } from "../../share/types/DataTypes";
+import { ISchemaConfig } from "../../share/types/ISchemaConfig";
+import { VIEWS_CONFIG } from "../../share/view_configs";
+import { VIEW_TYPE } from "../../views/ViewTypes";
+import { DATABASE_MODELS } from "../mongoose/DatabaseModels";
+import { DATABASE_VIEWS } from "../mongoose/DatabaseViews";
+import { TRPCContext } from "../trpc";
+import { $manyToOneJoin, $objectIdToString, $stringToObjectId } from "./Utils";
 
 export type CustomAggregate = (
     stages: [matchStage: any, selectStage: any, optionStage: any],
@@ -24,21 +27,21 @@ function getPopulate(config: any, schemaConfig?: ISchemaConfig<any>) {
 }
 
 export async function findMany(
-    ctx:TRPCContext,
-    schema: SCHEMA_TYPE,
+    ctx: TRPCContext,
+    schema: SCHEMA_TYPE | VIEW_TYPE,
     input: any,
     advancedQuery?: CustomAggregate,
 ) {
-    const SchemaConfig = ctx.SchemaConfig ?? SCHEMAS_CONFIG[schema]
+    const SchemaConfig = ctx.SchemaConfig ?? (isSchemaType(schema) ? SCHEMAS_CONFIG[schema as SCHEMA_TYPE] : VIEWS_CONFIG[schema as VIEW_TYPE])
     const excludeSoftDelete = SchemaConfig.softDelete ? $notAvailable(DELETED_BY) : {}
-    const Model = DATABASE_MODELS[schema]
+    const Model = isSchemaType(schema) ? DATABASE_MODELS[schema as SCHEMA_TYPE] : DATABASE_VIEWS[schema as VIEW_TYPE]
     let records: any;
     let total: any;
     if (advancedQuery) {
         const matchStage = _.compact([
             $objectIdToString(SchemaConfig?.relationKeys),
             input.where ? {
-                $match: {$and: [input.where, $notAvailable(DELETED_BY)]},
+                $match: { $and: [input.where, $notAvailable(DELETED_BY)] },
             } : null,
             $stringToObjectId(SchemaConfig?.relationKeys),
         ]);
@@ -66,21 +69,21 @@ export async function findMany(
             getPopulate(input.options?.populate, SchemaConfig),
         ];
         const stages = _.compact(_.flattenDeep(
-                advancedQuery(
-                    [
-                        matchStage
-                        ,
-                        selectStage
-                        ,
-                        optionStage
+            advancedQuery(
+                [
+                    matchStage
+                    ,
+                    selectStage
+                    ,
+                    optionStage
 
-                    ]),
-            ))
-        ;
+                ]),
+        ))
+            ;
         records = await Model.aggregate(stages);
     } else {
         records = await Model.find(
-            {$and: [input.where ?? {}, $notAvailable(DELETED_BY)]},
+            { $and: [input.where ?? {}, $notAvailable(DELETED_BY)] },
             input.select,
             input.options as any,
         ).lean();

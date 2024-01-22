@@ -1,12 +1,12 @@
-import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
-import {SCHEMAS_CONFIG} from "../../share/schema_configs";
-import {saveTempFiles} from "../file-storage/FileManager";
-import {DATABASE_MODELS} from "../mongoose/DatabaseModels";
 import mongoose from "mongoose";
+import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
+import { SCHEMAS_CONFIG } from "../../share/schema_configs";
+import { saveTempFiles } from "../file-storage/FileManager";
+import { DATABASE_MODELS } from "../mongoose/DatabaseModels";
 
 export async function moveTempFileToDB(
-    input: any | any[],
-    schema: SCHEMA_TYPE,
+  input: any | any[],
+  schema: SCHEMA_TYPE,
 ) {
   const FileTypeFields = SCHEMAS_CONFIG[schema].fileTypeKeys;
   const Result = Array.isArray(input) ? input : [input];
@@ -23,10 +23,10 @@ export async function moveTempFileToDB(
 }
 
 export function $joinTable(
-    path: string,
-    schema: SCHEMA_TYPE,
-    as?: string,
-    foreignField?: string,
+  path: string,
+  schema: SCHEMA_TYPE,
+  as?: string,
+  foreignField?: string,
 ) {
   return {
     $lookup: {
@@ -48,63 +48,79 @@ export function $unwind(path: string) {
 }
 
 export function $manyToOneJoin(
-    srcPath: string,
-    tgSchema: SCHEMA_TYPE,
-    as?: string,
+  srcPath: string,
+  tgSchema: SCHEMA_TYPE,
+  as?: string,
+  onlyIDMode?: boolean
 ) {
+  const fieldname = as ?? srcPath
   return [
     {
       $lookup: {
         from: DATABASE_MODELS[tgSchema].collection.name,
         localField: srcPath,
         foreignField: "_id",
-        as: as ?? srcPath,
+        as: fieldname,
       },
     },
-    $unwind(as ?? srcPath),
+    $unwind(fieldname),
+    onlyIDMode ? {
+      $set: {
+        [fieldname]: `$${fieldname}._id`
+      }
+    } : null
   ];
 }
 
 export function $oneToManyJoin(
-    tgPath: string,
-    tgSchema: SCHEMA_TYPE,
-    as?: string,
+  tgPath: string,
+  tgSchema: SCHEMA_TYPE,
+  as?: string,
+  onlyIDMode?: boolean,
+  localField:string = "_id"
 ) {
-  return {
+  const fieldname = as ?? DATABASE_MODELS[tgSchema].collection.name
+  return [{
     $lookup: {
       from: DATABASE_MODELS[tgSchema].collection.name,
-      localField: "_id",
+      localField: localField,
       foreignField: tgPath,
-      as: as ?? DATABASE_MODELS[tgSchema].collection.name,
+      as: fieldname,
     },
-  };
+  },
+  $unwind(fieldname),
+  onlyIDMode ? {
+    $set: {
+      [fieldname]: `$${fieldname}._id`
+    }
+  } : null];
 }
 
 export function $objectIdToString(paths?: any[]) {
   return paths?.length
-      ? {
-        $set: paths.reduce(
-            (acc, path) => ({...acc, [path]: {$toString: `$${path}`}}),
-            {},
-        ),
-      }
-      : undefined;
+    ? {
+      $set: paths.reduce(
+        (acc, path) => ({ ...acc, [path]: { $toString: `$${path}` } }),
+        {},
+      ),
+    }
+    : undefined;
 }
 
 export function $stringToObjectId(paths?: any[]) {
   return paths?.length
-      ? {
-        $set: paths.reduce(
-            (acc, path) => ({ ...acc, [path]: { $toObjectId: `$${path}` } }),
-            {},
-        ),
-      }
-      : undefined;
+    ? {
+      $set: paths.reduce(
+        (acc, path) => ({ ...acc, [path]: { $toObjectId: `$${path}` } }),
+        {},
+      ),
+    }
+    : undefined;
 }
 
 export async function findOneOrCreateNew<T>(
-    Model: mongoose.Model<T>,
-    query: any,
+  Model: mongoose.Model<T>,
+  query: any,
 ) {
   const document = await Model.findOne(query).exec();
   return document ? document : new Model();

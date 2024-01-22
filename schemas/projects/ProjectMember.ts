@@ -3,7 +3,8 @@ import { ISchemaDefinition } from "../../share/types/ISchemaDefinition";
 import { SCHEMA_TYPE } from "../SchemaTypes";
 
 export const ProjectMemberSchema : ISchemaDefinition={
-    project: {type:SCHEMA_TYPE.TEST_PROJECT, required:true},
+    testProject: {type:SCHEMA_TYPE.TEST_PROJECT, required:true, hidden:true},
     tester: {type: SCHEMA_TYPE.USER},
-    exclude: {type: BASIC_TYPE.BOOLEAN}
+    autoSyncFromTTv2:{type:BASIC_TYPE.BOOLEAN},
+    exclude: {type: BASIC_TYPE.BOOLEAN},
 }

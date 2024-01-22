@@ -1,75 +1,40 @@
-import {readFileSync, writeFileSync} from "fs";
-import {createFolderIfNotExist, getRelativePath, getSchemaFolder, getSchemaName, getTypeEnumText,} from "../genUtils";
+import { pascalCase } from "change-case";
+import { readFileSync, writeFileSync } from "fs";
 import path from "path";
-import {pascalCase} from "change-case";
-import {getObjectKeys} from "../../share/CommonFunctions";
-import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
+import { getObjectKeys } from "../../share/CommonFunctions";
+import { createFolderIfNotExist, getRelativePath, getSchemaFolder, getSchemaName, getTypeEnumText, } from "../genUtils";
 
-import {GenConfig} from "../../schemas";
+import { GenConfig } from "../../schemas";
+import { ViewGenConfig } from "../../views";
+import { VIEW_TYPE } from "../../views/ViewTypes";
 
-const RouterMethodMap = {
-    createMany: "mutation",
-    createOne: "mutation",
-    deleteMany: "mutation",
-    deleteOne: "mutation",
+const ViewRouterMethodMap = {
     exportToExcelFile: "mutation",
     findById: "query",
     findByIds: "mutation",
     findMany: "mutation",
     findOne: "query",
+    textSearch: "query",
+}
+
+const RouterMethodMap = {
+    ...ViewRouterMethodMap,
+    createMany: "mutation",
+    createOne: "mutation",
+    deleteMany: "mutation",
+    deleteOne: "mutation",
+
     importFromExcelFile: "mutation",
     importFromJsonArray: "mutation",
     importFromText: "mutation",
-    textSearch: "query",
+
     updateMany: "mutation",
     updateOne: "mutation",
     upsertMany: "mutation",
     upsertOne: "mutation",
 };
 
-const RouterParamsCodeMap = {
-    createMany: "ctx, {{DataType}}, input",
-    createOne: "ctx, {{DataType}}, input",
-    deleteMany: "ctx, {{DataType}}, input",
-    deleteOne: "ctx, {{DataType}}, input",
-    exportToExcelFile: "ctx, {{DataType}}, input",
-    findById: "ctx, {{DataType}}, input",
-    findByIds: "ctx, {{DataType}}, input",
-    findMany: "ctx, {{DataType}}, input",
-    findOne: "ctx, {{DataType}}, input",
-    importFromExcelFile: "ctx, {{DataType}}, input",
-    importFromJsonArray: "ctx, {{DataType}}, input",
-    importFromText: "ctx, {{DataType}}, input",
-    textSearch: "ctx, {{DataType}}, input",
-    updateMany: "ctx, {{DataType}}, input",
-    updateOne: "ctx, input,{{DataType}}",
-    upsertMany: "ctx, input,{{DataType}}",
-    upsertOne: "ctx, input,{{DataType}}",
-};
-
-const DynamicRouterParamsCodeMap = {
-    createMany: "ctx,input.input, DATABASE_MODELS[{{DataType}}]",
-    createOne: "ctx,input.ctx, {{DataType}}, input",
-    deleteMany: "input.input, DATABASE_MODELS[{{DataType}}]",
-    deleteOne: "input.input, DATABASE_MODELS[{{DataType}}]",
-    exportToExcelFile:
-        "input.input, DATABASE_MODELS[{{DataType}}],ctx.SchemaConfig as any",
-    findById: "input.input, DATABASE_MODELS[{{DataType}}]",
-    findByIds: "input.input, DATABASE_MODELS[{{DataType}}]",
-    findMany: "input.input, DATABASE_MODELS[{{DataType}}],ctx.SchemaConfig as any",
-    findOne: "input.input, DATABASE_MODELS[{{DataType}}]",
-    importFromExcelFile:
-        "ctx, input.input,ctx.ZodBase?.input as any,DATABASE_MODELS[{{DataType}}],ctx.SchemaConfig as any",
-    importFromJsonArray:
-        "ctx, input.input,ctx.ZodBase?.input as any,DATABASE_MODELS[{{DataType}}],ctx.SchemaConfig as any",
-    importFromText:
-        "ctx, input.input,ctx.ZodBase?.input as any,DATABASE_MODELS[{{DataType}}],ctx.SchemaConfig as any",
-    textSearch: "input.input,DATABASE_MODELS[{{DataType}}],ctx.SchemaConfig as any",
-    updateMany: "ctx, input.input, DATABASE_MODELS[{{DataType}}]",
-    updateOne: "ctx, input.ctx, {{DataType}}, input",
-    upsertMany: "ctx, input.input, DATABASE_MODELS[{{DataType}}]",
-    upsertOne: "ctx, input.input, DATABASE_MODELS[{{DataType}}]",
-};
 
 function getRouterCode(functionName: string, dynamic?: boolean) {
     const zod_name = pascalCase(functionName);
@@ -86,12 +51,11 @@ function getRouterCode(functionName: string, dynamic?: boolean) {
       .${RouterMethodMap[functionName as keyof typeof RouterMethodMap]}(({ ctx, input }) => DB_FUNC.${functionName}(ctx, {{DataType}}, input))`;
 }
 
-export function genBaseRouter(outDir: string,schema_type:SCHEMA_TYPE, genConfig: GenConfig) {
+export function genBaseRouter(outDir: string, schema_type: SCHEMA_TYPE, genConfig: GenConfig) {
     const ModuleName = getSchemaName(schema_type).SchemaName;
     const template = readFileSync(
         path.resolve(
-            `src/templates/${
-                genConfig.dynamic ? "Dynamic" : ""
+            `src/templates/${genConfig.dynamic ? "Dynamic" : ""
             }BaseRouterTemplate.txt`,
         ),
     ).toString();
@@ -113,9 +77,9 @@ export function genBaseRouter(outDir: string,schema_type:SCHEMA_TYPE, genConfig:
         .replaceAll("{{SchemaFolder}}", getSchemaFolder(genConfig.folder))
         .replaceAll("{{RelativePath}}", getRelativePath(genConfig.folder))
         .replaceAll("{{DataType}}", getTypeEnumText(schema_type))
-        .replaceAll("{{DATA_NAME}}",getTypeEnumText(schema_type))
-        .replaceAll("{{CATEGORY_NAME}}",getTypeEnumText(genConfig.dynamic?.category as SCHEMA_TYPE))
-        .replaceAll("{{PROPERTY_NAME}}",getTypeEnumText(genConfig.dynamic?.property as SCHEMA_TYPE))
+        .replaceAll("{{DATA_NAME}}", getTypeEnumText(schema_type))
+        .replaceAll("{{CATEGORY_NAME}}", getTypeEnumText(genConfig.dynamic?.category as SCHEMA_TYPE))
+        .replaceAll("{{PROPERTY_NAME}}", getTypeEnumText(genConfig.dynamic?.property as SCHEMA_TYPE))
         .replaceAll(
             "{{PropertyType}}",
             genConfig.dynamic ? getTypeEnumText(genConfig.dynamic?.property) : "",
@@ -123,6 +87,40 @@ export function genBaseRouter(outDir: string,schema_type:SCHEMA_TYPE, genConfig:
         .replaceAll(
             "{{CategoryType}}",
             genConfig.dynamic ? getTypeEnumText(genConfig.dynamic?.category) : "",
+        );
+    writeFileSync(filePath, fileContent);
+}
+
+export function genBaseRouterForView(outDir: string, view_type: VIEW_TYPE, viewGenConfig: ViewGenConfig) {
+    const ModuleName = getSchemaName(view_type).SchemaName;
+    const template = readFileSync(
+        path.resolve(
+            `src/templates/BaseRouterTemplateForView.txt`,
+        ),
+    ).toString();
+    const filePath = path.resolve(
+        `${outDir}/base_view_routers/${getSchemaFolder(viewGenConfig.folder)}${ModuleName}BaseRouter.ts`,
+    );
+    createFolderIfNotExist(filePath);
+
+    const routersCode = getObjectKeys(ViewRouterMethodMap)
+        .map((fn) => getRouterCode(fn));
+
+    const fileContent = template
+        .replaceAll("{{routerCodes}}", routersCode.join(",\n\n    "))
+        .replaceAll("{{ModuleName}}", ModuleName)
+        .replaceAll("{{schemaType}}", getTypeEnumText(view_type))
+        .replaceAll("{{SchemaFolder}}", getSchemaFolder(viewGenConfig.folder))
+        .replaceAll("{{RelativePath}}", getRelativePath(viewGenConfig.folder))
+        .replaceAll("{{DataType}}", getTypeEnumText(view_type))
+        .replaceAll("{{DATA_NAME}}", getTypeEnumText(view_type))
+        // .replaceAll("{{CATEGORY_NAME}}", getTypeEnumText(viewGenConfig.dynamic?.category as SCHEMA_TYPE))
+        // .replaceAll("{{PROPERTY_NAME}}", getTypeEnumText(viewGenConfig.dynamic?.property as SCHEMA_TYPE))
+        .replaceAll(
+            "{{PropertyType}}", "",
+        )
+        .replaceAll(
+            "{{CategoryType}}","",
         );
     writeFileSync(filePath, fileContent);
 }

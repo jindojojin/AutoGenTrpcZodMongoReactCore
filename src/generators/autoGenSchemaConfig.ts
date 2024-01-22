@@ -9,6 +9,8 @@ import {getObjectKeys} from "../../share/CommonFunctions";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 import {getSpecialKeys} from "../../share/SchemaUtils";
 import {GenConfig} from "../../schemas";
+import { VIEW_TYPE } from "../../views/ViewTypes";
+import { ViewGenConfig } from "../../views";
 
 function getFieldType(type: DataType): string {
     if (Array.isArray(type)) {
@@ -101,6 +103,44 @@ export function genSchemaConfig(outDir: string | string[], name: SCHEMA_TYPE, ge
     .replaceAll("{{SchemaFolder}}", getSchemaFolder(genConfig.folder))
     .replaceAll("{{RelativePath}}", getRelativePath(genConfig.folder))
     .replaceAll("{{dynamicConfig}}", getDynamicConfig(genConfig))
+    .replaceAll("{{fileTypeKeys}}", `[${fileTypeKeys.map((e) => `"${String(e)}"`)}]`)
+    .replaceAll("{{uniqueKeys}}", `[${uniqueKeys.map((e) => `"${String(e)}"`)}]`)
+    .replaceAll("{{exportKeys}}", `[${exportKeys.map((e) => `"${String(e)}"`)}]`)
+    .replaceAll("{{importKeys}}", `[${importKeys.map((e) => `"${String(e)}"`)}]`)
+    .replaceAll("{{relationKeys}}", `[${relationKeys.map((e) => `"${String(e)}"`)}]`)
+        .replaceAll("{{searchKeys}}", `[${searchKeys.map((e) => `"${String(e)}"`)}]`);
+    filePaths.forEach(filePath =>
+        writeFileSync(filePath, fileContent));
+}
+
+export function genSchemaConfigForView(outDir: string | string[], name: VIEW_TYPE, genConfig: ViewGenConfig) {
+    const ModuleName = getSchemaName(name).SchemaName;
+    const template = readFileSync(
+        path.resolve("src/templates/SchemaConfigTemplateForView.txt"),
+    ).toString();
+    if (!Array.isArray(outDir)) outDir = [outDir]
+    const filePaths = outDir.map(outDir => path.resolve(
+        `${outDir}/view_configs/${getSchemaFolder(
+            genConfig.folder,
+        )}${ModuleName}SchemaConfig.ts`,
+    ));
+    filePaths.forEach(filePath =>
+        createFolderIfNotExist(filePath));
+    const {
+        fileTypeKeys,
+        exportKeys,
+        searchKeys,
+        uniqueKeys,
+        relationKeys,
+        importKeys
+    } = getSpecialKeys(genConfig.view.schema);
+    const keyConfigs = getKeyConfigs(genConfig.view.schema, name)
+    const fileContent = template
+    .replaceAll("{{ModuleName}}", ModuleName)
+    .replaceAll("{{Module Name}}", name)
+    .replaceAll("{{keyConfigs}}", keyConfigs)
+    .replaceAll("{{SchemaFolder}}", getSchemaFolder(genConfig.folder))
+    .replaceAll("{{RelativePath}}", getRelativePath(genConfig.folder))
     .replaceAll("{{fileTypeKeys}}", `[${fileTypeKeys.map((e) => `"${String(e)}"`)}]`)
     .replaceAll("{{uniqueKeys}}", `[${uniqueKeys.map((e) => `"${String(e)}"`)}]`)
     .replaceAll("{{exportKeys}}", `[${exportKeys.map((e) => `"${String(e)}"`)}]`)

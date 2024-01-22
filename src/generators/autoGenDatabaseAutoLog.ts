@@ -29,7 +29,6 @@ export function autoGenDatabaseAutoLog(
   const filePath = path.resolve(
     `${outDir}/mongoose/DatabaseAutoLog.ts`,
   );
-  console.log("File path:", filePath);
   createFolderIfNotExist(filePath);
   const template = readFileSync(
     path.resolve("src/templates/DatabaseAutoLogTemplate.txt"),
