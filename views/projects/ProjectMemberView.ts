@@ -1,5 +1,5 @@
 import { SCHEMA_TYPE } from "../../schemas/SchemaTypes"
-import { $inner_join, $left_join } from "../../server_base/database-functions/ViewUtils"
+import { $left_join } from "../../server_base/database-functions/ViewUtils"
 import { IViewDefinition } from "../../share/types/IViewDefinition"
 
 export const ProjectMemberView: IViewDefinition = {

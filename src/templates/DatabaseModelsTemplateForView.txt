@@ -1,8 +1,16 @@
 import mongoose, {Schema} from "mongoose";
 import {VIEW_TYPE} from "../../views/ViewTypes";
-import { getViewConfig } from "../database-functions/ViewUtils";
-
+import { ViewGenList } from "../../views";
+import _ from "lodash"
 {{imports}}
+
+const pluralize = mongoose.pluralize() as (str: string) => string;
+export function getViewConfig(view: VIEW_TYPE) {
+    return {
+        viewOn: pluralize(ViewGenList[view].view.viewOn),
+        pipeline: _.compact(_.flattenDeep(ViewGenList[view].view.pineline)),
+    }
+}
 
 {{exports}}
 export const DATABASE_VIEWS: Record<VIEW_TYPE, mongoose.Model<any>> = {

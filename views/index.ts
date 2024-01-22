@@ -8,5 +8,5 @@ export type ViewGenConfig = {
 }
 
 export const ViewGenList: Record<VIEW_TYPE, ViewGenConfig> = {
-    [VIEW_TYPE.TEST_PROJECT_MEMBERS_VIEW]: { view: ProjectMemberView }
+    [VIEW_TYPE.TEST_PROJECT_MEMBERS_VIEW]: { view: ProjectMemberView, folder:"projects" }
 }
