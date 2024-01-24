@@ -2,21 +2,16 @@
  * Các hàm thông dụng liên quan đến việc tạo view sử dụng SCHEMA_TYPE và VIEW_TYPE
  */
 import { } from "change-case";
-import _ from "lodash";
-import mongoose from "mongoose";
 import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
-import { ViewGenList } from "../../views";
-import { VIEW_TYPE } from "../../views/ViewTypes";
+import { getMongooseCollectionName } from "../../share/CommonFunctions";
 
 
-
-const pluralize = mongoose.pluralize() as (str: string) => string
 
 export function $inner_join(from: SCHEMA_TYPE, localField: string, foreignField: string, as: string, fullObject: boolean = false) {
     return [
         {
             $lookup: {
-                from: pluralize(from), // Có thể không tồn tại khi gen code --> thêm ?? "" để tránh type check
+                from: getMongooseCollectionName(from),
                 localField,
                 foreignField,
                 as,
@@ -40,7 +35,7 @@ export function $left_join(from: SCHEMA_TYPE, localField: string, foreignField: 
     return [
         {
             $lookup: {
-                from: pluralize(from), // Có thể không tồn tại khi gen code --> thêm ?? "" để tránh type check
+                from: getMongooseCollectionName(from),
                 localField,
                 foreignField,
                 as,
@@ -52,7 +47,7 @@ export function $left_join(from: SCHEMA_TYPE, localField: string, foreignField: 
                 preserveNullAndEmptyArrays: true,
             },
         },
-        fullObject ? {
+        !fullObject ? {
             $set: {
                 [as]: `$${as}._id`
             }

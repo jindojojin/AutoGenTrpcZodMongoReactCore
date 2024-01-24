@@ -19,7 +19,7 @@ export const ProjectMemberView: IViewDefinition = {
                     $addToSet: "$testcase.tester",
                 },
                 a_testers: {
-                    $addToSet: "$testcase.a_tester",
+                    $addToSet: "$testcase.a_tester", 
                 },
                 reviewers: {
                     $addToSet: "$testcase.reviewers",
@@ -49,13 +49,13 @@ export const ProjectMemberView: IViewDefinition = {
             },
         },
         $left_join(SCHEMA_TYPE.PLM_CODE, "_id", "testProject", "plm"),
-        $left_join(SCHEMA_TYPE.PLM_DEFECT, "plm", "plm", "plm_code", true),
+        $left_join(SCHEMA_TYPE.PLM_DEFECT, "plm", "plm_code", "defect", true),
         {
             $group: {
                 _id: "$_id",
                 ttv2_testers: {
                     $first: "$ttv2_members",
-                },
+                },  
                 plm_hunters: {
                     $addToSet: "$defect.user_submit",
                 },

@@ -11,6 +11,7 @@ import { VIEW_TYPE } from "../../views/ViewTypes";
 export function autoGenDatabaseModel(outDir: string, GenList: Record<SCHEMA_TYPE, GenConfig>) {
     const importLines: string[] = [];
     const exportLines: string[] = [];
+    const initModelLines: string[] = [];
     const exportModelMapingLines: string[] = [];
     getObjectKeys(GenList).map((_key) => {
         const key = _key as SCHEMA_TYPE;
@@ -18,8 +19,9 @@ export function autoGenDatabaseModel(outDir: string, GenList: Record<SCHEMA_TYPE
 
         importLines.push(`${ModuleName}MongooseSchema`);
         exportLines.push(
-            `export const ${ModuleName}Model = mongoose.model("${ModuleName}",  ${ModuleName}MongooseSchema);\n ${ModuleName}Model.syncIndexes()`,
+            `export const ${ModuleName}Model = mongoose.model(${getTypeEnumText(key)},  ${ModuleName}MongooseSchema);`,
         );
+        initModelLines.push(`await ${ModuleName}Model.syncIndexes();`)
         exportModelMapingLines.push(
             `[${getTypeEnumText(key)}] : ${ModuleName}Model,`,
         );
@@ -36,6 +38,7 @@ export function autoGenDatabaseModel(outDir: string, GenList: Record<SCHEMA_TYPE
             `import {${importLines.join(",")}} from "./MongooseSchemas"`,
         )
         .replaceAll("{{exports}}", exportLines.join("\n"))
+        .replaceAll("{{initModels}}", initModelLines.join("\n"))
         .replaceAll("{{exportModelMapping}}", exportModelMapingLines.join("\n"));
     writeFileSync(filePath, fileContent);
 }
@@ -43,14 +46,18 @@ export function autoGenDatabaseModel(outDir: string, GenList: Record<SCHEMA_TYPE
 export function autoGenDatabaseModelForView(outDir: string, GenList: Record<VIEW_TYPE, ViewGenConfig>) {
     const importLines: string[] = [];
     const exportLines: string[] = [];
+    const initViewLines: string[] = [];
     const exportModelMapingLines: string[] = [];
     getObjectKeys(GenList).map((key) => {
         const ModuleName = getSchemaName(key).SchemaName;
 
         importLines.push(`${ModuleName}MongooseSchema`);
         exportLines.push(
-            `export const ${ModuleName}Model = mongoose.model("${ModuleName}",  ${ModuleName}MongooseSchema);\n ${ModuleName}Model.createCollection(getViewConfig(${getTypeEnumText(key)}));`,
+            `export const ${ModuleName}Model = mongoose.model(${getTypeEnumText(key)},  ${ModuleName}MongooseSchema);\n`,
         );
+        initViewLines.push(`await ${ModuleName}Model.collection.drop();
+        await ${ModuleName}Model.createCollection(getViewConfig(${getTypeEnumText(key)}))
+      `)
         exportModelMapingLines.push(
             `[${getTypeEnumText(key)}] : ${ModuleName}Model,`,
         );
@@ -67,6 +74,7 @@ export function autoGenDatabaseModelForView(outDir: string, GenList: Record<VIEW
             `import {${importLines.join(",")}} from "./MongooseViews"`,
         )
         .replaceAll("{{exports}}", exportLines.join("\n"))
+        .replaceAll("{{initViews}}", initViewLines.join("\n"))
         .replaceAll("{{exportModelMapping}}", exportModelMapingLines.join("\n"));
     writeFileSync(filePath, fileContent);
 }

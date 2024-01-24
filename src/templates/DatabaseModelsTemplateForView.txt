@@ -1,18 +1,23 @@
-import mongoose, {Schema} from "mongoose";
-import {VIEW_TYPE} from "../../views/ViewTypes";
+import _ from "lodash";
+import mongoose from "mongoose";
+import { getMongooseCollectionName } from "../../share/CommonFunctions";
 import { ViewGenList } from "../../views";
-import _ from "lodash"
+import { VIEW_TYPE } from "../../views/ViewTypes";
 {{imports}}
 
-const pluralize = mongoose.pluralize() as (str: string) => string;
-export function getViewConfig(view: VIEW_TYPE) {
-    return {
-        viewOn: pluralize(ViewGenList[view].view.viewOn),
-        pipeline: _.compact(_.flattenDeep(ViewGenList[view].view.pineline)),
-    }
+export function getViewConfig(view: VIEW_TYPE): Parameters<typeof mongoose.Model.createCollection>[0] {
+  return {
+    viewOn: getMongooseCollectionName(ViewGenList[view].view.viewOn),
+    pipeline: _.compact(_.flattenDeep(ViewGenList[view].view.pineline)),
+  }
 }
 
 {{exports}}
+
+export async function initViews() {
+  {{initViews}}
+}
+
 export const DATABASE_VIEWS: Record<VIEW_TYPE, mongoose.Model<any>> = {
   {{exportModelMapping}}
 };

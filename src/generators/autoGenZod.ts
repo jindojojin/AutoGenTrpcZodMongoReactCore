@@ -7,7 +7,7 @@ import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
 import { getObjectKeys } from "../../share/CommonFunctions";
 import { BASIC_TYPE, DataType, isBasicType, isFileType, isSchemaType, } from "../../share/types/DataTypes";
 import { ISchemaDefinition, ISchemaFieldConfig, } from "../../share/types/ISchemaDefinition";
-import { ViewGenConfig } from "../../views";
+import { ViewGenConfig, ViewGenList } from "../../views";
 import { VIEW_TYPE } from "../../views/ViewTypes";
 import {
   createFolderIfNotExist,
@@ -137,11 +137,11 @@ function getZodSchema(
   };
 }
 
-function getImportZodList(schema?: SCHEMA_TYPE) {
+function getImportZodList(schema: SCHEMA_TYPE | VIEW_TYPE) {
   //schema=undefined -> sử dụng cho view --> import tất cả
-  const relativePath = schema ? getRelativePath(
-    GenList[schema].folder,
-  ) : "../zods/"
+  const relativePath = isSchemaType(schema) ? getRelativePath(
+    GenList[schema as SCHEMA_TYPE].folder,
+  ) : getRelativePath(ViewGenList[schema as VIEW_TYPE].folder) + "../zods/"
 
   return getObjectKeys(GenList)
     .filter((s) => s != schema)
@@ -193,7 +193,7 @@ export function genZodFileForView(outDir: string, view_type: VIEW_TYPE, viewGenC
     .replaceAll("{{ModuleName}}", ViewName)
     .replaceAll(
       "{{import_other_zods}}",
-      getImportZodList().join("\n"),
+      getImportZodList(view_type).join("\n"),
     )
     .replaceAll("{{RelativePath}}", getRelativePath(viewGenConfig.folder));
   writeFileSync(filePath, fileContent);
