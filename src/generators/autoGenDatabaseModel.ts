@@ -19,7 +19,7 @@ export function autoGenDatabaseModel(outDir: string, GenList: Record<SCHEMA_TYPE
 
         importLines.push(`${ModuleName}MongooseSchema`);
         exportLines.push(
-            `export const ${ModuleName}Model = mongoose.model(${getTypeEnumText(key)},  ${ModuleName}MongooseSchema);`,
+            `export const ${ModuleName}Model = mongoose.model("${ModuleName}",  ${ModuleName}MongooseSchema);`,
         );
         initModelLines.push(`await ${ModuleName}Model.syncIndexes();`)
         exportModelMapingLines.push(
@@ -53,7 +53,7 @@ export function autoGenDatabaseModelForView(outDir: string, GenList: Record<VIEW
 
         importLines.push(`${ModuleName}MongooseSchema`);
         exportLines.push(
-            `export const ${ModuleName}Model = mongoose.model(${getTypeEnumText(key)},  ${ModuleName}MongooseSchema);\n`,
+            `export const ${ModuleName}Model = mongoose.model("${ModuleName}",  ${ModuleName}MongooseSchema);\n`,
         );
         initViewLines.push(`await ${ModuleName}Model.collection.drop();
         await ${ModuleName}Model.createCollection(getViewConfig(${getTypeEnumText(key)}))
