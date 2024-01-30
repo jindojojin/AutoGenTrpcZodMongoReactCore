@@ -9,6 +9,7 @@ import {getObjectKeys} from "./CommonFunctions";
 import {SCHEMA_TYPE} from "../schemas/SchemaTypes";
 import {DB_FUNC} from "../server_base/database-functions";
 import {DYNAMIC_CATEGORY_ID} from "./constants/database_fields";
+import {VIEW_TYPE} from "../views/ViewTypes";
 
 export function getSpecialKeys<T>(SchemaDefinition: ISchemaDefinition<T>) {
     const fileTypeKeys: (keyof T)[] = [];
@@ -99,14 +100,16 @@ export function getLinkedSchemaConfig<T>(fieldConfig: ISchemaFieldConfig) {
         ] as ISchemaConfig<T>;
 }
 
-export function getSchemaName(schema: SCHEMA_TYPE) {
+const DB_TYPE = {...SCHEMA_TYPE, ...VIEW_TYPE}
+
+export function getSchemaName(schema: SCHEMA_TYPE | VIEW_TYPE) {
     const original_name =
-        getObjectKeys(SCHEMA_TYPE).find((e) => SCHEMA_TYPE[e] === schema) ?? "";
+        getObjectKeys(DB_TYPE).find((e) => DB_TYPE[e] === schema) ?? "";
     const SCHEMA_NAME = constantCase(original_name);
     const SchemaName = pascalCase(SCHEMA_NAME);
     const schemaName = camelCase(SCHEMA_NAME);
     const schema_name = snakeCase(SCHEMA_NAME);
-    return { SCHEMA_NAME, SchemaName, schema_name, schemaName };
+    return {SCHEMA_NAME, SchemaName, schema_name, schemaName};
 }
 
 export type GenConfig = {

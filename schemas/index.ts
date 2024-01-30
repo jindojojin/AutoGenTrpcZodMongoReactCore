@@ -1,29 +1,29 @@
 // Table name use for create relationship in schemas and automatic generate route,....
-import { withAutoLog } from "../server_base/auto-logs/AutoLogSchema";
-import { SystemScopeSchema, SystemUserScopeSchema } from "../server_base/basic-auth/AuthSchemas";
-import { DB_FUNC, excludeAllExcept } from "../server_base/database-functions";
+import {withAutoLog} from "../server_base/auto-logs/AutoLogSchema";
+import {SystemScopeSchema, SystemUserScopeSchema} from "../server_base/basic-auth/AuthSchemas";
+import {DB_FUNC, excludeAllExcept} from "../server_base/database-functions";
 import {
     getDynamicSchemaGenConfigs
 } from "../server_base/trpc-dynamic-routes/dynamic_table_schema/getDynamicSchemaDefinition";
-import { ISchemaDefinition } from "../share/types/ISchemaDefinition";
-import { SCHEMA_TYPE } from "./SchemaTypes";
-import { AssetSchema } from "./assets/Asset";
-import { AssetCategorySchema } from "./assets/AssetCategory";
-import { AssetInvoiceSchema } from "./assets/AssetInvoice";
-import { AssetPicSchema } from "./assets/AssetPic";
-import { AssetStorageSchema } from "./assets/AssetStorage";
-import { AssetTransferSchema } from "./assets/AssetTransfer";
-import { PLMCodeSchema } from "./projects/PLMCode";
-import { PLMDefectSchema } from "./projects/PLMDefect";
-import { ProjectSchema } from "./projects/Project";
-import { ProjectMemberSchema } from "./projects/ProjectMember";
-import { TTv2TestCaseSchema } from "./projects/TTv2TestCase";
-import { TTv2TestSetSchema } from "./projects/TTv2TestSet";
-import { TTv2TestSuiteSchema } from "./projects/TTv2TestSuite";
-import { TestProjectSchema } from "./projects/TestProject";
-import { TaskSchema } from "./tasks/Task";
-import { TaskCheckItemSchema } from "./tasks/TaskCheckItem";
-import { UserSchema } from "./users/User";
+import {ISchemaDefinition} from "../share/types/ISchemaDefinition";
+import {SCHEMA_TYPE} from "./SchemaTypes";
+import {AssetSchema} from "./assets/Asset";
+import {AssetCategorySchema} from "./assets/AssetCategory";
+import {AssetInvoiceSchema} from "./assets/AssetInvoice";
+import {AssetPicSchema} from "./assets/AssetPic";
+import {AssetStorageSchema} from "./assets/AssetStorage";
+import {AssetTransferSchema} from "./assets/AssetTransfer";
+import {PLMCodeSchema} from "./projects/PLMCode";
+import {PLMDefectSchema} from "./projects/PLMDefect";
+import {ProjectSchema} from "./projects/Project";
+import {ProjectMemberBlacklistSchema} from "./projects/ProjectMember";
+import {TTv2TestCaseSchema} from "./projects/TTv2TestCase";
+import {TTv2TestSetSchema} from "./projects/TTv2TestSet";
+import {TTv2TestSuiteSchema} from "./projects/TTv2TestSuite";
+import {TestProjectSchema} from "./projects/TestProject";
+import {TaskSchema} from "./tasks/Task";
+import {TaskCheckItemSchema} from "./tasks/TaskCheckItem";
+import {UserSchema} from "./users/User";
 
 export type GenConfig = {
     schema: ISchemaDefinition;
@@ -100,7 +100,11 @@ export const GenList: Record<SCHEMA_TYPE, GenConfig> = {
         schema: PLMCodeSchema,
         folder: "projects",
     },
-    [SCHEMA_TYPE.PROJECT_MEMBER]:{schema: ProjectMemberSchema, folder:"projects"},
+    [SCHEMA_TYPE.PROJECT_MEMBER_BLACKLIST]: {
+        schema: ProjectMemberBlacklistSchema,
+        folder: "projects",
+        excludeFunctions: excludeAllExcept(["createOne", "deleteOne"])
+    },
     [SCHEMA_TYPE.PLM_DEFECT]: {schema: PLMDefectSchema, folder: "projects"},
     [SCHEMA_TYPE.PROJECT]: {schema: ProjectSchema, folder: "projects"},
     [SCHEMA_TYPE.TEST_PROJECT]: {

@@ -1,8 +1,9 @@
 import { DATABASE_ACTIONS } from "./constants/authentication";
 
-import { getSchemaName } from "./SchemaUtils";
-import { SCHEMA_TYPE } from "../schemas/SchemaTypes";
 import _ from "lodash";
+import { SCHEMA_TYPE } from "../schemas/SchemaTypes";
+import { getSchemaName } from "./SchemaUtils";
+import { VIEW_TYPE } from "../views/ViewTypes";
 
 export const ADMIN_SCOPE = "SYSTEM_ADMIN";
 
@@ -12,7 +13,7 @@ export enum SPECIFIC_SCOPE {
 }
 
 export function action2scope(
-    table: SCHEMA_TYPE,
+    table: SCHEMA_TYPE | VIEW_TYPE,
     action: DATABASE_ACTIONS,
     field?: string,
 ) {

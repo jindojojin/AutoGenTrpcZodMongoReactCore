@@ -32,12 +32,12 @@ copyFile(path.resolve('views/ViewTypes.ts'), clientPath("views"))//
 autoGenSchemaType([serverPath("share/types"), clientPath("share/types")], serverPath("server_base"), GenList, ViewGenList);//
 
 //Schemas
-autoGenSchemaConfigIndex([serverPath("share"), clientPath("share")], GenList);//
+autoGenSchemaConfigIndex([serverPath("share"), clientPath("share")], GenList, ViewGenList);//
 autoGenDatabaseModel(serverPath("server_base"), GenList);//
 autoGenMongooseSchema(serverPath("server_base"), GenList);//
 autoGenZodIndex(serverPath("server_base"), GenList);//
-autoGenBaseRouterIndex(serverPath("server_base"), GenList);
-autoGenDatabaseAPI([serverPath("share"), clientPath("share")], GenList);
+autoGenBaseRouterIndex(serverPath("server_base"), GenList);//
+autoGenDatabaseAPI([serverPath("share"), clientPath("share")], GenList, ViewGenList);
 
 
 autoGenDatabaseAutoLog(serverPath("server_base"), GenList);
@@ -51,11 +51,11 @@ getObjectKeys(GenList).forEach((schema_type) => {
 });
 
 //Views
-autoGenSchemaConfigIndexForView([serverPath("share"), clientPath("share")], ViewGenList);//
+// autoGenSchemaConfigIndexForView([serverPath("share"), clientPath("share")], ViewGenList);//
 autoGenDatabaseModelForView(serverPath("server_base"), ViewGenList);//
 autoGenMongooseSchemaForView(serverPath("server_base"), ViewGenList);
 autoGenZodIndexForView(serverPath("server_base"), ViewGenList);//
-autoGenBaseRouterIndexForView(serverPath("server_base"), ViewGenList);
+autoGenBaseRouterIndexForView(serverPath("server_base"), ViewGenList);//
 
 
 getObjectKeys(ViewGenList).forEach((view_type) => {

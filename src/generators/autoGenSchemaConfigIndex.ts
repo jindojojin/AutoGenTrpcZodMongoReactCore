@@ -1,27 +1,32 @@
-import { readFileSync, writeFileSync } from "fs";
+import {readFileSync, writeFileSync} from "fs";
 import path from "path";
-import {
-    createFolderIfNotExist,
-    getSchemaFolder,
-    getSchemaName,
-    getTypeEnumText,
-} from "../genUtils";
+import {createFolderIfNotExist, getSchemaFolder, getSchemaName, getTypeEnumText,} from "../genUtils";
 
-import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 
-import { GenConfig } from "../../schemas";
-import { getObjectKeys } from "../../share/CommonFunctions";
-import { ViewGenConfig } from "../../views";
-import { VIEW_TYPE } from "../../views/ViewTypes";
+import {GenConfig} from "../../schemas";
+import {getObjectKeys} from "../../share/CommonFunctions";
+import {ViewGenConfig} from "../../views";
+import {VIEW_TYPE} from "../../views/ViewTypes";
 
 export function autoGenSchemaConfigIndex(outDir: string | string[],
-    GenList: Record<SCHEMA_TYPE, GenConfig>
-) {
+                                         GenList: Record<SCHEMA_TYPE, GenConfig>,
+                                         ViewGenList: Record<VIEW_TYPE, ViewGenConfig>) {
     const importLines: string[] = [];
     const exportLines: string[] = [];
-    Object.keys(GenList).forEach((_key) => {
-        const key = _key as SCHEMA_TYPE;
+    getObjectKeys(GenList).forEach((key) => {
         const genConfig = GenList[key];
+        const ModuleName = getSchemaName(key).SchemaName;
+        importLines.push(
+            `import {${ModuleName}SchemaConfig} from "./${getSchemaFolder(
+                genConfig.folder,
+            )}${ModuleName}SchemaConfig";`,
+        );
+        exportLines.push(`[${getTypeEnumText(key)}]: ${ModuleName}SchemaConfig`);
+    });
+
+    getObjectKeys(ViewGenList).forEach((key) => {
+        const genConfig = ViewGenList[key];
         const ModuleName = getSchemaName(key).SchemaName;
         importLines.push(
             `import {${ModuleName}SchemaConfig} from "./${getSchemaFolder(
@@ -38,8 +43,8 @@ export function autoGenSchemaConfigIndex(outDir: string | string[],
         path.resolve("src/templates/SchemaConfigIndexTemplate.txt"),
     ).toString();
     const fileContent = template
-        .replaceAll("{{imports}}", importLines.join("\n"))
-        .replaceAll("{{exports}}", exportLines.join(",\n  "));
+    .replaceAll("{{imports}}", importLines.join("\n"))
+    .replaceAll("{{exports}}", exportLines.join(",\n  "));
     filePaths.forEach(filePath =>
         writeFileSync(filePath, fileContent));
 }

@@ -1,7 +1,8 @@
 import {SCHEMA_TYPE} from "../../../schemas/SchemaTypes";
+import {VIEW_TYPE} from "../../../views/ViewTypes";
 
 export type APIConfigs<T = any> = {
-  schema: SCHEMA_TYPE;
+  schema: SCHEMA_TYPE|VIEW_TYPE;
   dynamic?: {
     categoryId?: string;
   };

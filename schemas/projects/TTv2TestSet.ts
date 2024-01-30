@@ -1,7 +1,8 @@
 import {BASIC_TYPE} from "../../share/types/DataTypes";
 import {ISchemaDefinition} from "../../share/types/ISchemaDefinition";
 import {SCHEMA_TYPE} from "../SchemaTypes";
-import {TTV2_STATES} from "./TTv2TestCase";
+
+import {TTV2_STATES} from "../../share/constants/share_constants";
 
 export const TTv2TestSetSchema: ISchemaDefinition = {
   tpid: { type: SCHEMA_TYPE.TTV2_TEST_SUITE, hidden: true },

@@ -120,7 +120,7 @@ export function genSchemaConfigForView(outDir: string | string[], name: VIEW_TYP
     ).toString();
     if (!Array.isArray(outDir)) outDir = [outDir]
     const filePaths = outDir.map(outDir => path.resolve(
-        `${outDir}/view_configs/${getSchemaFolder(
+        `${outDir}/schema_configs/${getSchemaFolder(
             genConfig.folder,
         )}${ModuleName}SchemaConfig.ts`,
     ));

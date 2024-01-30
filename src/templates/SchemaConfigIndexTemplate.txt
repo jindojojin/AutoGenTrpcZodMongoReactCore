@@ -1,5 +1,6 @@
 import {ISchemaConfig} from "../types/ISchemaConfig";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import {VIEW_TYPE} from "../../views/ViewTypes";
 {{imports}}
 
 export const SCHEMAS_CONFIG = {

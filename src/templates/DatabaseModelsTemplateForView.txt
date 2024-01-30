@@ -1,6 +1,6 @@
 import _ from "lodash";
 import mongoose from "mongoose";
-import { getMongooseCollectionName } from "../../share/CommonFunctions";
+import { getMongooseCollectionName } from "./Utils";
 import { ViewGenList } from "../../views";
 import { VIEW_TYPE } from "../../views/ViewTypes";
 {{imports}}
