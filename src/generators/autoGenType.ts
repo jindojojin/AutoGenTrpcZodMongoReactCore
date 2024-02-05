@@ -1,15 +1,17 @@
-import { writeFileSync } from "fs";
+import {writeFileSync} from "fs";
 import _ from "lodash";
 import path from "path";
-import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
-import { getObjectKeys } from "../../share/CommonFunctions";
-import { BASIC_TYPE, DataType, isBasicType, isFileType, isSchemaType, } from "../../share/types/DataTypes";
-import { createFolderIfNotExist, getSchemaName } from "../genUtils";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import {getObjectKeys} from "../../share/CommonFunctions";
+import {BASIC_TYPE, DataType, isBasicType, isFileType, isSchemaType,} from "../../share/types/DataTypes";
+import {createFolderIfNotExist, getSchemaName} from "../genUtils";
 
-import { GenConfig } from "../../schemas";
-import { ISchemaDefinition } from "../../share/types/ISchemaDefinition";
-import { ViewGenConfig } from "../../views";
-import { VIEW_TYPE } from "../../views/ViewTypes";
+import {GenConfig} from "../../schemas";
+import {ISchemaDefinition} from "../../share/types/ISchemaDefinition";
+import {ViewGenConfig} from "../../views";
+import {VIEW_TYPE} from "../../views/ViewTypes";
+import {TABLE_API} from "../../custom_apis/TableAPI";
+import {TableAPIGenConfig} from "../../custom_apis/index.js";
 
 const BasicTypeStr: Record<BASIC_TYPE, string> = {
     [BASIC_TYPE.BOOLEAN]: "boolean",
@@ -80,14 +82,13 @@ function getViewTypeStr(view: VIEW_TYPE, ViewDefinition: ViewGenConfig) {
 }
 
 
-
-export function autoGenSchemaType(publicOutDir: string | string[], privateOutDir: string, SchemaGenList: Record<SCHEMA_TYPE, GenConfig>, ViewGenList: Record<VIEW_TYPE, ViewGenConfig>) {
+export function autoGenSchemaType(publicOutDir: string | string[], privateOutDir: string, SchemaGenList: Record<SCHEMA_TYPE, GenConfig>, ViewGenList: Record<VIEW_TYPE, ViewGenConfig>, TableAPIGen: Record<TABLE_API, TableAPIGenConfig>) {
     const schemaTypes = getObjectKeys(SchemaGenList).map((schema) =>
         getSchemaTypeStr(schema, SchemaGenList[schema]),
     );
 
     const viewTypes = getObjectKeys(ViewGenList).map((view) => getViewTypeStr(view, ViewGenList[view]))
-
+    const tableApiTypes = getObjectKeys(TableAPIGen).map(table => getTypeObjectStr(TableAPIGen[table].config.schema, table))
     if (!Array.isArray(publicOutDir)) publicOutDir = [publicOutDir]
     const publicFilePaths = publicOutDir.map(publicOutDir => path.resolve(`${publicOutDir}/DatabaseTypes.ts`));
     const privateFilePath = path.resolve(`${privateOutDir}/mongoose/DatabaseTypes.ts`);
@@ -95,9 +96,9 @@ export function autoGenSchemaType(publicOutDir: string | string[], privateOutDir
     createFolderIfNotExist(privateFilePath);
     publicFilePaths.forEach(publicFilePath => writeFileSync(
         publicFilePath,
-        [...schemaTypes, ...viewTypes].map((s) => s.publicType).join(";\n")));
+        [...schemaTypes, ...viewTypes, ...tableApiTypes].map((s) => s.publicType).join(";\n")));
     writeFileSync(
         privateFilePath,
-        [...schemaTypes, ...viewTypes].map((s) => s.privateType).join(";\n"),
+        [...schemaTypes, ...viewTypes, ...tableApiTypes].map((s) => s.privateType).join(";\n"),
     );
 }

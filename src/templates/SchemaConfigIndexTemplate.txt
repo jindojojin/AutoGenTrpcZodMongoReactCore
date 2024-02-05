@@ -1,6 +1,7 @@
 import {ISchemaConfig} from "../types/ISchemaConfig";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 import {VIEW_TYPE} from "../../views/ViewTypes";
+import { TABLE_API } from "../../custom_apis/TableAPI";
 {{imports}}
 
 export const SCHEMAS_CONFIG = {

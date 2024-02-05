@@ -1,15 +1,30 @@
-import {camelCase, capitalCase, constantCase, pascalCase, snakeCase,} from "change-case";
+import {
+    camelCase,
+    capitalCase,
+    constantCase,
+    pascalCase,
+    snakeCase,
+} from "change-case";
 import _ from "lodash";
-import {SCHEMAS_CONFIG} from "./schema_configs";
-import {FILE_TYPE, getSingleType, isBasicType, isFileType, isSchemaType,} from "./types/DataTypes";
-import {ISchemaConfig} from "./types/ISchemaConfig";
-import {ISchemaDefinition, ISchemaFieldConfig,} from "./types/ISchemaDefinition";
+import { SCHEMAS_CONFIG } from "./schema_configs";
+import {
+    FILE_TYPE,
+    getSingleType,
+    isBasicType,
+    isFileType,
+    isSchemaType,
+} from "./types/DataTypes";
+import { ISchemaConfig } from "./types/ISchemaConfig";
+import {
+    ISchemaDefinition,
+    ISchemaFieldConfig,
+} from "./types/ISchemaDefinition";
 
-import {getObjectKeys} from "./CommonFunctions";
-import {SCHEMA_TYPE} from "../schemas/SchemaTypes";
-import {DB_FUNC} from "../server_base/database-functions";
-import {DYNAMIC_CATEGORY_ID} from "./constants/database_fields";
-import {VIEW_TYPE} from "../views/ViewTypes";
+import { getObjectKeys } from "./CommonFunctions";
+import { SCHEMA_TYPE } from "../schemas/SchemaTypes";
+import { DYNAMIC_CATEGORY_ID } from "./constants/database_fields";
+import { VIEW_TYPE } from "../views/ViewTypes";
+import { TABLE_API } from "../custom_apis/TableAPI";
 
 export function getSpecialKeys<T>(SchemaDefinition: ISchemaDefinition<T>) {
     const fileTypeKeys: (keyof T)[] = [];
@@ -36,7 +51,7 @@ export function getSpecialKeys<T>(SchemaDefinition: ISchemaDefinition<T>) {
         fileTypeKeys,
         searchKeys,
         uniqueKeys,
-        importKeys
+        importKeys,
     };
 }
 
@@ -102,26 +117,15 @@ export function getLinkedSchemaConfig<T>(fieldConfig: ISchemaFieldConfig) {
 
 const DB_TYPE = {...SCHEMA_TYPE, ...VIEW_TYPE}
 
-export function getSchemaName(schema: SCHEMA_TYPE | VIEW_TYPE) {
+export function getSchemaName(schema: SCHEMA_TYPE | VIEW_TYPE | TABLE_API) {
     const original_name =
         getObjectKeys(DB_TYPE).find((e) => DB_TYPE[e] === schema) ?? "";
     const SCHEMA_NAME = constantCase(original_name);
     const SchemaName = pascalCase(SCHEMA_NAME);
     const schemaName = camelCase(SCHEMA_NAME);
     const schema_name = snakeCase(SCHEMA_NAME);
-    return {SCHEMA_NAME, SchemaName, schema_name, schemaName};
+    return { SCHEMA_NAME, SchemaName, schema_name, schemaName };
 }
-
-export type GenConfig = {
-    schema: ISchemaDefinition;
-    folder?: string;
-    dynamic?: {
-        category: SCHEMA_TYPE;
-        property: SCHEMA_TYPE;
-    };
-    logSchema?: SCHEMA_TYPE;
-    excludeFunctions?: (keyof typeof DB_FUNC)[];
-};
 
 export function getCategoryKeyOfDynamicData<T>(field: keyof T) {
     return `${String(field)}.${DYNAMIC_CATEGORY_ID}` as keyof T;

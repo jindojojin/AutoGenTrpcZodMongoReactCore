@@ -1,5 +1,6 @@
-import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
-import { VIEW_TYPE } from "../../views/ViewTypes";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import {VIEW_TYPE} from "../../views/ViewTypes";
+import {TABLE_API} from "../../custom_apis/TableAPI";
 
 export enum BASIC_TYPE {
   DATE = "Date",
@@ -22,13 +23,14 @@ export enum FILE_TYPE {
 }
 
 export type DataType =
-  | BASIC_TYPE
-  | SCHEMA_TYPE
-  | VIEW_TYPE
-  | FILE_TYPE
-  | BASIC_TYPE[]
-  | SCHEMA_TYPE[]
-  | FILE_TYPE[];
+    | BASIC_TYPE
+    | SCHEMA_TYPE
+    | VIEW_TYPE
+    | TABLE_API
+    | FILE_TYPE
+    | BASIC_TYPE[]
+    | SCHEMA_TYPE[]
+    | FILE_TYPE[];
 
 export function isBasicType(type: any) {
   const _type = Array.isArray(type) ? type[0] : type;
@@ -45,9 +47,14 @@ export function isSchemaType(type: any) {
   return Object.values(SCHEMA_TYPE).includes(_type as SCHEMA_TYPE);
 }
 
+export function isTableAPIType(type:any){
+  const _type = Array.isArray(type) ? type[0] : type;
+  return Object.values(TABLE_API).includes(_type as TABLE_API);
+}
+
 export function getBaseType(
-  type: DataType
-): "SCHEMA_TYPE" | "BASIC_TYPE" | "FILE_TYPE" | "VIEW_TYPE" {
+    type: DataType
+): "SCHEMA_TYPE" | "BASIC_TYPE" | "FILE_TYPE" | "VIEW_TYPE" | "TABLE_API" {
   const _type = Array.isArray(type) ? type[0] : type;
 
   if (type == "Test project members view") console.log(Object.keys(SCHEMA_TYPE), Object.values(SCHEMA_TYPE))
@@ -55,12 +62,14 @@ export function getBaseType(
     return "SCHEMA_TYPE";
   if (Object.values(VIEW_TYPE).includes(_type as VIEW_TYPE))
     return "VIEW_TYPE";
+  if (Object.values(TABLE_API).includes(_type as TABLE_API))
+    return "TABLE_API";
   if (Object.values(FILE_TYPE).includes(_type as FILE_TYPE)) return "FILE_TYPE";
   return "BASIC_TYPE";
 }
 
 export function getSingleType<T extends BASIC_TYPE | SCHEMA_TYPE | FILE_TYPE>(
-  type: DataType
+    type: DataType
 ): T {
   return (Array.isArray(type) ? type[0] : type) as T;
 }

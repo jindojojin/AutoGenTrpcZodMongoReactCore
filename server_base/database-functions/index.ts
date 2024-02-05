@@ -16,16 +16,20 @@ import {exportToExcelFile} from "./exportMany";
 import {getObjectKeys} from "../../share/CommonFunctions";
 import _ from "lodash"
 
-export const DB_FUNC = {
-  createOne,
-  createMany,
+export const VIEW_FUNC = {
   findOne,
   findMany,
   findById,
   findByIds,
+  textSearch,
+  exportToExcelFile,
+}
+export const DB_FUNC = {
+  ...VIEW_FUNC,
+  createOne,
+  createMany,
   deleteOne,
   deleteMany,
-  textSearch,
   updateOne,
   updateMany,
   upsertOne,
@@ -33,7 +37,7 @@ export const DB_FUNC = {
   importFromExcelFile,
   importFromJsonArray,
   importFromText,
-  exportToExcelFile,
+
 };
 export const excludeAllExcept = (arr: (keyof typeof DB_FUNC)[]) => {
   return _.difference(getObjectKeys(DB_FUNC), arr) as (keyof typeof DB_FUNC)[]

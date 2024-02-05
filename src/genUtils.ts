@@ -1,13 +1,15 @@
-import { camelCase, constantCase, pascalCase, snakeCase } from "change-case";
+import {camelCase, constantCase, pascalCase, snakeCase} from "change-case";
 import * as fs from "fs";
-import { existsSync, mkdirSync } from "fs";
-import { isPlainObject, mapValues } from "lodash";
-import { ObjectId } from "mongodb";
+import {existsSync, mkdirSync} from "fs";
+import {isPlainObject, mapValues} from "lodash";
+import {ObjectId} from "mongodb";
 import path from "path";
-import { SCHEMA_TYPE } from "../schemas/SchemaTypes";
-import { getObjectKeys } from "../share/CommonFunctions";
-import { BASIC_TYPE, DataType, FILE_TYPE, getBaseType, } from "../share/types/DataTypes";
-import { VIEW_TYPE } from "../views/ViewTypes";
+import {SCHEMA_TYPE} from "../schemas/SchemaTypes";
+import {getObjectKeys} from "../share/CommonFunctions";
+import {BASIC_TYPE, DataType, FILE_TYPE, getBaseType,} from "../share/types/DataTypes";
+import {VIEW_TYPE} from "../views/ViewTypes";
+import {TABLE_API} from "../custom_apis/TableAPI";
+
 export function convertObjectIdsToStrings(obj: any): any {
     return mapValues(obj, (value: any) => {
         if (isPlainObject(value)) {
@@ -46,7 +48,8 @@ const Text2Enum = {
     SCHEMA_TYPE,
     FILE_TYPE,
     BASIC_TYPE,
-    VIEW_TYPE
+    VIEW_TYPE,
+    TABLE_API
 };
 
 export function getTypeEnumText(type: DataType) {
@@ -57,7 +60,7 @@ export function getTypeEnumText(type: DataType) {
 }
 
 export function getSchemaName(schema: string) {
-    const ENUM = { ...SCHEMA_TYPE, ...VIEW_TYPE }
+    const ENUM = {...SCHEMA_TYPE, ...VIEW_TYPE, ...TABLE_API}
     const original_name =
         getObjectKeys(ENUM).find((e) => ENUM[e] === schema) ?? "";
     const SCHEMA_NAME = constantCase(original_name);

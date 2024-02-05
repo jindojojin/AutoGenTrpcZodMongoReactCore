@@ -1,20 +1,20 @@
-import { useMemo } from "react";
-import { databaseClient, simplePopulate } from "../../../../src/trpc/service";
-import { downloadFile } from "../../Common/FileService";
-import { useApiInput, useApiRoute, useFixedQuery } from "./common";
-import { APICallbacks, APIConfigs } from "../configs/CommonConfig";
-import { SCHEMAS_CONFIG } from "../../../share/schema_configs";
+import {useMemo} from "react";
+import {databaseClient, simplePopulate} from "../../../../src/trpc/service";
+import {downloadFile} from "../../Common/FileService";
+import {useApiInput, useApiRoute, useFixedQuery} from "./common";
+import {APICallbacks, APIConfigs} from "../configs/CommonConfig";
+import {SCHEMAS_CONFIG} from "../../../share/schema_configs";
 
 export function useExportToExcel<T>(
-  configs: APIConfigs,
-  query?: any,
-  callback?: APICallbacks<void>
+    configs: APIConfigs,
+    query?: any,
+    callback?: APICallbacks<void>
 ) {
   const route = useApiRoute(configs);
   const buildInput = useApiInput(configs);
   const exportToExcelApi = databaseClient[route].exportToExcelFile;
   const exportQuery = useMemo(
-    () => buildInput({ query: getExportQuery(configs, query) }),
+    () => buildInput({ query: getExportQuery(configs, query), ...configs.fixedParams }),
     [buildInput]
   );
   return async () => {
@@ -33,8 +33,8 @@ export function useExportTemplateToExcel(
 ) {
   const buildInput = useApiInput(configs);
   const exportTemplateQuery = useMemo(
-    () => buildInput({ query: getExportQuery(configs, query), template: true }),
-    [buildInput]
+      () => buildInput({query: getExportQuery(configs, query), template: true}),
+      [buildInput]
   );
   const route = useApiRoute(configs);
   return async () => {

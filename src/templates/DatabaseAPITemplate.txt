@@ -1,6 +1,8 @@
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 import {VIEW_TYPE} from "../../views/ViewTypes";
+import {TABLE_API} from "../../custom_apis/TableAPI";
+
 export type API_NAME = {{api_names}}
-export const DATABASE_APIS: Record<SCHEMA_TYPE|VIEW_TYPE, API_NAME> = {
+export const DATABASE_APIS: Record<SCHEMA_TYPE|VIEW_TYPE|TABLE_API, API_NAME> = {
   {{export_apis}}
 };

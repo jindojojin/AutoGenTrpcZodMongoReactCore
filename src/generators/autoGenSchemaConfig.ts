@@ -9,8 +9,10 @@ import {getObjectKeys} from "../../share/CommonFunctions";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 import {getSpecialKeys} from "../../share/SchemaUtils";
 import {GenConfig} from "../../schemas";
-import { VIEW_TYPE } from "../../views/ViewTypes";
-import { ViewGenConfig } from "../../views";
+import {VIEW_TYPE} from "../../views/ViewTypes";
+import {ViewGenConfig} from "../../views";
+import {TABLE_API} from "../../custom_apis/TableAPI";
+import {TableAPIGenConfig} from "../../custom_apis/index.js";
 
 function getFieldType(type: DataType): string {
     if (Array.isArray(type)) {
@@ -146,7 +148,46 @@ export function genSchemaConfigForView(outDir: string | string[], name: VIEW_TYP
     .replaceAll("{{exportKeys}}", `[${exportKeys.map((e) => `"${String(e)}"`)}]`)
     .replaceAll("{{importKeys}}", `[${importKeys.map((e) => `"${String(e)}"`)}]`)
     .replaceAll("{{relationKeys}}", `[${relationKeys.map((e) => `"${String(e)}"`)}]`)
-        .replaceAll("{{searchKeys}}", `[${searchKeys.map((e) => `"${String(e)}"`)}]`);
+    .replaceAll("{{searchKeys}}", `[${searchKeys.map((e) => `"${String(e)}"`)}]`);
+    filePaths.forEach(filePath =>
+        writeFileSync(filePath, fileContent));
+}
+
+
+export function genSchemaConfigForTableAPI(outDir: string | string[], name: TABLE_API, genConfig: TableAPIGenConfig) {
+    const ModuleName = getSchemaName(name).SchemaName;
+    const template = readFileSync(
+        path.resolve("src/templates/SchemaConfigTemplateForView.txt"),
+    ).toString();
+    if (!Array.isArray(outDir)) outDir = [outDir]
+    const filePaths = outDir.map(outDir => path.resolve(
+        `${outDir}/schema_configs/${getSchemaFolder(
+            genConfig.folder,
+        )}${ModuleName}SchemaConfig.ts`,
+    ));
+    filePaths.forEach(filePath =>
+        createFolderIfNotExist(filePath));
+    const {
+        fileTypeKeys,
+        exportKeys,
+        searchKeys,
+        uniqueKeys,
+        relationKeys,
+        importKeys
+    } = getSpecialKeys(genConfig.config.schema);
+    const keyConfigs = getKeyConfigs(genConfig.config.schema, name)
+    const fileContent = template
+    .replaceAll("{{ModuleName}}", ModuleName)
+    .replaceAll("{{Module Name}}", name)
+    .replaceAll("{{keyConfigs}}", keyConfigs)
+    .replaceAll("{{SchemaFolder}}", getSchemaFolder(genConfig.folder))
+    .replaceAll("{{RelativePath}}", getRelativePath(genConfig.folder))
+    .replaceAll("{{fileTypeKeys}}", `[${fileTypeKeys.map((e) => `"${String(e)}"`)}]`)
+    .replaceAll("{{uniqueKeys}}", `[${uniqueKeys.map((e) => `"${String(e)}"`)}]`)
+    .replaceAll("{{exportKeys}}", `[${exportKeys.map((e) => `"${String(e)}"`)}]`)
+    .replaceAll("{{importKeys}}", `[${importKeys.map((e) => `"${String(e)}"`)}]`)
+    .replaceAll("{{relationKeys}}", `[${relationKeys.map((e) => `"${String(e)}"`)}]`)
+    .replaceAll("{{searchKeys}}", `[${searchKeys.map((e) => `"${String(e)}"`)}]`);
     filePaths.forEach(filePath =>
         writeFileSync(filePath, fileContent));
 }

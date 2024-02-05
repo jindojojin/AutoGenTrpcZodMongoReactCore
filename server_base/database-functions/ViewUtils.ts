@@ -22,7 +22,7 @@ export function $inner_join(from: SCHEMA_TYPE, localField: string, foreignField:
                 preserveNullAndEmptyArrays: false,
             },
         },
-        fullObject ? {
+        !fullObject ? {
             $set: {
                 [as]: `$${as}._id`
             }
@@ -109,5 +109,36 @@ export function $full_join(from: SCHEMA_TYPE, as: string, fullObject: boolean = 
                 [as]: `$${as}._id`
             }
         } : null
+    ]
+}
+
+export function $add_percent_value(count: string | string[], total: string | string[], result_field: string | string[]) {
+    count = Array.isArray(count) ? count : [count];
+    total = Array.isArray(total) ? total : [total];
+    result_field = Array.isArray(result_field) ? result_field : [result_field];
+    return [
+        {
+            $addFields: result_field.reduce((prev, field_name, idx) => ({
+                ...prev,
+                [field_name]: {
+                    $concat: [
+                        {
+                            $toString: {
+                                $round: [{
+                                    $multiply: [{
+                                        $divide: [`$${count[idx]}`, {
+                                            $cond: {
+                                                if: {$eq: [0, `$${total[idx]}`]}, then: 1, else: `$${total[idx]}`
+                                            }
+                                        }]
+                                    }, 100]
+                                }, 2]
+                            }
+                        },
+                        "%"
+                    ]
+                }
+            }), {})
+        }
     ]
 }

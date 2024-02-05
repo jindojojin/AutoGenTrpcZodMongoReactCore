@@ -1,7 +1,0 @@
-import {ISchemaConfig} from "../types/ISchemaConfig";
-import {VIEW_TYPE} from "../../views/ViewTypes";
-{{imports}}
-
-export const VIEWS_CONFIG = {
-  {{exports}}
-};

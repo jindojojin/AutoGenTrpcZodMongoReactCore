@@ -30,7 +30,7 @@ export function autoGenBaseRouterIndex(
             )}${ModuleName}BaseRouter";`,
         );
         export_routerLines.push(
-            `[${getTypeEnumText(key)}]: ${ModuleName}BaseRouter()`,
+            `[${getTypeEnumText(key)}]: ${ModuleName}BaseRouter`,
         );
     });
 
@@ -61,7 +61,7 @@ export function autoGenBaseRouterIndexForView(
             )}${ModuleName}BaseRouter";`,
         );
         export_routerLines.push(
-            `[${getTypeEnumText(key)}]: ${ModuleName}BaseRouter()`,
+            `[${getTypeEnumText(key)}]: ${ModuleName}BaseRouter`,
         );
     });
 

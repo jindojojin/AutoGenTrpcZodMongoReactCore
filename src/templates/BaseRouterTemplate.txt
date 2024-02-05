@@ -8,7 +8,6 @@ import {SCHEMA_TYPE} from "../../{{RelativePath}}schemas/SchemaTypes";
 import { DATABASE_MODELS } from "../{{RelativePath}}mongoose/DatabaseModels";
 import { SCHEMAS_CONFIG } from "../../{{RelativePath}}share/schema_configs";
 import { IProcedureConfig } from "../{{RelativePath}}trpcUtils";
-export const {{ModuleName}}BaseRouter = (config?: IProcedureConfig) =>
-  router({
+export const {{ModuleName}}BaseRouter = router({
     {{routerCodes}}
   });

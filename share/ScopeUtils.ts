@@ -4,6 +4,7 @@ import _ from "lodash";
 import { SCHEMA_TYPE } from "../schemas/SchemaTypes";
 import { getSchemaName } from "./SchemaUtils";
 import { VIEW_TYPE } from "../views/ViewTypes";
+import { TABLE_API } from "../custom_apis/TableAPI";
 
 export const ADMIN_SCOPE = "SYSTEM_ADMIN";
 
@@ -13,7 +14,7 @@ export enum SPECIFIC_SCOPE {
 }
 
 export function action2scope(
-    table: SCHEMA_TYPE | VIEW_TYPE,
+    table: SCHEMA_TYPE | VIEW_TYPE | TABLE_API,
     action: DATABASE_ACTIONS,
     field?: string,
 ) {

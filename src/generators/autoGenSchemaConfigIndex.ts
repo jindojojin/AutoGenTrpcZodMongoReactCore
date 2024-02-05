@@ -8,14 +8,18 @@ import {GenConfig} from "../../schemas";
 import {getObjectKeys} from "../../share/CommonFunctions";
 import {ViewGenConfig} from "../../views";
 import {VIEW_TYPE} from "../../views/ViewTypes";
+import {TABLE_API} from "../../custom_apis/TableAPI";
+import {TableAPIGenConfig} from "../../custom_apis/index.js";
 
 export function autoGenSchemaConfigIndex(outDir: string | string[],
                                          GenList: Record<SCHEMA_TYPE, GenConfig>,
-                                         ViewGenList: Record<VIEW_TYPE, ViewGenConfig>) {
+                                         ViewGenList: Record<VIEW_TYPE, ViewGenConfig>,
+                                         TableGenList:Record<TABLE_API,TableAPIGenConfig>) {
     const importLines: string[] = [];
     const exportLines: string[] = [];
-    getObjectKeys(GenList).forEach((key) => {
-        const genConfig = GenList[key];
+    const Gen = {...GenList,...ViewGenList,...TableGenList}
+    getObjectKeys(Gen).forEach((key) => {
+        const genConfig = Gen[key];
         const ModuleName = getSchemaName(key).SchemaName;
         importLines.push(
             `import {${ModuleName}SchemaConfig} from "./${getSchemaFolder(
@@ -25,16 +29,6 @@ export function autoGenSchemaConfigIndex(outDir: string | string[],
         exportLines.push(`[${getTypeEnumText(key)}]: ${ModuleName}SchemaConfig`);
     });
 
-    getObjectKeys(ViewGenList).forEach((key) => {
-        const genConfig = ViewGenList[key];
-        const ModuleName = getSchemaName(key).SchemaName;
-        importLines.push(
-            `import {${ModuleName}SchemaConfig} from "./${getSchemaFolder(
-                genConfig.folder,
-            )}${ModuleName}SchemaConfig";`,
-        );
-        exportLines.push(`[${getTypeEnumText(key)}]: ${ModuleName}SchemaConfig`);
-    });
     if (!Array.isArray(outDir)) outDir = [outDir]
 
     const filePaths = outDir.map(outDir => path.resolve(`${outDir}/schema_configs/index.ts`));
@@ -45,35 +39,6 @@ export function autoGenSchemaConfigIndex(outDir: string | string[],
     const fileContent = template
     .replaceAll("{{imports}}", importLines.join("\n"))
     .replaceAll("{{exports}}", exportLines.join(",\n  "));
-    filePaths.forEach(filePath =>
-        writeFileSync(filePath, fileContent));
-}
-
-export function autoGenSchemaConfigIndexForView(outDir: string | string[],
-    GenList: Record<VIEW_TYPE, ViewGenConfig>
-) {
-    const importLines: string[] = [];
-    const exportLines: string[] = [];
-    getObjectKeys(GenList).forEach((key) => {
-        const genConfig = GenList[key];
-        const ModuleName = getSchemaName(key).SchemaName;
-        importLines.push(
-            `import {${ModuleName}SchemaConfig} from "./${getSchemaFolder(
-                genConfig.folder,
-            )}${ModuleName}SchemaConfig";`,
-        );
-        exportLines.push(`[${getTypeEnumText(key)}]: ${ModuleName}SchemaConfig`);
-    });
-    if (!Array.isArray(outDir)) outDir = [outDir]
-
-    const filePaths = outDir.map(outDir => path.resolve(`${outDir}/view_configs/index.ts`));
-    filePaths.forEach(filePath => createFolderIfNotExist(filePath));
-    const template = readFileSync(
-        path.resolve("src/templates/SchemaConfigIndexTemplateForView.txt"),
-    ).toString();
-    const fileContent = template
-        .replaceAll("{{imports}}", importLines.join("\n"))
-        .replaceAll("{{exports}}", exportLines.join(",\n  "));
     filePaths.forEach(filePath =>
         writeFileSync(filePath, fileContent));
 }

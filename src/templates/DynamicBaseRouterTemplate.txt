@@ -23,7 +23,6 @@ const DynamicParams: DynamicTableProcedureParams = {
   fixedFields: _.omit(SCHEMAS_CONFIG[{{DATA_NAME}}].fieldConfigs, ["_id"]),
 };
 
-export const {{ModuleName}}BaseRouter = (config?: IProcedureConfig) =>
-  router({
+export const {{ModuleName}}BaseRouter = router({
     {{routerCodes}}
   });

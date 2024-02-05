@@ -1,9 +1,9 @@
-import { AnyZodObject, z, ZodType, ZodTypeAny } from "zod";
-import { BASIC_TYPE, DataType, isBasicType, isSchemaType, } from "../../../share/types/DataTypes";
-import { ISchemaFieldConfig } from "../../../share/types/ISchemaDefinition";
-import { zImportOutput } from "../../database-functions/importMany";
-import { ZOD_OUTPUTS } from "../../zods";
-import { zObjectId, ZodMongoQuery } from "../../zodUtils";
+import {AnyZodObject, z, ZodType, ZodTypeAny} from "zod";
+import {BASIC_TYPE, DataType, isBasicType, isSchemaType,} from "../../../share/types/DataTypes";
+import {ISchemaFieldConfig} from "../../../share/types/ISchemaDefinition";
+import {zImportOutput} from "../../database-functions/importMany";
+import {ZOD_OUTPUTS} from "../../zods";
+import {zObjectId, ZodMongoQuery} from "../../zodUtils";
 
 function getIOQueryZod(zodType: ZodTypeAny) {
     return {
@@ -150,7 +150,7 @@ export function getViewRouteZodIO<
             select: projectionSchema.optional(),
             options: optionsSchema.optional(),
         })
-        .optional();
+        .partial();
 
     const FindManyOutput = z.object({
         records: FindOneOutput.array(),
@@ -167,8 +167,7 @@ export function getViewRouteZodIO<
             select: projectionSchema.optional(),
             options: optionsSchema.optional(),
         })
-        .optional()
-        .default({ text: "" });
+        .partial();
 
     const TextSearchOutput = z.object({
         records: FindOneOutput.array(),

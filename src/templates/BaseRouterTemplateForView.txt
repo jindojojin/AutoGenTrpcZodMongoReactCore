@@ -5,10 +5,14 @@ import { protectedProcedure, router } from "../{{RelativePath}}trpc";
 import { ZOD_APIS, ZOD_INPUTS } from "../{{RelativePath}}view_zods";
 import { DB_FUNC } from "../{{RelativePath}}database-functions";
 import { VIEW_TYPE } from "../../{{RelativePath}}views/ViewTypes";
+import {SCHEMA_TYPE} from "../../../schemas/SchemaTypes";
+import {TableAPIGen} from "../../../custom_apis/index.js";
+import {TABLE_API} from "../../../custom_apis/TableAPI";
 import { DATABASE_MODELS } from "../{{RelativePath}}mongoose/DatabaseModels";
 import { SCHEMAS_CONFIG } from "../../{{RelativePath}}share/schema_configs";
 import { IProcedureConfig } from "../{{RelativePath}}trpcUtils";
-export const {{ModuleName}}BaseRouter = (config?: IProcedureConfig) =>
-  router({
+import {zObjectId} from "../../zodUtils";
+import z from "zod";
+export const {{ModuleName}}BaseRouter = router({
     {{routerCodes}}
   });
