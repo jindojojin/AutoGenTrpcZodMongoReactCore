@@ -1,53 +1,32 @@
-import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
-import { BASIC_TYPE } from "../../share/types/DataTypes";
+import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import {BASIC_TYPE} from "../../share/types/DataTypes";
 import {
     $add_percent_value,
     $inner_join,
     $left_join_multi_fields,
 } from "../../server_base/database-functions/ViewUtils";
-import {
-    TTV2_STATES,
-    TTV2_TC_DONE,
-    TTV2_TC_FOR_COUNT,
-    TTV2_TC_PASSED,
-} from "../../share/constants/share_constants";
-import { ObjectId } from "mongodb";
-import { TableApiDefinition } from "../../share/types/IViewDefinition";
+import {TTV2_STATES, TTV2_TC_DONE, TTV2_TC_FOR_COUNT, TTV2_TC_PASSED,} from "../../share/constants/share_constants";
+import {TableApiDefinition} from "../../share/types/IViewDefinition";
+import {$match_test_project, $match_testset} from "./CommonPinelines";
 
 export const TTv2ProgressByMember: TableApiDefinition = {
     parameters: {
-        testsets: { type: [SCHEMA_TYPE.TTV2_TEST_SET] },
-        testproject: { type: SCHEMA_TYPE.TEST_PROJECT },
+        testsets: {type: [SCHEMA_TYPE.TTV2_TEST_SET]},
+        testproject: {type: SCHEMA_TYPE.TEST_PROJECT},
     },
     schema: {
-        tester: { type: SCHEMA_TYPE.USER },
-        tc_done: { type: BASIC_TYPE.NUMBER },
-        tc_pass: { type: BASIC_TYPE.NUMBER },
-        tc_total: { type: BASIC_TYPE.NUMBER },
-        pass_rate: { type: BASIC_TYPE.TEXT },
-        progress: { type: BASIC_TYPE.TEXT },
-        expected_progress: { type: BASIC_TYPE.TEXT },
+        tester: {type: SCHEMA_TYPE.USER},
+        tc_done: {type: BASIC_TYPE.NUMBER},
+        tc_pass: {type: BASIC_TYPE.NUMBER},
+        tc_total: {type: BASIC_TYPE.NUMBER},
+        pass_rate: {type: BASIC_TYPE.TEXT},
+        progress: {type: BASIC_TYPE.TEXT},
+        expected_progress: {type: BASIC_TYPE.TEXT},
     },
     viewOn: SCHEMA_TYPE.TEST_PROJECT,
     pineline: (testsets: string[], testproject: string) => [
-        {
-            $match: {
-                _id: new ObjectId(testproject),
-            },
-        },
-        $inner_join(SCHEMA_TYPE.TTV2_TEST_SUITE, "_id", "testProject", "testsuite"),
-        $inner_join(
-            SCHEMA_TYPE.TTV2_TEST_SET,
-            "testsuite",
-            "tpid",
-            "testset",
-            true,
-        ),
-        {
-            $match: {
-                "testset._id": { $in: testsets.map((ts) => new ObjectId(ts)) },
-            },
-        },
+        $match_test_project(testproject),
+        $match_testset(testsets),
         $inner_join(
             SCHEMA_TYPE.TTV2_TESTCASE,
             "testset._id",
@@ -57,7 +36,7 @@ export const TTv2ProgressByMember: TableApiDefinition = {
         ),
         {
             $addFields: {
-                tester: { $ifNull: ["$testcase.tester", "$testcase.assigned_tester"] },
+                tester: {$ifNull: ["$testcase.tester", "$testcase.assigned_tester"]},
             },
         },
         $left_join_multi_fields(

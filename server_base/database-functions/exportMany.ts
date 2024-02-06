@@ -25,7 +25,6 @@ export async function exportToExcelFile(
     // else, export template only
     const data = await findMany(ctx, schema, input.query, advanceQuery);
     records = data.records;
-    console.log(records)
   }
   const table = getTableFromListData(records, schemaConfig);
   const excelFile = new ExcelJS.Workbook();

@@ -24,6 +24,7 @@ import {TestProjectSchema} from "./projects/TestProject";
 import {TaskSchema} from "./tasks/Task";
 import {TaskCheckItemSchema} from "./tasks/TaskCheckItem";
 import {UserSchema} from "./users/User";
+import {TTv2UserSchema} from "./projects/TTv2User";
 
 export type GenConfig = {
     schema: ISchemaDefinition;
@@ -122,6 +123,10 @@ export const GenList: Record<SCHEMA_TYPE, GenConfig> = {
     },
     [SCHEMA_TYPE.TTV2_TESTCASE]: {
         schema: TTv2TestCaseSchema,
+        folder: "projects",
+    },
+    [SCHEMA_TYPE.TTV2_USER]: {
+        schema: TTv2UserSchema,
         folder: "projects",
     },
     [SCHEMA_TYPE.SCOPE]: {schema: SystemScopeSchema, folder: "users"},

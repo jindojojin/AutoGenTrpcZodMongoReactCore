@@ -24,8 +24,8 @@ export const TTV2_TC_FOR_COUNT = [
     "REVIEW_NOK", //TODO cai nay la doan vay :)),chua check lai
     "REVIEW_OK",
 ];
-export const TTV2_STATES = [
-    "READY",
+
+export const TTV2_TC_STATES = ["READY",
     "SKIPPED",
     "TESTING",
     "PAUSE", // TODO cai nay doan vay :))
@@ -34,7 +34,9 @@ export const TTV2_STATES = [
     "REVIEWING", //TODO cai nay la doan vay :)),chua check lai
     "REVIEW_PAUSE", //TODO cai nay la doan vay :)),chua check lai
     "REVIEW_NOK", //TODO cai nay la doan vay :)),chua check lai
-    "REVIEW_OK",
+    "REVIEW_OK",]
+export const TTV2_STATES = [
+    ...TTV2_TC_STATES,
     "TEST_SUITE_RUNNING",
     "TEST_SUITE_STOPPED",
 ];

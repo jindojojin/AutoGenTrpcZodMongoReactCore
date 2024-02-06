@@ -1,21 +1,21 @@
-import { App, message, Table } from "antd";
-import { useCallback } from "react";
-import { useTranslation } from "react-i18next";
-import { databaseClient } from "../../../../src/trpc/service";
-import { uploadFiles } from "../../Common/FileService";
-import { useApiInput, useApiRoute, useFixedData } from "./common";
-import { APICallbacks, APIConfigs } from "../configs/CommonConfig";
-import { t } from "i18next";
+import {App, message, Table} from "antd";
+import {useCallback} from "react";
+import {useTranslation} from "react-i18next";
+import {databaseClient} from "../../../../src/trpc/service";
+import {uploadFiles} from "../../Common/FileService";
+import {useApiInput, useApiRoute, useFixedData} from "./common";
+import {APICallbacks, APIConfigs} from "../configs/CommonConfig";
+import {t} from "i18next";
 
 function useShowResult() {
-  const { notification, modal } = App.useApp();
-  const showResult = useCallback(
-      async (result: any) => {
-        if (result.insertedCount || result.updatedCount) {
-          notification.success({
-            message: `Success to import ${
-                result.insertedCount + result.updatedCount
-            } item(s)!`,
+    const {notification, modal} = App.useApp();
+    const showResult = useCallback(
+        async (result: any) => {
+            if (result.insertedCount || result.updatedCount) {
+                notification.success({
+                    message: `Success to import ${
+                        result.insertedCount + result.updatedCount
+                    } item(s)!`,
           });
         }
         if (result.errors?.length) {
@@ -98,8 +98,8 @@ export function useImportFromText<T>(configs: APIConfigs, callback?: APICallback
             initData,
           }),
       );
-      await showResult(result);
-      callback?.onSuccess?.();
+        await showResult(result);
+        callback?.onFinish?.();
     } catch (error) {
       message.error(t("importFromTextError", { name: configs.schema }));
       console.error("Import from text error", error);

@@ -6,7 +6,8 @@ import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 import {getMongooseCollectionName} from "../mongoose/Utils";
 
 
-export function $inner_join(from: SCHEMA_TYPE, localField: string, foreignField: string, as: string, fullObject: boolean = false) {
+export function $inner_join(from: SCHEMA_TYPE, localField: string, foreignField: string,
+                            as: string, fullObject: boolean = false) {
     return [
         {
             $lookup: {

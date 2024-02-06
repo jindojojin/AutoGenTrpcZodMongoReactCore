@@ -11,6 +11,7 @@ export enum SCHEMA_TYPE {
     TTV2_TEST_SUITE = "TTv2 Test suite",
     TTV2_TEST_SET = "TTv2 Test set",
     TTV2_TESTCASE = "TTv2 Testcase",
+    TTV2_USER="TTv2 User",
 
     TASK = "Task",
     TASK_CHECK_ITEM = "Task Check Item",
