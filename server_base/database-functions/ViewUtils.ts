@@ -4,9 +4,10 @@
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 
 import {getMongooseCollectionName} from "../mongoose/Utils";
+import {VIEW_TYPE} from "../../views/ViewTypes";
 
 
-export function $inner_join(from: SCHEMA_TYPE, localField: string, foreignField: string,
+export function $inner_join(from: SCHEMA_TYPE | VIEW_TYPE, localField: string, foreignField: string,
                             as: string, fullObject: boolean = false) {
     return [
         {
@@ -31,7 +32,7 @@ export function $inner_join(from: SCHEMA_TYPE, localField: string, foreignField:
     ]
 }
 
-export function $left_join(from: SCHEMA_TYPE, localField: string, foreignField: string, as: string, fullObject: boolean = false) {
+export function $left_join(from: SCHEMA_TYPE | VIEW_TYPE, localField: string, foreignField: string, as: string, fullObject: boolean = false) {
     return [
         {
             $lookup: {
@@ -55,7 +56,7 @@ export function $left_join(from: SCHEMA_TYPE, localField: string, foreignField: 
     ]
 }
 
-export function $left_join_multi_fields(from: SCHEMA_TYPE, localFields: string[], foreignFields: string[], as: string, fullObject: boolean = false) {
+export function $left_join_multi_fields(from: SCHEMA_TYPE | VIEW_TYPE, localFields: string[], foreignFields: string[], as: string, fullObject: boolean = false) {
     return [
         {
             $lookup: {
@@ -90,7 +91,7 @@ export function $left_join_multi_fields(from: SCHEMA_TYPE, localFields: string[]
 }
 
 
-export function $full_join(from: SCHEMA_TYPE, as: string, fullObject: boolean = false) {
+export function $full_join(from: SCHEMA_TYPE | VIEW_TYPE, as: string, fullObject: boolean = false) {
     return [
         {
             $lookup: {

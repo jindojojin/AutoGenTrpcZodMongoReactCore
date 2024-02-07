@@ -4,7 +4,7 @@ import {DataType} from "./DataTypes";
 import {VIEW_TYPE} from "../../views/ViewTypes";
 
 export type IViewDefinition = {
-    viewOn: SCHEMA_TYPE,
+    viewOn: SCHEMA_TYPE|VIEW_TYPE,
     pineline: any[],
     schema: ISchemaDefinition
 }

@@ -5,6 +5,7 @@ import {VIEW_FUNC} from "../server_base/database-functions";
 import {RunningTestSuites} from "./projects/RunningTestSuites";
 import {RunningPLMs} from "./projects/RunningPLMs";
 import {TestcaseView} from "./projects/TestcaseView";
+import {DefectView} from "./projects/DefectView";
 
 export type ViewGenConfig = {
     view: IViewDefinition,
@@ -15,5 +16,6 @@ export const ViewGenList: Record<VIEW_TYPE, ViewGenConfig> = {
     [VIEW_TYPE.TEST_PROJECT_MEMBERS_VIEW]: {view: ProjectMemberView, folder: "projects"},
     [VIEW_TYPE.RUNNING_TEST_SUITES]: {view: RunningTestSuites, folder: "projects"},
     [VIEW_TYPE.RUNNING_PLM]: {view: RunningPLMs, folder: "projects"},
-    [VIEW_TYPE.TESTCASE_VIEW]:{view:TestcaseView, folder:"projects"}
+    [VIEW_TYPE.TESTCASE_VIEW]:{view:TestcaseView, folder:"projects"},
+    [VIEW_TYPE.DEFECT_VIEW]:{view:DefectView,folder:"projects"}
 }
