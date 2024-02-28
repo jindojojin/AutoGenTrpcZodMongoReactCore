@@ -1,26 +1,33 @@
 import z from "zod";
-import {random} from "lodash";
-import {createJWT, generateRandomPassword, md5} from "./utils/security";
-import {privateProcedure, publicProcedure, router} from "../trpc";
-import {UserModel} from "../mongoose/DatabaseModels";
-import {AUTH_USER_ID_FIELD, AUTH_USER_PWD_FIELD, AUTH_USER_SALT_FIELD,} from "../../share/constants/database_fields";
-import {getUserScopes} from "./utils/getUserScopes";
+import { random } from "lodash";
+import { createJWT, generateRandomPassword, md5 } from "./utils/security";
+import { privateProcedure, publicProcedure, router } from "../trpc";
+import {
+    AUTH_USER_ID_FIELD,
+    AUTH_USER_PWD_FIELD,
+    AUTH_USER_SALT_FIELD,
+} from "../../share/constants/database_fields";
 
-import type {AuthorizedUser} from "../../share/types/CommonTypes";
+import type { AuthorizedUser } from "../../share/types/CommonTypes";
+import { getSystemScopes } from "./utils/getSystemScopes";
+import { DATABASE_MODELS } from "../mongoose/DatabaseModels";
+import { SCHEMA_TYPE } from "../../schemas/SchemaTypes";
+import { getUserAndScopes } from "./utils/getUserAndScopes";
+import { NODE_CACHE } from "../CacheManager";
 
 const zActiveUsersInput = z.object({
     users: z.string().array(),
     password: z.string().optional(), // password mặc định = random
 });
 const zActiveUsersOutput = z
-    .object({
-        userId: z.string(),
-        password: z.string(),
-    })
-    .array();
+.object({
+    userId: z.string(),
+    password: z.string(),
+})
+.array();
 
 export async function doActiveUsers(input: z.infer<typeof zActiveUsersInput>) {
-    const listUpdate = await UserModel.find({
+    const listUpdate = await DATABASE_MODELS[SCHEMA_TYPE.USER].find({
         userId: {$in: input.users},
     });
     const passMap: { [k: string]: string } = {};
@@ -31,7 +38,7 @@ export async function doActiveUsers(input: z.infer<typeof zActiveUsersInput>) {
         userDoc[AUTH_USER_PWD_FIELD] = md5(pass + salt);
         userDoc[AUTH_USER_SALT_FIELD] = salt;
     });
-    await UserModel.bulkSave(listUpdate);
+    await DATABASE_MODELS[SCHEMA_TYPE.USER].bulkSave(listUpdate);
     return listUpdate.map((u) => ({
         userId: u[AUTH_USER_ID_FIELD],
         password: passMap[String(u[AUTH_USER_ID_FIELD])],
@@ -50,7 +57,7 @@ export async function doCheckUserAuth(input: z.infer<typeof zCheckUserAuth>) {
     )
         return true;
 
-    const user = await UserModel.findOne({
+    const user = await DATABASE_MODELS[SCHEMA_TYPE.USER].findOne({
         [AUTH_USER_ID_FIELD]: input.username,
     });
     if (!user) {
@@ -68,18 +75,30 @@ export async function doCheckUserAuth(input: z.infer<typeof zCheckUserAuth>) {
 }
 
 export const AuthRouter = router({
-    getUserToken: privateProcedure.input(z.string()).query(async ({input}) => {
-        const scopes = await getUserScopes(input);
-        return createJWT<AuthorizedUser>({loginID: input, scopes});
+    getUserToken: privateProcedure.input(z.string()).query(async ({ input }) => {
+        const auth = await getUserAndScopes(input);
+        NODE_CACHE.set(input, auth, "24h");
+        return createJWT<AuthorizedUser>(
+            { loginID: input, _id: auth.userProfile._id },
+            "24h",
+        );
     }),
 
+    getSystemScopes: publicProcedure.query(getSystemScopes),
+    getUserScopes: publicProcedure.query(async ({ ctx }) => {
+        const loginID = ctx?.user?.loginID;
+        if (!loginID) throw "NO PERMISSION! PLEASE LOGIN FIRST";
+        const data = await getUserAndScopes(loginID);
+        NODE_CACHE.set(loginID, data, "24h");
+        return data;
+    }),
     activeUsers: privateProcedure
-        .input(zActiveUsersInput)
-        .output(zActiveUsersOutput)
-        .mutation(({input}) => doActiveUsers(input)),
+    .input(zActiveUsersInput)
+    .output(zActiveUsersOutput)
+    .mutation(({ input }) => doActiveUsers(input)),
 
     checkUserAuth: publicProcedure
-        .input(zCheckUserAuth)
-        .output(z.boolean())
-        .mutation(({input}) => doCheckUserAuth(input)),
+    .input(zCheckUserAuth)
+    .output(z.boolean())
+    .mutation(({ input }) => doCheckUserAuth(input)),
 });

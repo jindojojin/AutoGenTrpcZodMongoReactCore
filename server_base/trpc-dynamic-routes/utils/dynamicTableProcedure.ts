@@ -1,15 +1,15 @@
-import mongoose, { Model, Schema } from "mongoose";
+import mongoose, {Model, Schema} from "mongoose";
 import _ from "lodash";
-import { getBaseZodFromFieldConfigs, getBasicRouteZodIO } from "./ZodBuilders";
-import { getSchemaFromFieldConfigs } from "./SchemaBuilder";
-import { ProcedureBuilder } from "@trpc/server";
-import { z } from "zod";
-import { zObjectId } from "../../zodUtils";
-import { ISchemaConfig } from "../../../share/types/ISchemaConfig";
-import { getSchemaConfigFromFieldConfigs } from "../../../share/SchemaUtils";
-import { ISchemaDefinition } from "../../../share/types/ISchemaDefinition";
+import {getBaseZodFromFieldConfigs, getBasicRouteZodIO} from "./ZodBuilders";
+import {getSchemaFromFieldConfigs} from "./SchemaBuilder";
+import {z} from "zod";
+import {zObjectId} from "../../zodUtils";
+import {ISchemaConfig} from "../../../share/types/ISchemaConfig";
+import {getSchemaConfigFromFieldConfigs} from "../../../share/SchemaUtils";
+import {ISchemaDefinition} from "../../../share/types/ISchemaDefinition";
 
-import { DYNAMIC_CATEGORY_ID } from "../../../share/constants/database_fields";
+import {DYNAMIC_CATEGORY_ID} from "../../../share/constants/database_fields";
+import {protectedProcedure, publicProcedure, TRPCContext} from "../../trpc";
 
 export type DynamicTableCtx = {
   ZodBase: ReturnType<typeof getBaseZodFromFieldConfigs>;
@@ -21,11 +21,11 @@ export type DynamicTableCtx = {
 export const DynamicTableConfigs: Map<string, DynamicTableCtx> = new Map();
 
 export async function getZodAndSchemaByCategory(
-  categoryId: string | undefined | null,
-  PropertyModel: Model<any>,
-  CategoryModel: Model<any>,
-  fixedFields: ISchemaDefinition,
-  defaultCategoryName?: string,
+    categoryId: string | undefined | null,
+    PropertyModel: Model<any>,
+    CategoryModel: Model<any>,
+    fixedFields: ISchemaDefinition,
+    defaultCategoryName?: string,
 ) {
   // if (DynamicTableConfigs.has(String(categoryId))) {
   //   return DynamicTableConfigs.get(String(categoryId)) as DynamicTableCtx;
@@ -36,25 +36,24 @@ export async function getZodAndSchemaByCategory(
       category = await CategoryModel.findById(categoryId).lean();
     }
     const listFields = await PropertyModel.find(
-      categoryId
-        ? {
-            [DYNAMIC_CATEGORY_ID]: { $in: [categoryId] },
-          }
-        : {},
+        categoryId
+            ? {
+              [DYNAMIC_CATEGORY_ID]: { $in: [categoryId] },
+            }
+            : {},
     ).lean();
     const fieldConfigs = {
       ...fixedFields,
       ...(_.keyBy(listFields, "_id") as any),
     };
-    console.log("FieldConfigs", fieldConfigs);
     const ZodBase = getBaseZodFromFieldConfigs(fieldConfigs);
     const result = {
       ZodBase,
       ZodAPI: getBasicRouteZodIO(ZodBase),
       MongoSchema: getSchemaFromFieldConfigs(fieldConfigs),
       SchemaConfig: getSchemaConfigFromFieldConfigs(
-        fieldConfigs,
-        (category as any)?.name,
+          fieldConfigs,
+          (category as any)?.name,
       ),
     };
     DynamicTableConfigs.set(String(categoryId), result);
@@ -62,6 +61,7 @@ export async function getZodAndSchemaByCategory(
   }
 }
 
+publicProcedure
 /**
  *
  * @param procedure
@@ -71,7 +71,7 @@ export async function getZodAndSchemaByCategory(
  * @param categoryField Tên trường chỉ định _id của category, yêu cầu giống nhau ở DataModel và PropertyModel
  */
 export interface DynamicTableProcedureParams {
-  procedure: ProcedureBuilder<any>;
+  procedure: typeof protectedProcedure;
   MongoDataSchema: Schema;
   PropertyModel: Model<any>;
   CategoryModel: Model<any>;
@@ -80,44 +80,44 @@ export interface DynamicTableProcedureParams {
 }
 
 export const dynamicTableProcedure = (
-  params: DynamicTableProcedureParams,
-  inputZod: keyof ReturnType<typeof getBasicRouteZodIO>,
-  outputZod: keyof ReturnType<typeof getBasicRouteZodIO>,
+    params: DynamicTableProcedureParams,
+    inputZod: keyof ReturnType<typeof getBasicRouteZodIO>,
+    outputZod: keyof ReturnType<typeof getBasicRouteZodIO>,
 ) => {
   return params.procedure
-    .input(
+  .input(
       z.object({
-        categoryId: zObjectId().optional().nullable(),
+        [DYNAMIC_CATEGORY_ID]: zObjectId().optional().nullable(),
         input: z.any(),
       }),
-    )
-    .output(z.any())
-    .use(async ({ ctx, input, next }) => {
-      const dynamicTableCtx = await getZodAndSchemaByCategory(
-        input.categoryId,
+  )
+  .output(z.any())
+  .use(async ({ ctx, input, next }) => {
+    const dynamicTableCtx = await getZodAndSchemaByCategory(
+        input[DYNAMIC_CATEGORY_ID],
         params.PropertyModel,
         params.CategoryModel,
         params.fixedFields,
-      );
-      params.MongoDataSchema.add(dynamicTableCtx.MongoSchema);
-      await params.DataModel.syncIndexes();
-      await dynamicTableCtx.ZodAPI[
+    );
+    params.MongoDataSchema.add(dynamicTableCtx.MongoSchema);
+    await params.DataModel.syncIndexes();
+    await dynamicTableCtx.ZodAPI[
         inputZod as keyof typeof dynamicTableCtx.ZodAPI
-      ].parseAsync(input.input);
-      return next({
-        ctx: {
-          ...ctx,
-          ZodBase: dynamicTableCtx.ZodBase,
-          ZodInput:
+        ].parseAsync(input.input);
+    return next({
+      ctx: {
+        ...ctx,
+        ZodBase: dynamicTableCtx.ZodBase,
+        ZodInput:
             dynamicTableCtx.ZodAPI[
-              inputZod as keyof typeof dynamicTableCtx.ZodAPI
-            ],
-          ZodOutput:
+                inputZod as keyof typeof dynamicTableCtx.ZodAPI
+                ],
+        ZodOutput:
             dynamicTableCtx.ZodAPI[
-              outputZod as keyof typeof dynamicTableCtx.ZodAPI
-            ],
-          SchemaConfig: dynamicTableCtx.SchemaConfig,
-        },
-      });
+                outputZod as keyof typeof dynamicTableCtx.ZodAPI
+                ],
+        SchemaConfig: dynamicTableCtx.SchemaConfig,
+      } as TRPCContext,
     });
+  });
 };

@@ -1,6 +1,6 @@
-import { ISchemaDefinition } from "../../share/types/ISchemaDefinition";
+import {ISchemaDefinition} from "../../share/types/ISchemaDefinition";
 
-import { BASIC_TYPE } from "../../share/types/DataTypes";
+import {BASIC_TYPE} from "../../share/types/DataTypes";
 import {SCHEMA_TYPE} from "../SchemaTypes";
 
 export const TaskCheckItemSchema: ISchemaDefinition = {

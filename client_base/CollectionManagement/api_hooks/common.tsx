@@ -38,7 +38,7 @@ export function useApiInput(config: APIConfigs) {
   return (input: any) => {
     if (config.dynamic) {
       return {
-        categoryId: config.dynamic.categoryId,
+        [DYNAMIC_CATEGORY_ID]: config.dynamic.categoryId,
         input,
       };
     } else return input;

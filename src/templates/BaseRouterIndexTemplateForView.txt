@@ -1,0 +1,8 @@
+import {VIEW_TYPE} from "../../views/ViewTypes";
+import {SCHEMA_TYPE} from "../../../schemas/SchemaTypes";
+import {TABLE_API} from "../../../custom_apis/TableAPI";
+{{imports}}
+
+export const VIEW_BASE_ROUTERS = {
+  {{export_routers}}
+};

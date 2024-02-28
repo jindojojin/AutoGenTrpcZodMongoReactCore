@@ -2,7 +2,7 @@
  * This file is auto generated _ do not fix manually
  */
 import _ from "lodash";
-import { publicProcedure, router } from "../{{RelativePath}}trpc";
+import { protectedProcedure, router } from "../{{RelativePath}}trpc";
 import { DB_FUNC } from "../{{RelativePath}}database-functions";
 import {SCHEMA_TYPE} from "../../../schemas/SchemaTypes";
 import { MONGOOSE_SCHEMA } from "../{{RelativePath}}mongoose/MongooseSchemas";
@@ -15,7 +15,7 @@ import {
 import { IProcedureConfig } from "../{{RelativePath}}trpcUtils";
 
 const DynamicParams: DynamicTableProcedureParams = {
-  procedure: publicProcedure,
+  procedure: protectedProcedure,
   DataModel: DATABASE_MODELS[{{DATA_NAME}}],
   MongoDataSchema: MONGOOSE_SCHEMA[{{DATA_NAME}}],
   PropertyModel: DATABASE_MODELS[{{PROPERTY_NAME}}],
@@ -23,7 +23,6 @@ const DynamicParams: DynamicTableProcedureParams = {
   fixedFields: _.omit(SCHEMAS_CONFIG[{{DATA_NAME}}].fieldConfigs, ["_id"]),
 };
 
-export const {{ModuleName}}BaseRouter = (config?: IProcedureConfig) =>
-  router({
+export const {{ModuleName}}BaseRouter = router({
     {{routerCodes}}
   });

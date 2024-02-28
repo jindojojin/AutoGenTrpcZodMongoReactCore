@@ -1,12 +1,9 @@
-import React from "react";
-import { ColumnType } from "antd/es/table";
-import { showIf } from "../../Common/Utils";
 import { CheckOutlined } from "@ant-design/icons";
-import { ISchemaFieldConfig } from "../../../share/types/ISchemaDefinition";
+import React from "react";
+import { showIf } from "../../Common/Utils";
+import { TableColumValueRender } from "../Types";
 
-BooleanColumn.propTypes = {};
-
-function BooleanColumn<T>(config: ISchemaFieldConfig): Partial<ColumnType<T>> {
+export const BooleanColumn: TableColumValueRender<boolean> = () => {
   return {
     render: (value: any) => showIf(value, <CheckOutlined />),
   };

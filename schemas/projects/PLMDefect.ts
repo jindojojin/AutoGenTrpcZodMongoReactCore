@@ -1,6 +1,8 @@
-import { ISchemaDefinition } from "../../share/types/ISchemaDefinition";
-import { BASIC_TYPE } from "../../share/types/DataTypes";
+import {ISchemaDefinition} from "../../share/types/ISchemaDefinition";
+import {BASIC_TYPE} from "../../share/types/DataTypes";
 import {SCHEMA_TYPE} from "../SchemaTypes";
+
+export const DEFFECT_TYPE=["DEFECT","NOT A DEFECT"]
 
 export const PLMDefectSchema: ISchemaDefinition = {
   plm_code: {
@@ -29,13 +31,13 @@ export const PLMDefectSchema: ISchemaDefinition = {
     required: true,
     label: "Priority",
   },
-  register_by: {
+  reg_by: {
     type: BASIC_TYPE.TEXT,
     label: "Reg. by",
     immutable: true,
   },
-  user_submit: {
-    type: SCHEMA_TYPE.USER,
+  reg_email: {
+    type: BASIC_TYPE.TEXT,
     nullable: true,
     label: "Register E-Mail",
     hint: "Null if not submitted by system's user",

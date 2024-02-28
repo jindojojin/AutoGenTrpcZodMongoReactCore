@@ -3,6 +3,11 @@ import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
 {{imports}}
 
 {{exports}}
+
+export async function initModels() {
+  {{initModels}}
+}
+
 export const DATABASE_MODELS: Record<SCHEMA_TYPE, mongoose.Model<any>> = {
   {{exportModelMapping}}
 };

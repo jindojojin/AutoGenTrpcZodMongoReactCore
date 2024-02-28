@@ -1,8 +1,13 @@
-import React, {useCallback, useRef, useState} from "react";
-import {Dropdown} from "antd";
-import {CopyOutlined, FileExcelOutlined, ImportOutlined,} from "@ant-design/icons";
+import {
+    CopyOutlined,
+    FileExcelOutlined,
+    ImportOutlined,
+} from "@ant-design/icons";
+import { Button, Dropdown } from "antd";
+import { useCallback, useRef, useState } from "react";
 
-import {showIf} from "../../Common/Utils";
+import _ from "lodash";
+import { showIf } from "../../Common/Utils";
 
 const EXTENSIONS = {
     excel: ".xlsx,.xls",
@@ -10,10 +15,9 @@ const EXTENSIONS = {
 };
 
 function TableImporter<T>(props: {
-    onImportFromText?: (text: string) => Promise<any>,
-    onImportFromExcel?: (file: any) => Promise<any>
+    onImportFromText?: (text: string) => Promise<any>;
+    onImportFromExcel?: (file: any) => Promise<any>;
 }) {
-
     const handlePaste = useCallback(() => {
         try {
             navigator.clipboard.readText().then((r) => {
@@ -30,7 +34,7 @@ function TableImporter<T>(props: {
         (event: any) => {
             props.onImportFromExcel?.(event.target.files[0]);
         },
-        [props.onImportFromExcel]
+        [props.onImportFromExcel],
     );
     return showIf(
         props.onImportFromExcel || props.onImportFromText,
@@ -38,19 +42,23 @@ function TableImporter<T>(props: {
             <Dropdown
                 trigger={["click", "click"]}
                 menu={{
-                    items: [
-                        {
-                            label: "From excel file",
-                            key: "excel",
-                            icon: <FileExcelOutlined/>,
-                        },
-                        {
-                            label: "Paste from excel",
-                            key: "clipboard",
-                            icon: <CopyOutlined/>,
-                        },
-                    ],
-                    onClick: async ({key}) => {
+                    items: _.compact([
+                        props.onImportFromExcel
+                            ? {
+                                label: "From excel file",
+                                key: "excel",
+                                icon: <FileExcelOutlined />,
+                            }
+                            : null,
+                        props.onImportFromText
+                            ? {
+                                label: "Paste from excel",
+                                key: "clipboard",
+                                icon: <CopyOutlined />,
+                            }
+                            : null,
+                    ]),
+                    onClick: async ({ key }) => {
                         switch (key) {
                             case "excel":
                                 setUploadType("excel");
@@ -69,16 +77,16 @@ function TableImporter<T>(props: {
                     },
                 }}
             >
-                <ImportOutlined title={"Import"}/>
+                <Button type="primary" size="small" icon={<ImportOutlined />}>Import</Button>
             </Dropdown>
             <input
                 ref={fileInput as any}
-                style={{display: "none"}}
+                style={{ display: "none" }}
                 type={"file"}
                 accept={EXTENSIONS[uploadType]}
                 onChange={handleFileUpload}
             />
-        </>
+        </>,
     );
 }
 

@@ -1,7 +1,7 @@
 // created for each request
 export type AuthorizedUser = {
   loginID: string;
-  scopes: string[];
+  _id: string;
 };
 
 export type DateRange = {

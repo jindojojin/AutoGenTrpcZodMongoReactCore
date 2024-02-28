@@ -1,0 +1,23 @@
+import _ from "lodash";
+import mongoose from "mongoose";
+import { getMongooseCollectionName } from "./Utils";
+import { ViewGenList } from "../../views";
+import { VIEW_TYPE } from "../../views/ViewTypes";
+{{imports}}
+
+export function getViewConfig(view: VIEW_TYPE): Parameters<typeof mongoose.Model.createCollection>[0] {
+  return {
+    viewOn: getMongooseCollectionName(ViewGenList[view].view.viewOn),
+    pipeline: _.compact(_.flattenDeep(ViewGenList[view].view.pineline)),
+  }
+}
+
+{{exports}}
+
+export async function initViews() {
+  {{initViews}}
+}
+
+export const DATABASE_VIEWS: Record<VIEW_TYPE, mongoose.Model<any>> = {
+  {{exportModelMapping}}
+};

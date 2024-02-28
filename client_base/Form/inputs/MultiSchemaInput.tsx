@@ -17,6 +17,7 @@ import { SearchProps } from "antd/es/input";
 import _ from "lodash";
 import { useState } from "react";
 import { showIf } from "../../Common/Utils";
+import {DYNAMIC_CATEGORY_ID} from "../../../share/constants/database_fields";
 
 export interface IMultiSchemaInputProps<T> {
   value?: T[];
@@ -103,7 +104,7 @@ function MultiSchemaInput<T extends { _id: any }>(
               onSearch={async (value) => {
 
                 const options = await props.trpcRoute.textSearch.query(props.categoryId || props.forceUseCategory
-                  ? { categoryId: props.categoryId, input: { text: value } }
+                  ? { [DYNAMIC_CATEGORY_ID]: props.categoryId, input: { text: value } }
                   : { text: value })
                 setOptions(options.records)
               }}

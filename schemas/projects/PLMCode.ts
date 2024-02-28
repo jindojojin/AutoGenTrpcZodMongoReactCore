@@ -1,5 +1,5 @@
-import { BASIC_TYPE } from "../../share/types/DataTypes";
-import { ISchemaDefinition } from "../../share/types/ISchemaDefinition";
+import {BASIC_TYPE} from "../../share/types/DataTypes";
+import {ISchemaDefinition} from "../../share/types/ISchemaDefinition";
 import {SCHEMA_TYPE} from "../SchemaTypes";
 
 export const PLMCodeSchema: ISchemaDefinition = {
@@ -7,6 +7,7 @@ export const PLMCodeSchema: ISchemaDefinition = {
   plmCode: {
     type: BASIC_TYPE.TEXT,
     unique: true,
+    exportKey:true,
     importKey: true,
     required: true,
     label: "Dev. Mdl. Name/Item Name",

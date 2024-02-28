@@ -1,23 +1,25 @@
-import { ISchemaDefinition } from "../../../share/types/ISchemaDefinition";
-import { BASIC_TYPE } from "../../../share/types/DataTypes";
-import { DYNAMIC_CATEGORY_ID } from "../../../share/constants/database_fields";
-import { withAutoLog } from "../../auto-logs/AutoLogSchema";
-import { PropertySchema } from "./PropertySchema";
-import {GenConfig} from "../../genUtils";
 import {SCHEMA_TYPE} from "../../../schemas/SchemaTypes";
+import {DYNAMIC_CATEGORY_ID} from "../../../share/constants/database_fields";
+import {BASIC_TYPE, isSchemaType} from "../../../share/types/DataTypes";
+import {ISchemaDefinition} from "../../../share/types/ISchemaDefinition";
+import {withAutoLog} from "../../auto-logs/AutoLogSchema";
+import {PropertySchema} from "./PropertySchema";
 
-type Config<T> = {
+import {GenConfig} from "../../../schemas";
+
+type Config<T> = Partial<GenConfig> & {
   name: T;
-  schema?: ISchemaDefinition;
 };
 
-function getSchemaConfig<T>(config: Config<T> | T): {
+function getSchemaConfig<T extends SCHEMA_TYPE>(config: Config<T> | T): {
   type: T;
   definition: ISchemaDefinition;
+  genConfig:Partial<GenConfig>
 } {
   return {
     type: (config as Config<T>).name ?? (config as T),
     definition: (config as Config<T>).schema ?? {},
+    genConfig:  isSchemaType(config)?{} :config as any
   };
 }
 
@@ -47,9 +49,12 @@ export function getDynamicSchemaGenConfigs<
       logSchema: config.dataLog,
       dataSchema: dataSchema.type,
       dataGenConfig: {
+        ...dataSchema.genConfig,
         schema: {
           [DYNAMIC_CATEGORY_ID]: {
             type: cateSchema.type,
+            importKey:true,
+            exportKey:true,
             hidden: true,
           },
           ...dataSchema.definition,
@@ -65,6 +70,7 @@ export function getDynamicSchemaGenConfigs<
       logSchema: config.categoryLog,
       dataSchema: cateSchema.type,
       dataGenConfig: {
+        ...cateSchema.genConfig,
         folder,
         schema: {
           [DYNAMIC_CATEGORY_ID]: {
@@ -80,16 +86,16 @@ export function getDynamicSchemaGenConfigs<
       },
     }),
     ...withAutoLog({
-      logSchema: config.propertyLog as any,
-      dataSchema: config.property as any,
+      logSchema: config.propertyLog,
+      dataSchema: propSchema.type,
       dataGenConfig: {
+        ...propSchema.genConfig,
         folder,
         schema: {
           [DYNAMIC_CATEGORY_ID]: {
             type: cateSchema.type,
             hidden: true,
           },
-          ...propSchema.definition,
           ...PropertySchema,
         },
       },

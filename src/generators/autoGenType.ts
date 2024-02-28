@@ -1,10 +1,17 @@
 import {writeFileSync} from "fs";
 import _ from "lodash";
 import path from "path";
-import {BASIC_TYPE, DataType, isBasicType, isFileType, isSchemaType, } from "../../share/types/DataTypes";
-import {createFolderIfNotExist, GenConfig, getSchemaName} from "../../server_base/genUtils";
-import {getObjectKeys} from "../../share/CommonFunctions";
 import {SCHEMA_TYPE} from "../../schemas/SchemaTypes";
+import {getObjectKeys} from "../../share/CommonFunctions";
+import {BASIC_TYPE, DataType, isBasicType, isFileType, isSchemaType,} from "../../share/types/DataTypes";
+import {createFolderIfNotExist, getSchemaName} from "../genUtils";
+
+import {GenConfig} from "../../schemas";
+import {ISchemaDefinition} from "../../share/types/ISchemaDefinition";
+import {ViewGenConfig} from "../../views";
+import {VIEW_TYPE} from "../../views/ViewTypes";
+import {TABLE_API} from "../../custom_apis/TableAPI";
+import {TableAPIGenConfig} from "../../custom_apis/index.js";
 
 const BasicTypeStr: Record<BASIC_TYPE, string> = {
     [BASIC_TYPE.BOOLEAN]: "boolean",
@@ -35,16 +42,16 @@ function getTypeStr(type: DataType, enums?: string[]): string {
     return typeStr;
 }
 
-function getSchemaTypeStr(schema: SCHEMA_TYPE, genConfig: GenConfig) {
+function getTypeObjectStr(schema: ISchemaDefinition, name: string) {
     let fieldTypes: { publicType: undefined | string; privateType: string }[] =
-        getObjectKeys(genConfig.schema).map((field) => {
+        getObjectKeys(schema).map((field) => {
             const {
                 private: _private,
                 type,
                 enum: _enum,
                 nullable,
                 required,
-            } = genConfig.schema[field];
+            } = schema[field];
             const typeStr = `${String(field)}${required ? "" : "?"}:${getTypeStr(
                 type,
                 _enum,
@@ -55,23 +62,33 @@ function getSchemaTypeStr(schema: SCHEMA_TYPE, genConfig: GenConfig) {
             };
         });
     return {
-        publicType: `export type ${
-            getSchemaName(schema).SchemaName
-        } = {_id:string,${_.compact(fieldTypes.map((f) => f.publicType)).join(
-            ",",
-        )}}`,
-        privateType: `export type ${
-            getSchemaName(schema).SchemaName
-        } = {_id:string,${_.compact(fieldTypes.map((f) => f.privateType)).join(
-            ",",
-        )}}`,
+        publicType: `export type ${getSchemaName(name).SchemaName
+            } = {_id:string,${_.compact(fieldTypes.map((f) => f.publicType)).join(
+                ",",
+            )}}`,
+        privateType: `export type ${getSchemaName(name).SchemaName
+            } = {_id:string,${_.compact(fieldTypes.map((f) => f.privateType)).join(
+                ",",
+            )}}`,
     };
 }
 
-export function autoGenSchemaType(publicOutDir: string | string[], privateOutDir: string, genList: Record<SCHEMA_TYPE, GenConfig>) {
-    const schemaTypes = getObjectKeys(genList).map((schema) =>
-        getSchemaTypeStr(schema, genList[schema]),
+function getSchemaTypeStr(schema: SCHEMA_TYPE, genConfig: GenConfig) {
+    return getTypeObjectStr(genConfig.schema, schema);
+}
+
+function getViewTypeStr(view: VIEW_TYPE, ViewDefinition: ViewGenConfig) {
+    return getTypeObjectStr(ViewDefinition.view.schema, view)
+}
+
+
+export function autoGenSchemaType(publicOutDir: string | string[], privateOutDir: string, SchemaGenList: Record<SCHEMA_TYPE, GenConfig>, ViewGenList: Record<VIEW_TYPE, ViewGenConfig>, TableAPIGen: Record<TABLE_API, TableAPIGenConfig>) {
+    const schemaTypes = getObjectKeys(SchemaGenList).map((schema) =>
+        getSchemaTypeStr(schema, SchemaGenList[schema]),
     );
+
+    const viewTypes = getObjectKeys(ViewGenList).map((view) => getViewTypeStr(view, ViewGenList[view]))
+    const tableApiTypes = getObjectKeys(TableAPIGen).map(table => getTypeObjectStr(TableAPIGen[table].config.schema, table))
     if (!Array.isArray(publicOutDir)) publicOutDir = [publicOutDir]
     const publicFilePaths = publicOutDir.map(publicOutDir => path.resolve(`${publicOutDir}/DatabaseTypes.ts`));
     const privateFilePath = path.resolve(`${privateOutDir}/mongoose/DatabaseTypes.ts`);
@@ -79,9 +96,9 @@ export function autoGenSchemaType(publicOutDir: string | string[], privateOutDir
     createFolderIfNotExist(privateFilePath);
     publicFilePaths.forEach(publicFilePath => writeFileSync(
         publicFilePath,
-        schemaTypes.map((s) => s.publicType).join(";\n")));
+        [...schemaTypes, ...viewTypes, ...tableApiTypes].map((s) => s.publicType).join(";\n")));
     writeFileSync(
         privateFilePath,
-        schemaTypes.map((s) => s.privateType).join(";\n"),
+        [...schemaTypes, ...viewTypes, ...tableApiTypes].map((s) => s.privateType).join(";\n"),
     );
 }

@@ -1,14 +1,13 @@
 /**
  * This file is auto generated _ do not fix manually
  */
-import { publicProcedure, router } from "../{{RelativePath}}trpc";
+import { protectedProcedure, router } from "../{{RelativePath}}trpc";
 import { ZOD_APIS, ZOD_INPUTS } from "../{{RelativePath}}zods";
 import { DB_FUNC } from "../{{RelativePath}}database-functions";
 import {SCHEMA_TYPE} from "../../{{RelativePath}}schemas/SchemaTypes";
 import { DATABASE_MODELS } from "../{{RelativePath}}mongoose/DatabaseModels";
 import { SCHEMAS_CONFIG } from "../../{{RelativePath}}share/schema_configs";
 import { IProcedureConfig } from "../{{RelativePath}}trpcUtils";
-export const {{ModuleName}}BaseRouter = (config?: IProcedureConfig) =>
-  router({
+export const {{ModuleName}}BaseRouter = router({
     {{routerCodes}}
   });

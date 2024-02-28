@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
+import { databaseClient } from "../../../src/trpc/service";
+import { getSchemaConfigFromFieldConfigs } from "../../share/SchemaUtils";
 import { API_NAME } from "../../share/constants/database_apis";
 import { DYNAMIC_CATEGORY_ID } from "../../share/constants/database_fields";
 import { ISchemaConfig } from "../../share/types/ISchemaConfig";
-import { getSchemaConfigFromFieldConfigs } from "../../share/SchemaUtils";
-import { databaseClient } from "../../../src/trpc/service";
 
 function useAllSchemaConfigs(
   categoryRoute: API_NAME,
@@ -21,7 +21,7 @@ function useAllSchemaConfigs(
       setCategoryInfos(categories.records);
       setPropertyInfos(properties.records);
     })();
-  }, []);
+  }, [categoryField, categoryRoute, propertyRoute]);
   const SchemaConfigs = useMemo(() => {
     const Result = new Map<string, ISchemaConfig<any>>();
     if (CategoryInfos && PropertyInfos) {

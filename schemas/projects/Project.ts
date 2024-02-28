@@ -1,5 +1,5 @@
-import { ISchemaDefinition } from "../../share/types/ISchemaDefinition";
-import { BASIC_TYPE, FILE_TYPE } from "../../share/types/DataTypes";
+import {ISchemaDefinition} from "../../share/types/ISchemaDefinition";
+import {BASIC_TYPE, FILE_TYPE} from "../../share/types/DataTypes";
 
 export const ProjectSchema: ISchemaDefinition = {
   logo: {

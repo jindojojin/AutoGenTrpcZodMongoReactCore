@@ -91,7 +91,7 @@ function streamFileDownload(response: AxiosResponse, filename?: string) {
 }
 
 export function getUploadFileURL(value?: string | (any & { _id: string })) {
-  return `${import.meta.env.VITE_API_GATEWAY_URL}/storage/file/single/${
+  return `${FILE_STORAGE_URL}/file/single/${
       (value as any)?._id ?? value ?? ""
   }`;
 }

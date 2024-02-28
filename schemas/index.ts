@@ -1,37 +1,59 @@
 // Table name use for create relationship in schemas and automatic generate route,....
-import {GenConfig} from "../server_base/genUtils";
+import {withAutoLog} from "../server_base/auto-logs/AutoLogSchema";
+import {SystemScopeSchema, SystemUserScopeSchema} from "../server_base/basic-auth/AuthSchemas";
+import {DB_FUNC, excludeAllExcept} from "../server_base/database-functions";
 import {
     getDynamicSchemaGenConfigs
 } from "../server_base/trpc-dynamic-routes/dynamic_table_schema/getDynamicSchemaDefinition";
+import {ISchemaDefinition} from "../share/types/ISchemaDefinition";
+import {SCHEMA_TYPE} from "./SchemaTypes";
 import {AssetSchema} from "./assets/Asset";
-import {withAutoLog} from "../server_base/auto-logs/AutoLogSchema";
-import {AssetPicSchema} from "./assets/AssetPic";
+import {AssetCategorySchema} from "./assets/AssetCategory";
 import {AssetInvoiceSchema} from "./assets/AssetInvoice";
-import {TaskSchema} from "./tasks/Task";
-import {TaskCheckItemSchema} from "./tasks/TaskCheckItem";
+import {AssetPicSchema} from "./assets/AssetPic";
+import {AssetStorageSchema} from "./assets/AssetStorage";
+import {AssetTransferSchema} from "./assets/AssetTransfer";
 import {PLMCodeSchema} from "./projects/PLMCode";
 import {PLMDefectSchema} from "./projects/PLMDefect";
 import {ProjectSchema} from "./projects/Project";
-import {TestProjectSchema} from "./projects/TestProject";
-import {TTv2TestSuiteSchema} from "./projects/TTv2TestSuite";
-import {TTv2TestSetSchema} from "./projects/TTv2TestSet";
+import {ProjectMemberBlacklistSchema} from "./projects/ProjectMember";
 import {TTv2TestCaseSchema} from "./projects/TTv2TestCase";
-import {SystemScopeSchema, SystemUserScopeSchema} from "../server_base/basic-auth/AuthSchemas";
+import {TTv2TestSetSchema} from "./projects/TTv2TestSet";
+import {TTv2TestSuiteSchema} from "./projects/TTv2TestSuite";
+import {TestProjectSchema} from "./projects/TestProject";
+import {TaskSchema} from "./tasks/Task";
+import {TaskCheckItemSchema} from "./tasks/TaskCheckItem";
 import {UserSchema} from "./users/User";
-import {SCHEMA_TYPE} from "./SchemaTypes";
-import {AssetStorageSchema} from "./assets/AssetStorage";
+import {TTv2UserSchema} from "./projects/TTv2User";
 
+export type GenConfig = {
+    schema: ISchemaDefinition;
+    folder?: string;
+    dynamic?: {
+        category: SCHEMA_TYPE;
+        property: SCHEMA_TYPE;
+    };
+    logSchema?: SCHEMA_TYPE;
+    excludeFunctions?: (keyof typeof DB_FUNC)[];
+    useSoftDelete?: boolean;
+};
 export const GenList: Record<SCHEMA_TYPE, GenConfig> = {
     ...getDynamicSchemaGenConfigs(
         {
             data: {
                 name: SCHEMA_TYPE.ASSET,
                 schema: AssetSchema,
+                excludeFunctions: ["findMany"],
+                useSoftDelete: true,
             },
             dataLog: SCHEMA_TYPE.ASSET_LOG,
-            category: SCHEMA_TYPE.ASSET_CATEGORY,
+            category: {
+                name: SCHEMA_TYPE.ASSET_CATEGORY, excludeFunctions: ["findMany"],
+                schema: AssetCategorySchema,
+                useSoftDelete: true
+            },
             categoryLog: SCHEMA_TYPE.ASSET_CATEGORY_LOG,
-            property: SCHEMA_TYPE.ASSET_PROPERTY,
+            property: {name: SCHEMA_TYPE.ASSET_PROPERTY, useSoftDelete: true},
             propertyLog: SCHEMA_TYPE.ASSET_PROPERTY_LOG,
         },
         "assets",
@@ -50,9 +72,25 @@ export const GenList: Record<SCHEMA_TYPE, GenConfig> = {
         dataGenConfig: {
             schema: AssetInvoiceSchema,
             folder: "assets",
+            useSoftDelete: true
         },
     }),
-    [SCHEMA_TYPE.ASSET_STORAGE]: {schema: AssetStorageSchema, folder: "assets"},
+    ...withAutoLog({
+        logSchema: SCHEMA_TYPE.ASSET_STORAGE_LOG,
+        dataSchema: SCHEMA_TYPE.ASSET_STORAGE,
+        dataGenConfig: {
+            schema: AssetStorageSchema, folder: "assets"
+        }
+    }),
+    ...withAutoLog({
+        logSchema: SCHEMA_TYPE.ASSET_TRANSFER_LOG,
+        dataSchema: SCHEMA_TYPE.ASSET_TRANSFER,
+        dataGenConfig: {
+            schema: AssetTransferSchema, folder: "assets",
+            excludeFunctions: excludeAllExcept([]),
+            useSoftDelete: true
+        }
+    }),
     [SCHEMA_TYPE.TASK]: {schema: TaskSchema, folder: "tasks"},
     [SCHEMA_TYPE.TASK_CHECK_ITEM]: {
         schema: TaskCheckItemSchema,
@@ -62,6 +100,11 @@ export const GenList: Record<SCHEMA_TYPE, GenConfig> = {
     [SCHEMA_TYPE.PLM_CODE]: {
         schema: PLMCodeSchema,
         folder: "projects",
+    },
+    [SCHEMA_TYPE.PROJECT_MEMBER_BLACKLIST]: {
+        schema: ProjectMemberBlacklistSchema,
+        folder: "projects",
+        excludeFunctions: excludeAllExcept(["createOne", "deleteOne"])
     },
     [SCHEMA_TYPE.PLM_DEFECT]: {schema: PLMDefectSchema, folder: "projects"},
     [SCHEMA_TYPE.PROJECT]: {schema: ProjectSchema, folder: "projects"},
@@ -82,7 +125,11 @@ export const GenList: Record<SCHEMA_TYPE, GenConfig> = {
         schema: TTv2TestCaseSchema,
         folder: "projects",
     },
+    [SCHEMA_TYPE.TTV2_USER]: {
+        schema: TTv2UserSchema,
+        folder: "projects",
+    },
     [SCHEMA_TYPE.SCOPE]: {schema: SystemScopeSchema, folder: "users"},
-    [SCHEMA_TYPE.USER]: {schema: UserSchema, folder: "users"},
+    [SCHEMA_TYPE.USER]: {schema: UserSchema, folder: "users", useSoftDelete: true},
     [SCHEMA_TYPE.USER_SCOPE]: {schema: SystemUserScopeSchema, folder: "users"},
 };

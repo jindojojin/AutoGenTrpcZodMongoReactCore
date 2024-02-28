@@ -1,9 +1,9 @@
 import {AnyZodObject, z, ZodType, ZodTypeAny} from "zod";
 import {BASIC_TYPE, DataType, isBasicType, isSchemaType,} from "../../../share/types/DataTypes";
-import {zObjectId, ZodMongoQuery} from "../../zodUtils";
 import {ISchemaFieldConfig} from "../../../share/types/ISchemaDefinition";
-import {ZOD_OUTPUTS} from "../../zods";
 import {zImportOutput} from "../../database-functions/importMany";
+import {ZOD_OUTPUTS} from "../../zods";
+import {zObjectId, ZodMongoQuery} from "../../zodUtils";
 
 function getIOQueryZod(zodType: ZodTypeAny) {
     return {
@@ -96,20 +96,20 @@ export function getBaseZodFromFieldConfigs<T>(fieldConfigs: {
         },
     );
     result.query = result.query.partial();
-    result.output = result.output.extend({_id: zObjectId()});
+    result.output = result.output.extend({ _id: zObjectId() });
     return result;
 }
 
-export function getBasicRouteZodIO<
+export function getViewRouteZodIO<
     I extends AnyZodObject,
     O extends AnyZodObject,
     K extends ZodType<string>,
-    Q extends AnyZodObject,
+    Q extends AnyZodObject
 >(
     baseZod: { input: I; output: O; query: Q },
     _zKeys: K | undefined = undefined,
 ) {
-    const zKeys = _zKeys ?? baseZod.output.keyof();
+    const zKeys = (_zKeys ?? baseZod.output.keyof()).or(z.enum(["createAt", "updateAt"]));
     const projectionSchema = z.union([
         zKeys,
         zKeys.array(),
@@ -127,9 +127,10 @@ export function getBasicRouteZodIO<
             sort: sortSchema,
             skip: z.number(),
             limit: z.number(),
-            populate: z.array(z.object({path: zKeys, select: z.any()})),
+            populate: z.array(z.object({ path: zKeys, select: z.any() })),
         })
         .partial();
+
 
     //=================================Find One=================================//
     const FindOne = z
@@ -149,7 +150,7 @@ export function getBasicRouteZodIO<
             select: projectionSchema.optional(),
             options: optionsSchema.optional(),
         })
-        .optional();
+        .partial();
 
     const FindManyOutput = z.object({
         records: FindOneOutput.array(),
@@ -166,8 +167,7 @@ export function getBasicRouteZodIO<
             select: projectionSchema.optional(),
             options: optionsSchema.optional(),
         })
-        .optional()
-        .default({text: ""});
+        .partial();
 
     const TextSearchOutput = z.object({
         records: FindOneOutput.array(),
@@ -189,6 +189,41 @@ export function getBasicRouteZodIO<
         options: optionsSchema.optional(),
     });
     const FindByIdsOutput = z.array(baseZod.output);
+    //=============================Export to Excel File ==========================//
+    const ExportToExcelFile = z.object({
+        template: z.boolean().optional(),
+        query: FindMany,
+    });
+    const ExportToExcelFileOutput = z.string();
+
+    return {
+        zKeys,
+        FindOne,
+        FindOneOutput,
+        FindMany,
+        FindManyOutput,
+        TextSearch,
+        TextSearchOutput,
+        FindById,
+        FindByIdOutput,
+        FindByIds,
+        FindByIdsOutput,
+        ExportToExcelFile,
+        ExportToExcelFileOutput
+    }
+
+}
+
+export function getBasicRouteZodIO<
+    I extends AnyZodObject,
+    O extends AnyZodObject,
+    K extends ZodType<string>,
+    Q extends AnyZodObject,
+>(
+    baseZod: { input: I; output: O; query: Q },
+    _zKeys: K | undefined = undefined,
+) {
+    const ViewZodIO = getViewRouteZodIO(baseZod, _zKeys);
     //===============================Update One=================================//
     const UpdateOne = z.object({
         id: zObjectId(),
@@ -218,14 +253,14 @@ export function getBasicRouteZodIO<
 
     //===============================Upsert One=================================//
     const UpsertOne = z.object({
-        key: zKeys,
+        key: ViewZodIO.zKeys,
         data: baseZod.input.partial(),
     });
     const UpsertOneOutput = z.boolean();
 
     //===============================Upsert Many================================//
     const UpsertMany = z.object({
-        key: zKeys,
+        key: ViewZodIO.zKeys,
         data: baseZod.input.partial().array(),
     });
     const UpsertManyOutput = z.any();
@@ -250,24 +285,10 @@ export function getBasicRouteZodIO<
     //==============================Import From Json Array ============================//
     const ImportFromJsonArray = z.array(z.any());
     const ImportFromJsonArrayOutput = zImportOutput;
-    //=============================Export to Excel File ==========================//
-    const ExportToExcelFile = z.object({
-        template: z.boolean().optional(),
-        query: FindMany,
-    });
-    const ExportToExcelFileOutput = z.string();
+
 
     return {
-        FindOne,
-        FindOneOutput,
-        FindMany,
-        FindManyOutput,
-        TextSearch,
-        TextSearchOutput,
-        FindById,
-        FindByIdOutput,
-        FindByIds,
-        FindByIdsOutput,
+        ...ViewZodIO,
         CreateOne,
         CreateOneOutput,
         CreateMany,
@@ -282,8 +303,6 @@ export function getBasicRouteZodIO<
         ImportFromTextOutput,
         ImportFromJsonArray,
         ImportFromJsonArrayOutput,
-        ExportToExcelFile,
-        ExportToExcelFileOutput,
         UpdateOne,
         UpdateOneOutput,
         UpdateMany,

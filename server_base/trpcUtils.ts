@@ -1,4 +1,4 @@
-import { ProcedureBuilder } from "@trpc/server";
+import {ProcedureBuilder} from "@trpc/server";
 
 export interface IProcedureConfig {
   findOne?: ProcedureBuilder<any>;

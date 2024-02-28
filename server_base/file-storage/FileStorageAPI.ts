@@ -13,9 +13,10 @@ import {
   STORAGE_FOLDER_PATH,
 } from "./FileManager";
 import archiver from "archiver";
+import { AuthorizedUser } from "../../share/types/CommonTypes";
 
 interface MulterRequest extends Request {
-  user?: any;
+  user?: AuthorizedUser;
   file?: Express.Multer.File;
   files?: Express.Multer.File[];
 }
@@ -36,24 +37,24 @@ export function initStorage(app: Express, folderName: string) {
   console.log(`Serving ${folderName} at:`, STORAGE_FOLDER_PATH);
 
   app.post(
-    `/storage/${folderName}/single`,
-    upload.single("file"),
-    async (req, res) => {
-      try {
-        const Req = req as MulterRequest;
-        const file = Req.file;
-        if (!file) throw "No upload file";
-        let fileID: string;
-        if (req.query["temp"]) {
-          fileID = addTempFiles(file) as string;
-        } else {
-          fileID = await saveFiles(file, folderName, Req.user?._id) as string;
+      `/storage/${folderName}/single`,
+      upload.single("file"),
+      async (req, res) => {
+        try {
+          const Req = req as MulterRequest;
+          const file = Req.file;
+          if (!file) throw "No upload file";
+          let fileID: string;
+          if (req.query["temp"]) {
+            fileID = addTempFiles(file) as string;
+          } else {
+            fileID = await saveFiles(file, folderName, Req.user?._id) as string;
+          }
+          res.send(fileID);
+        } catch (e) {
+          res.status(500).send(e);
         }
-        res.send(fileID);
-      } catch (e) {
-        res.status(500).send(e);
-      }
-    },
+      },
   );
   app.get(`/storage/${folderName}/single/:fileID`, async (req, res) => {
     try {
@@ -75,42 +76,42 @@ export function initStorage(app: Express, folderName: string) {
   });
 
   app.post(
-    `/storage/${folderName}/multi`,
-    upload.array("files"),
-    async (req, res) => {
-      const Req = req as MulterRequest;
-      console.log("Upload file", req.query);
-      const files = (req as MulterRequest).files;
-      if (files) {
-        let fileIDs: string[];
-        if (req.query["temp"]) {
-          fileIDs = addTempFiles(files) as string[];
-        } else {
-          fileIDs = await saveFiles(files, folderName, Req.user?._id) as string[];
+      `/storage/${folderName}/multi`,
+      upload.array("files"),
+      async (req, res) => {
+        const Req = req as MulterRequest;
+        console.log("Upload file", req.query);
+        const files = (req as MulterRequest).files;
+        if (files) {
+          let fileIDs: string[];
+          if (req.query["temp"]) {
+            fileIDs = addTempFiles(files) as string[];
+          } else {
+            fileIDs = await saveFiles(files, folderName, Req.user?._id) as string[];
+          }
+          const result = await saveFiles(files, folderName, Req.user?._id);
+          res.send(fileIDs);
         }
-        const result = await saveFiles(files, folderName, Req.user?._id);
-        res.send(fileIDs);
-      }
-    },
+      },
   );
   app.post(`/storage/${folderName}/download-zip`, async (req, res) => {
     try {
       const filePath = path.resolve(
-        STORAGE_FOLDER_PATH,
-        folderName,
-        `${new Date().getTime()}_TempFile.zip`,
+          STORAGE_FOLDER_PATH,
+          folderName,
+          `${new Date().getTime()}_TempFile.zip`,
       );
       const files = (await getFiles(req.body)) as SFile[];
       const output = fs.createWriteStream(filePath); // Tạo file zip mới
       output.on("close", () => {
         console.log(`${archive.pointer()} total bytes`);
         console.log(
-          "Archiver has been finalized and the output file descriptor has closed.",
+            "Archiver has been finalized and the output file descriptor has closed.",
         );
         delayDelete(filePath, 10);
         res.download(
-          filePath,
-          req.query?.["fileName"]?.toString() ?? "Compress.zip",
+            filePath,
+            req.query?.["fileName"]?.toString() ?? "Compress.zip",
         ); // Gửi file zip cho người dùng để download
       });
       const archive = archiver("zip", {
